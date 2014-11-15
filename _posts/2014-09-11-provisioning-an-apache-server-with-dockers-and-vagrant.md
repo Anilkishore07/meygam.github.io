@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Provisioning an Apache Server With Dockers And Vagrant"
+author: saravana
 date:   2014-09-11
 categories: dockers vagrant
 ---
@@ -30,10 +31,11 @@ Line#3/4: Runs apt-get update and installs apache2.
 Line#5: Starts Apache and tails the apache logs. This will be the default command that will run when a new container is created from this docker image. Tailing the log helps to have a foreground process, and it is required if this container has to be run in background.
 
 ###Vagrant File
-To build docker image from this file we need a mahcine with docker installed. To make life easier, we will use Vagrant to build and run this container. If you are new to vagrant, go to this link get started - http://docs.vagrantup.com/v2/getting-started/index.html
+To build docker image from this file we need a computer with docker installed. To make life easier, we will use Vagrant to build and run this container. If you are new to vagrant, go to this link get started - http://docs.vagrantup.com/v2/getting-started/index.html
 
 Here is the vagrant file to build an image from docker file, run the docker and forward the port 80 from vm to host on port 18080.
 
+{% highlight ruby linenos %}
 	VAGRANTFILE_API_VERSION = "2"
 
 	Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -42,29 +44,21 @@ Here is the vagrant file to build an image from docker file, run the docker and 
   	config.vm.network "forwarded_port", guest: 80, host: 18080
 
   	config.vm.provision "docker" do |d|
-    d.build_image "/vagrant", args: "-t speriyasamy/apache2"
-    d.run "apache2", image: "speriyasamy/apache2", args: "-p 80:80"
+      d.build_image "/vagrant", args: "-t speriyasamy/apache2"
+      d.run "apache2", image: "speriyasamy/apache2", args: "-p 80:80"
   	end
 	end
+{% endhighlight %}
 
-Once you bring up the vagrant, it should install docker, build the docker image and use the same image to run the container.
+Use `vagarnt up` to bring the vm up. It should install docker, build the docker image and use the same image to run the container.
 
-	vagarnt up
+You can verify this by ssh into the vagrant box, `vagarnt ssh`, and list the docker container using `docker ps` and you should see a apache container running.
 
-You can verify this by ssh into the vagrant box.
+![Docker Screenshot](/assets/2014/sep/docker.png)
 
-	vagarnt ssh
+Now you can access the apache from your host machine using http://localhost:18080
 
-And list the docker container using the below command and you should see a apache container running
-
-	docker ps
-    
-{<1>}![](/content/images/2014/Sep/Untitled.png)
-
-And now you can access the apache from your host machine using http://localhost:18080
-
-{<2>}![](/content/images/2014/Sep/Untitled-1.png)
-
+![Apache Screenshot](/assets/2014/sep/apache.png)
 
 
 ###Manual Steps
