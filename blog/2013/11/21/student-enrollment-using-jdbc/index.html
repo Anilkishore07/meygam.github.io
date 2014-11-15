@@ -1,0 +1,894 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Building Java Web Application Using JDBC - The Story of Experiments with Technology</title>
+  <meta name="author" content="Meygam Inc">
+
+  
+  <meta name="description" content="This post will show how to create a Student Enrollment Application using MYSQL DB with JDBC. This is a simple application that aims to collect the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Story of Experiments with Technology" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-45942294-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Story of Experiments with Technology</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.meygam.com/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Building Java Web Application Using JDBC</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T09:41:55-06:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>9:41 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post will show how to create a Student Enrollment Application using MYSQL DB with JDBC. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project</h2>
+
+<p>To begin with, in the IDE, create a Java Dynamic Web project for the application. While creating the dynamic web project, enable the checkbox to generate web.xml deployment descriptor.</p>
+
+<p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
+
+<p><img src="/assets/images/elizabetht/jdbclayout.png" title="JDBC Dynamic Web Project Layout" alt="JDBC Dynamic Web Project Layout" /></p>
+
+<h2>2. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A servlet and the corresponding class in the source folder that would handle the HTTP requests.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+<li>A welcome file list, which can be used optionally to include the welcome file for the application.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+</span><span class='line'>&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0"&gt;
+</span><span class='line'>  &lt;display-name&gt;StudentEnrollmentWithJDBC&lt;/display-name&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;welcome-file-list&gt;
+</span><span class='line'>    &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+</span><span class='line'>  &lt;/welcome-file-list&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;servlet&gt;
+</span><span class='line'>      &lt;servlet-name&gt;studentJDBCServlet&lt;/servlet-name&gt;
+</span><span class='line'>      &lt;servlet-class&gt;com.github.elizabetht.controller.StudentController&lt;/servlet-class&gt;
+</span><span class='line'>  &lt;/servlet&gt;
+</span><span class='line'>  
+</span><span class='line'>  &lt;servlet-mapping&gt;
+</span><span class='line'>      &lt;servlet-name&gt;studentJDBCServlet&lt;/servlet-name&gt;
+</span><span class='line'>      &lt;url-pattern&gt;/StudentController&lt;/url-pattern&gt;
+</span><span class='line'>  &lt;/servlet-mapping&gt;
+</span><span class='line'>&lt;/web-app&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>3. Add JARs to the project</h2>
+
+<p>Add the following JARs from the web (or their latest equivalent) to the WEB-INF/lib folder under WebContent directory in the project.</p>
+
+<ul>
+<li>mysql-connector-java-5.1.26-bin.jar (for MYSQL data access support)</li>
+<li>jstl.jar and standard.jar (for JSTL Expression language support)</li>
+<li>ojdbc5.jar (for Oracle JDBC Driver support)</li>
+</ul>
+
+
+<p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
+
+<p><img src="/assets/images/elizabetht/jdbcliblayout.png" title="JDBC Library Layout" alt="JDBC Library Layout" /></p>
+
+<h2>4. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;content&rdquo; under WebContent (This is where the jsp files will be created).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="JDBC Signup Layout" alt="JDBC Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="JDBC Login Layout" alt="JDBC Login Layout" /></p>
+
+<p>The main actions for this application are as follows:</p>
+
+<ul>
+<li>Signup (To Insert the Student Signup details into the Database)</li>
+<li>Login (To Verify the Student Login details from the Database)</li>
+</ul>
+
+
+<p>In order to display a success (result) page after the login action is complete, create a success.jsp page to indicate the login success. Similarly, to indicate a login failure (result), create a page failure.jsp. These are just pages used to display the contents - no processing logic involved.</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under WebContent folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC/tree/master/WebContent">https://github.com/elizabetht/StudentEnrollmentWithJDBC/tree/master/WebContent</a></p>
+
+<h2>5. Create packages</h2>
+
+<p>Create packages each for the Controller, Repository and Model tiers under the src folder.
+Also create package for the utilities class under the src folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jdbc-package.png" title="JDBC Package Layout" alt="JDBC Package Layout" /></p>
+
+<h2>6. Create class for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Student {
+</span><span class='line'>  private String userName;
+</span><span class='line'>  private String firstName;
+</span><span class='line'>  private String lastName;
+</span><span class='line'>  private String password;
+</span><span class='line'>  private String emailAddress;
+</span><span class='line'>  private Date dateOfBirth;
+</span><span class='line'>
+</span><span class='line'>  public String getUserName() {
+</span><span class='line'>      return userName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setUserName(String userName) {
+</span><span class='line'>      this.userName = userName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public String getFirstName() {
+</span><span class='line'>      return firstName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setFirstName(String firstName) {
+</span><span class='line'>      this.firstName = firstName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public String getLastName() {
+</span><span class='line'>      return lastName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setLastName(String lastName) {
+</span><span class='line'>      this.lastName = lastName;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public String getPassword() {
+</span><span class='line'>      return password;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setPassword(String password) {
+</span><span class='line'>      this.password = password;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public String getEmailAddress() {
+</span><span class='line'>      return emailAddress;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setEmailAddress(String emailAddress) {
+</span><span class='line'>      this.emailAddress = emailAddress;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public Date getDateOfBirth() {
+</span><span class='line'>      return dateOfBirth;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public void setDateOfBirth(Date dateOfBirth) {
+</span><span class='line'>      this.dateOfBirth = dateOfBirth;
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>7. Create db.properties file</h2>
+
+<p>Create a file named db.properties under the src folder, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dbDriver=com.mysql.jdbc.Driver
+</span><span class='line'>connectionUrl=jdbc:mysql://&lt;include connection url&gt;:3306/studentEnrollment
+</span><span class='line'>userName=&lt;include username&gt;
+</span><span class='line'>password=&lt;include password&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>8. Create utility class </h2>
+
+<p>Create a POJO class named DbUtil.java under the package com.github.elizabetht.util to include a helper class functionality that would load the db.properties file and get the database connection.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class DbUtil {
+</span><span class='line'>  private static Connection dbConnection = null;
+</span><span class='line'>
+</span><span class='line'>  public static Connection getConnection() {
+</span><span class='line'>      if (dbConnection != null) {
+</span><span class='line'>          return dbConnection;
+</span><span class='line'>      } else {
+</span><span class='line'>          try {
+</span><span class='line'>              InputStream inputStream = DbUtil.class.getClassLoader()
+</span><span class='line'>                      .getResourceAsStream("db.properties");
+</span><span class='line'>              Properties properties = new Properties();
+</span><span class='line'>              if (properties != null) {
+</span><span class='line'>                  properties.load(inputStream);
+</span><span class='line'>
+</span><span class='line'>                  String dbDriver = properties.getProperty("dbDriver");
+</span><span class='line'>                  String connectionUrl = properties
+</span><span class='line'>                          .getProperty("connectionUrl");
+</span><span class='line'>                  String userName = properties.getProperty("userName");
+</span><span class='line'>                  String password = properties.getProperty("password");
+</span><span class='line'>
+</span><span class='line'>                  Class.forName(dbDriver).newInstance();
+</span><span class='line'>                  dbConnection = DriverManager.getConnection(connectionUrl,
+</span><span class='line'>                          userName, password);
+</span><span class='line'>              }
+</span><span class='line'>          } catch (Exception e) {
+</span><span class='line'>              e.printStackTrace();
+</span><span class='line'>          }
+</span><span class='line'>          return dbConnection;
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>9. Create class for Repository tier</h2>
+
+<p>Create a Repository tier POJO class named StudentRepository.java under the package com.github.elizabetht.repository to support the database operations of saving the student details, verifying the student login details and checking if the username exists when a save is attempted.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class StudentRepository {
+</span><span class='line'>  private Connection dbConnection;
+</span><span class='line'>  
+</span><span class='line'>  public StudentRepository() {
+</span><span class='line'>      dbConnection = DbUtil.getConnection();
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  public void save(String userName, String password, String firstName, String lastName, String dateOfBirth, String emailAddress) {
+</span><span class='line'>      try {
+</span><span class='line'>          PreparedStatement prepStatement = dbConnection.prepareStatement("insert into student(userName, password, firstName, lastName, dateOfBirth, emailAddress) values (?, ?, ?, ?, ?, ?)");
+</span><span class='line'>          prepStatement.setString(1, userName);
+</span><span class='line'>          prepStatement.setString(2, password);
+</span><span class='line'>          prepStatement.setString(3, firstName);
+</span><span class='line'>          prepStatement.setString(4, lastName);
+</span><span class='line'>          prepStatement.setDate(5, new java.sql.Date(new SimpleDateFormat("MM/dd/yyyy")
+</span><span class='line'>          .parse(dateOfBirth.substring(0, 10)).getTime()));
+</span><span class='line'>          prepStatement.setString(6, emailAddress);
+</span><span class='line'>          
+</span><span class='line'>          prepStatement.executeUpdate();
+</span><span class='line'>      } catch (SQLException e) {
+</span><span class='line'>          e.printStackTrace();
+</span><span class='line'>      } catch (ParseException e) {            
+</span><span class='line'>          e.printStackTrace();
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  public boolean findByUserName(String userName) {
+</span><span class='line'>      try {
+</span><span class='line'>          PreparedStatement prepStatement = dbConnection.prepareStatement("select count(*) from student where userName = ?");
+</span><span class='line'>          prepStatement.setString(1, userName);   
+</span><span class='line'>                      
+</span><span class='line'>          ResultSet result = prepStatement.executeQuery();
+</span><span class='line'>          if (result != null) {   
+</span><span class='line'>              while (result.next()) {
+</span><span class='line'>                  if (result.getInt(1) == 1) {
+</span><span class='line'>                      return true;
+</span><span class='line'>                  }               
+</span><span class='line'>              }
+</span><span class='line'>          }
+</span><span class='line'>      } catch (Exception e) {
+</span><span class='line'>          e.printStackTrace();
+</span><span class='line'>      }
+</span><span class='line'>      return false;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  public boolean findByLogin(String userName, String password) {
+</span><span class='line'>      try {
+</span><span class='line'>          PreparedStatement prepStatement = dbConnection.prepareStatement("select password from student where userName = ?");
+</span><span class='line'>          prepStatement.setString(1, userName);           
+</span><span class='line'>          
+</span><span class='line'>          ResultSet result = prepStatement.executeQuery();
+</span><span class='line'>          if (result != null) {
+</span><span class='line'>              while (result.next()) {
+</span><span class='line'>                  if (result.getString(1).equals(password)) {
+</span><span class='line'>                      return true;
+</span><span class='line'>                  }
+</span><span class='line'>              }               
+</span><span class='line'>          }           
+</span><span class='line'>      } catch (Exception e) {
+</span><span class='line'>          e.printStackTrace();
+</span><span class='line'>      }
+</span><span class='line'>      return false;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>10. Create class for Controller Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the servicing logic of the application goes - whether a signup or login action is called.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@SuppressWarnings("serial")
+</span><span class='line'>public class StudentController extends HttpServlet {
+</span><span class='line'>  private StudentRepository studentRepository;
+</span><span class='line'>
+</span><span class='line'>  private static String STUDENT_SIGNUP = "content/signup.jsp";
+</span><span class='line'>  private static String STUDENT_LOGIN = "content/login.jsp";
+</span><span class='line'>  private static String LOGIN_SUCCESS = "content/success.jsp";
+</span><span class='line'>  private static String LOGIN_FAILURE = "content/failure.jsp";
+</span><span class='line'>
+</span><span class='line'>  /**
+</span><span class='line'>   * @see HttpServlet#HttpServlet()
+</span><span class='line'>   */
+</span><span class='line'>  public StudentController() {
+</span><span class='line'>      super();
+</span><span class='line'>      studentRepository = new StudentRepository();
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  /**
+</span><span class='line'>   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+</span><span class='line'>   *      response)
+</span><span class='line'>   */
+</span><span class='line'>  protected void doGet(HttpServletRequest request,
+</span><span class='line'>          HttpServletResponse response) throws ServletException, IOException {    
+</span><span class='line'>      String forward = STUDENT_SIGNUP;
+</span><span class='line'>      RequestDispatcher view = request.getRequestDispatcher(forward);
+</span><span class='line'>      view.forward(request, response);
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  /**
+</span><span class='line'>   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+</span><span class='line'>   *      response)
+</span><span class='line'>   */
+</span><span class='line'>  protected void doPost(HttpServletRequest request,
+</span><span class='line'>          HttpServletResponse response) throws ServletException, IOException {
+</span><span class='line'>      String pageName = request.getParameter("pageName");
+</span><span class='line'>      String forward = "";        
+</span><span class='line'>      
+</span><span class='line'>      if (studentRepository != null) {
+</span><span class='line'>          if (pageName.equals("signup")) {
+</span><span class='line'>              if (studentRepository.findByUserName(request
+</span><span class='line'>                      .getParameter("userName"))) {
+</span><span class='line'>                  request.setAttribute("message", "User Name exists. Try another user name");
+</span><span class='line'>                  forward = STUDENT_SIGNUP;
+</span><span class='line'>                  RequestDispatcher view = request
+</span><span class='line'>                          .getRequestDispatcher(forward);
+</span><span class='line'>                  view.forward(request, response);
+</span><span class='line'>                  return;
+</span><span class='line'>              }
+</span><span class='line'>
+</span><span class='line'>              studentRepository.save(request.getParameter("userName"),
+</span><span class='line'>                      request.getParameter("password"),
+</span><span class='line'>                      request.getParameter("firstName"),
+</span><span class='line'>                      request.getParameter("lastName"),
+</span><span class='line'>                      request.getParameter("dateOfBirth"),
+</span><span class='line'>                      request.getParameter("emailAddress"));
+</span><span class='line'>              forward = STUDENT_LOGIN;
+</span><span class='line'>          } else if (pageName.equals("login")) {
+</span><span class='line'>              boolean result = studentRepository.findByLogin(
+</span><span class='line'>                      request.getParameter("userName"),
+</span><span class='line'>                      request.getParameter("password"));
+</span><span class='line'>              if (result == true) {
+</span><span class='line'>                  forward = LOGIN_SUCCESS;
+</span><span class='line'>              } else {
+</span><span class='line'>                  forward = LOGIN_FAILURE;
+</span><span class='line'>              }
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>      RequestDispatcher view = request.getRequestDispatcher(forward);
+</span><span class='line'>      view.forward(request, response);
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>11. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the db.properties file.</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CREATE TABLE `student` (
+</span><span class='line'>  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+</span><span class='line'>  `dateOfBirth` datetime NOT NULL,
+</span><span class='line'>  `emailAddress` varchar(255) NOT NULL,
+</span><span class='line'>  `firstName` varchar(255) NOT NULL,
+</span><span class='line'>  `lastName` varchar(255) NOT NULL,
+</span><span class='line'>  `password` varchar(8) NOT NULL,
+</span><span class='line'>  `userName` varchar(20) NOT NULL,
+</span><span class='line'>  PRIMARY KEY (`id`)
+</span><span class='line'>) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>12. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>13. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC.git">https://github.com/elizabetht/StudentEnrollmentWithJDBC.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC/releases/tag/1.2">https://github.com/elizabetht/StudentEnrollmentWithJDBC/releases/tag/1.2</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Elizabeth Thomas</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T09:41:55-06:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>9:41 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jdbc/'>jdbc</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/" data-via="" data-counturl="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/11/21/student-enrollment-using-struts-2/" title="Previous Post: Building Java Web Application Using Struts 2">&laquo; Building Java Web Application Using Struts 2</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/" title="Next Post: Building Java Web Application Using Jersey2 REST with Spring">Building Java Web Application Using Jersey2 REST with Spring &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/">Provisioning an Apache Server With Dockers and Vagrant</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/">Connecting to Open VPN Server From iOS Device</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/01/jenkins-android/">Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/05/jenkins-release-upload/">Automating the Release of Java Artifacts Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/17/wordpress-on-aws/">WordPress on AWS</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Meygam Inc
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'SaravanaKumar';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/';
+        var disqus_url = 'http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

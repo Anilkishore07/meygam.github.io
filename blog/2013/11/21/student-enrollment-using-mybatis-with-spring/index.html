@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Building Java Web Application Using MyBatis With Spring - The Story of Experiments with Technology</title>
+  <meta name="author" content="Meygam Inc">
+
+  
+  <meta name="description" content="This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Story of Experiments with Technology" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-45942294-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Story of Experiments with Technology</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.meygam.com/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Building Java Web Application Using MyBatis With Spring</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T09:41:09-06:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>9:41 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project using Maven Template</h2>
+
+<p>To begin with, in the IDE, create a Java Maven project with the template of maven-archetype-webapp (Filter the catalog based on the string &ldquo;webapp&rdquo;) by providing appropriate values for GroupId and Artifact Id for the project. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
+
+<p><img src="/assets/images/elizabetht/mybatislayout.png" title="MyBatis Project Layout" alt="MyBatis Maven Project Layout" /></p>
+
+<h2>2. Update pom.xml</h2>
+
+<p>To make the above Maven Java Web Application project support the MyBatis framework, add the following dependencies to the existing pom.xml</p>
+
+<ul>
+<li>mybatis (for MyBatis support)</li>
+<li>mybatis-spring (for MyBatis-Spring integration support)</li>
+<li>jstl, spring-webmvc, servlet-api and spring-context-support (for Spring support)</li>
+<li>spring-test (may be optional, needed if Spring-test support is needed)</li>
+<li>mysql-connector-java (for MYSQL support)</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;3.1.1&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;1.1.1&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;3.1.1.RELEASE&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;3.1.1.RELEASE&lt;/version&gt;
+</span><span class='line'>      &lt;scope&gt;test&lt;/scope&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;mysql&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;5.1.21&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;1.2&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;3.2.4.RELEASE&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;
+</span><span class='line'>    &lt;dependency&gt;
+</span><span class='line'>      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+</span><span class='line'>      &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+</span><span class='line'>      &lt;version&gt;2.5&lt;/version&gt;
+</span><span class='line'>    &lt;/dependency&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>3. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A servlet and specify the location of the configuration file for the same. In this sample, a configuration file named springConfig.xml is created under WEB-INF/config folder in the project layout.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+</span><span class='line'>&lt;web-app version="2.5"
+</span><span class='line'>xmlns="http://java.sun.com/xml/ns/javaee"
+</span><span class='line'>xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+</span><span class='line'>xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;servlet&gt;
+</span><span class='line'>  &lt;servlet-name&gt;myBatisServlet&lt;/servlet-name&gt;
+</span><span class='line'>  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+</span><span class='line'>  &lt;init-param&gt;
+</span><span class='line'>      &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+</span><span class='line'>      &lt;param-value&gt;/WEB-INF/config/springConfig.xml&lt;/param-value&gt;
+</span><span class='line'>  &lt;/init-param&gt;
+</span><span class='line'>&lt;/servlet&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;servlet-mapping&gt;
+</span><span class='line'>  &lt;servlet-name&gt;myBatisServlet&lt;/servlet-name&gt;
+</span><span class='line'>  &lt;url-pattern&gt;*.html&lt;/url-pattern&gt;
+</span><span class='line'>&lt;/servlet-mapping&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+</span><span class='line'>&lt;/web-app&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>4. Create the Spring Configuration File</h2>
+
+<p>Create a Spring Bean Configuration file under the folder WEB-INF/config. If STS(Spring Tool Suite) is the IDE, go ahead and enable the context, mvc and tx namespaces. The springConfig.xml will be as shown below</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+</span><span class='line'>&lt;beans xmlns="http://www.springframework.org/schema/beans"
+</span><span class='line'>  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+</span><span class='line'>  xmlns:context="http://www.springframework.org/schema/context"
+</span><span class='line'>  xmlns:mvc="http://www.springframework.org/schema/mvc"
+</span><span class='line'>  xmlns:tx="http://www.springframework.org/schema/tx"
+</span><span class='line'>  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+</span><span class='line'>      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+</span><span class='line'>      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+</span><span class='line'>      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>&lt;/beans&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven and base package for the context component scan.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;mvc:annotation-driven /&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;context:component-scan base-package="com.github.elizabetht" /&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Include the bean InternalResourceViewResolver of Spring to locate the jsp files</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+</span><span class='line'>  &lt;property name="prefix" value="/WEB-INF/jsp/" /&gt;
+</span><span class='line'>  &lt;property name="suffix" value=".jsp" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Include the bean for data source, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+</span><span class='line'>  &lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;
+</span><span class='line'>  &lt;property name="url" value="jdbc:mysql//&lt;include connection url&gt;:3306/studentEnrollment?autoReconnect=true&amp;createDatabaseIfNotExist=true&amp;" /&gt;
+</span><span class='line'>  &lt;property name="username" value="&lt;include username&gt;" /&gt;
+</span><span class='line'>  &lt;property name="password" value="&lt;include password&gt;" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Include the bean for transaction manager for scoping/controlling the transactions, that takes the data source defined above as reference (dependent)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;tx:annotation-driven transaction-manager="transactionManager" /&gt;
+</span><span class='line'>&lt;bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"&gt;
+</span><span class='line'>  &lt;property name="dataSource" ref="dataSource" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Coming to the MyBatis specific configurations, include the bean for sqlSessionFactory which is the central configuration in a MyBatis application. This bean takes in three properties
+- dataSource (already configured above)&nbsp;
+- typeAliasesPackage (location where the model classes of this application resides)&nbsp;
+- mapperLocations (location where the mapper xml files for the model resides - this is not needed here as annotation based configurations are used instead)&nbsp;</p>
+
+<p>More details of this can be read at <a href="http://mybatis.github.io/mybatis-3/">http://mybatis.github.io/mybatis-3/</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"&gt;
+</span><span class='line'>  &lt;property name="dataSource" ref="dataSource" /&gt;
+</span><span class='line'>  &lt;property name="typeAliasesPackage" value="com.github.elizabetht.model"/&gt;
+</span><span class='line'>  &lt;property name="mapperLocations" value="classpath*:com/github/elizabetht/mappers/*.xml" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Include the bean for sqlSession</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"&gt;
+</span><span class='line'>  &lt;constructor-arg index="0" ref="sqlSessionFactory" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next and finally, include the bean for MapperScannerConfigurer</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"&gt;
+</span><span class='line'>  &lt;property name="basePackage" value="com.github.elizabetht.mappers" /&gt;
+</span><span class='line'>&lt;/bean&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;jsp&rdquo; under WEB-INF (This is where the jsp files will be created as indicated in the springConfig.xml for the InternalResourceViewResolver bean).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="MyBatis Signup Layout" alt="MyBatis Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="MyBatis Login Layout" alt="MyBatis Login Layout" /></p>
+
+<p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under webapp folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/webapp">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/webapp</a></p>
+
+<h2>6. Create packages for Controller, Model, Service and Mappers</h2>
+
+<p>Create packages each for the Spring Controller, Model and Service classes under the src/main/java folder. Also create a package for the MyBatis Mapper class under the same src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/mybatis-package.png" title="MyBatis Package Layout" alt="MyBatis Package Layout" /></p>
+
+<h2>7. Create classes for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity during signup. Create another POJO class named StudentLogin.java inside the same package com.github.elizabetht.model to include the Student Login details.</p>
+
+<p>A reference link to the files for the Model classes can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/java/com/github/elizabetht/model</a></p>
+
+<h2>8. Create classes for MyBatis Mapper</h2>
+
+<p>A Mapper in MyBatis framework is similar to the Repository tier in a Spring environment. Crude SQL queries takes its place here.
+Create an interface class named StudentMapper.java inside the package com.github.elizabetht.mapper to support the database operations.</p>
+
+<p>There are two interface methods needed for the application&rsquo;s purpose.</p>
+
+<ul>
+<li>To Insert the Student Signup details into the Database</li>
+<li>To Verify the Student Login details from the Database</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public interface StudentMapper {
+</span><span class='line'>  @Insert("INSERT INTO student(userName, password, firstName,"
+</span><span class='line'>          + "lastName, dateOfBirth, emailAddress) VALUES"
+</span><span class='line'>          + "(#{userName},#{password}, #{firstName}, #{lastName},"
+</span><span class='line'>          + "#{dateOfBirth}, #{emailAddress})")
+</span><span class='line'>  @Options(useGeneratedKeys=true, keyProperty="id", flushCache=true, keyColumn="id")
+</span><span class='line'>  public void insertStudent(Student student);
+</span><span class='line'>      
+</span><span class='line'>  @Select("SELECT USERNAME as userName, PASSWORD as password, "
+</span><span class='line'>          + "FIRSTNAME as firstName, LASTNAME as lastName, "
+</span><span class='line'>          + "DATEOFBIRTH as dateOfBirth, EMAILADDRESS as emailAddress "
+</span><span class='line'>          + "FROM student WHERE userName = #{userName}")
+</span><span class='line'>  public Student getStudentByUserName(String userName);
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>9. Create classes for Service Tier</h2>
+
+<p>Create an interface class named StudentService.java inside the package com.github.elizabetht.service to support the service tier operations.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public interface StudentService {
+</span><span class='line'>  void insertStudent(Student student);
+</span><span class='line'>  boolean getStudentByLogin(String userName, String password);
+</span><span class='line'>  boolean getStudentByUserName(String userName);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create a service tier implementation class (a POJO indeed) named StudentServiceImpl.java inside the package com.github.elizabetht.service. This is where the application logic goes - either to save the student details into the database or to verify the student (already saved) details from the database.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Service("studentService")
+</span><span class='line'>public class StudentServiceImpl implements StudentService {
+</span><span class='line'>
+</span><span class='line'>  @Autowired
+</span><span class='line'>  private StudentMapper studentMapper;
+</span><span class='line'>  
+</span><span class='line'>  @Transactional
+</span><span class='line'>  public void insertStudent(Student student) {        
+</span><span class='line'>      studentMapper.insertStudent(student);
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public boolean getStudentByLogin(String userName, String password) {        
+</span><span class='line'>      Student student = studentMapper.getStudentByUserName(userName);
+</span><span class='line'>      
+</span><span class='line'>      if(student != null && student.getPassword().equals(password)) {
+</span><span class='line'>          return true;
+</span><span class='line'>      }
+</span><span class='line'>      
+</span><span class='line'>      return false;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  public boolean getStudentByUserName(String userName) {
+</span><span class='line'>      Student student = studentMapper.getStudentByUserName(userName);
+</span><span class='line'>      
+</span><span class='line'>      if(student != null) {
+</span><span class='line'>          return true;
+</span><span class='line'>      }
+</span><span class='line'>      
+</span><span class='line'>      return false;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<blockquote><p>When using MyBatis with Spring, a mapper can be directly injected into the service tier. This is probably the strongest point of the Spring integration of MyBatis. This is the only tool that I am aware that lets to build the application with no imports to it.</p><footer><strong>@EduardoMacarron</strong> <cite><a href='https://twitter.com/EduardoMacarron'>twitter.com/EduardoMacarron/&hellip;</a></cite></footer></blockquote>
+
+
+<h2>10. Create class for Controller Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the routing logic of the application goes - whether a signup or login action is called.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Controller
+</span><span class='line'>@SessionAttributes("student")
+</span><span class='line'>public class StudentController {
+</span><span class='line'>  
+</span><span class='line'>  @Autowired
+</span><span class='line'>  private StudentService studentService;
+</span><span class='line'>  
+</span><span class='line'>  @RequestMapping(value="/signup", method=RequestMethod.GET)
+</span><span class='line'>  public String signup(Model model) {
+</span><span class='line'>      Student student = new Student();
+</span><span class='line'>      model.addAttribute("student", student);
+</span><span class='line'>      return "signup";
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  @RequestMapping(value="/signup", method=RequestMethod.POST)
+</span><span class='line'>  public String signup(@ModelAttribute("student") Student student, Model model) {
+</span><span class='line'>      if(studentService.getStudentByUserName(student.getUserName())) {
+</span><span class='line'>          model.addAttribute("message", "User Name exists. Try another user name");
+</span><span class='line'>          return "signup";
+</span><span class='line'>      } else {
+</span><span class='line'>          studentService.insertStudent(student);
+</span><span class='line'>          model.addAttribute("message", "Saved student details");
+</span><span class='line'>          return "redirect:login.html";
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  @RequestMapping(value="/login", method=RequestMethod.GET)
+</span><span class='line'>  public String login(Model model) {
+</span><span class='line'>      StudentLogin studentLogin = new StudentLogin();
+</span><span class='line'>      model.addAttribute("studentLogin", studentLogin);
+</span><span class='line'>      return "login";
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  @RequestMapping(value="/login", method=RequestMethod.POST)
+</span><span class='line'>  public String login(@ModelAttribute("studentLogin") StudentLogin studentLogin) {
+</span><span class='line'>      boolean found = studentService.getStudentByLogin(studentLogin.getUserName(), studentLogin.getPassword());
+</span><span class='line'>      if (found) {                
+</span><span class='line'>          return "success";
+</span><span class='line'>      } else {                
+</span><span class='line'>          return "failure";
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>11. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the dataSource bean in springConfig.xml</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CREATE TABLE `student` (
+</span><span class='line'>  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+</span><span class='line'>  `dateOfBirth` datetime NOT NULL,
+</span><span class='line'>  `emailAddress` varchar(255) NOT NULL,
+</span><span class='line'>  `firstName` varchar(255) NOT NULL,
+</span><span class='line'>  `lastName` varchar(255) NOT NULL,
+</span><span class='line'>  `password` varchar(8) NOT NULL,
+</span><span class='line'>  `userName` varchar(20) NOT NULL,
+</span><span class='line'>  PRIMARY KEY (`id`)
+</span><span class='line'>) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>12. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>13. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git">https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Elizabeth Thomas</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T09:41:09-06:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>9:41 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/maven/'>maven</a>, <a class='category' href='/blog/categories/mybatis/'>mybatis</a>, <a class='category' href='/blog/categories/spring/'>spring</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/" data-via="" data-counturl="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/11/21/student-enrollment-using-hibernate-with-spring/" title="Next Post: Building Java Web Application Using Hibernate with Spring">Building Java Web Application Using Hibernate with Spring &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/">Provisioning an Apache Server With Dockers and Vagrant</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/">Connecting to Open VPN Server From iOS Device</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/01/jenkins-android/">Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/05/jenkins-release-upload/">Automating the Release of Java Artifacts Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/17/wordpress-on-aws/">WordPress on AWS</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Meygam Inc
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'SaravanaKumar';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/';
+        var disqus_url = 'http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

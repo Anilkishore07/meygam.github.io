@@ -11,19 +11,79 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>http://blog.meygam.com//blog/2014/03/01/jenkins-android/</loc>
+    <lastmod>2014-03-01T08:21:00-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/</loc>
+    <lastmod>2014-02-05T08:21:00-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.meygam.com//blog/2014/01/17/wordpress-on-aws/</loc>
     <lastmod>2014-01-17T00:00:00-06:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>http://blog.meygam.com//blog/2014/01/17/spring-cache-abstraction-using-ehcache/</loc>
+    <lastmod>2014-01-17T00:00:00-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2014/01/17/overview-of-microstrategy-features/</loc>
+    <lastmod>2014-01-17T00:00:00-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/</loc>
+    <lastmod>2014-01-17T00:00:00-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2014/01/13/jenkins-snapshot-upload/</loc>
+    <lastmod>2014-01-13T16:50:30-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/</loc>
+    <lastmod>2013-12-23T12:10:30-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/</loc>
+    <lastmod>2013-12-13T10:45:30-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/</loc>
+    <lastmod>2013-11-21T09:41:55-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-struts-2/</loc>
+    <lastmod>2013-11-21T09:41:45-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring/</loc>
+    <lastmod>2013-11-21T09:41:30-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/</loc>
+    <lastmod>2013-11-21T09:41:09-06:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.meygam.com//blog/archives/</loc>
-    <lastmod>2014-11-15T17:26:46-06:00</lastmod>
+    <lastmod>2014-11-15T17:59:30-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.meygam.com//</loc>
-    <lastmod>2014-11-15T17:26:46-06:00</lastmod>
+    <lastmod>2014-11-15T17:59:30-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

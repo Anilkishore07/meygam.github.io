@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Rest | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/rest/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T17:59:30-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
+    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <updated>2013-12-13T10:45:30-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project using Maven Template</h2>
+
+<p>To begin with, from the command line, create a Java Maven project with the template of jersey-quickstart-webapp by providing appropriate values for GroupId, Artifact Id, Version and Package for the project.</p>
+
+<pre><code>mvn archetype:generate -DarchetypeGroupId=org.glassfish.jersey.archetypes -DarchetypeArtifactId=jersey-quickstart-webapp -DarchetypeVersion=2.4.1
+</code></pre>
+
+<p>Import the project into the IDE using File->Import->Existing Maven Projects, select Root Directory where the Project is created (ideally the name of the Project or ArtifactId) and click on Finish. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
+
+<p><img src="/assets/images/elizabetht/jersey-layout.png" title="Jersey REST Spring Maven Project Layout" alt="Jersey REST Spring Maven Project Layout" /></p>
+
+<h2>2. Update pom.xml</h2>
+
+<p>To make the above Maven Java Web Application project support the Hibernate ORM and Jersey Container in Spring framework, add the following dependencies to the existing pom.xml</p>
+
+<ul>
+<li>jstl and servlet-api (for Javax Servlet Support)</li>
+<li>jersey-container-servlet, jersey-media-moxy, jersey-spring3, jersey-server and jersey-mvc-jsp (for Jersey Support)</li>
+<li>spring-core, spring-context, spring-web and spring-webmvc(for Spring Support)</li>
+<li>junit (for JUnit Support)</li>
+<li>commons-lang3 (for standard Java library support)</li>
+<li>mysql-connector-java (for MYSQL support)</li>
+<li>spring-jdbc (for data access with JDBC Spring)</li>
+<li>spring-orm (for ORM data access with Spring)</li>
+<li>spring-data-jpa (for JPA support)</li>
+<li>hibernate-validator and hibernate-entitymanager (for Hibernate Support)</li>
+<li>jta (for transaction support)</li>
+</ul>
+
+
+<pre><code>    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+            &lt;version&gt;2.5&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+            &lt;version&gt;1.2&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.containers&lt;/groupId&gt;
+            &lt;!-- &lt;artifactId&gt;jersey-container-servlet-core&lt;/artifactId&gt; --&gt;
+            &lt;!-- use the above artifactId if you need servlet 2.x compatibility --&gt;
+            &lt;artifactId&gt;jersey-container-servlet&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- uncomment this to get JSON support --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.media&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-media-moxy&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-spring3&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.core&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-server&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-mvc-jsp&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.11&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-lang3&lt;/artifactId&gt;
+            &lt;version&gt;3.1&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.21&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+            &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+            &lt;version&gt;4.2.0.Final&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+            &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+            &lt;version&gt;4.1.9.Final&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.transaction&lt;/groupId&gt;
+            &lt;artifactId&gt;jta&lt;/artifactId&gt;
+            &lt;version&gt;1.1&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-data-jpa&lt;/artifactId&gt;
+            &lt;version&gt;1.3.0.RELEASE&lt;/version&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+
+    &lt;/dependencies&gt;
+    &lt;properties&gt;
+        &lt;jersey.version&gt;2.4.1&lt;/jersey.version&gt;
+        &lt;spring.version&gt;3.2.4.RELEASE&lt;/spring.version&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;/properties&gt;
+</code></pre>
+
+<h2>3. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A Welcome file.</li>
+<li>The Context Config Location.</li>
+<li>A ContextLoaderLister and RequestContextListener to integrate spring with the web application.</li>
+<li>A Spring Jersey Web Servlet. Specify the location of the provider packages, enable the JSON POJO Mapping Feature, provide the path where the JSP files for the project are stored to the JSP TemplateBasePath and enable the JSP MVC Feature. In this sample, a configuration file named applicationConfig.xml is created under src/main/resources folder  and the JSP files are placed under WEB-INF/jsp folder in the project layout.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+</ul>
+
+
+<p>&#8220;`
+&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo;?></p>
+
+<!-- This web.xml file is not required when using Servlet 3.0 container,
+     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
+
+
+<p><web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"></p>
+
+<pre><code>&lt;welcome-file-list&gt;
+    &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+&lt;/welcome-file-list&gt;
+
+&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.request.RequestContextListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+
+&lt;servlet&gt;
+    &lt;servlet-name&gt;Spring Jersey Web Servlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.glassfish.jersey.servlet.ServletContainer&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.provider.packages&lt;/param-name&gt;
+        &lt;param-value&gt;com.github.elizabetht&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;com.sun.jersey.api.json.POJOMappingFeature&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.mvc.templateBasePath.jsp&lt;/param-name&gt;
+        &lt;param-value&gt;/WEB-INF/jsp&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.provider.classnames&lt;/param-name&gt;
+        &lt;param-value&gt;org.glassfish.jersey.server.mvc.jsp.JspMvcFeature&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;Spring Jersey Web Servlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/webapi/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre>
+
+<p></web-app>
+&#8220;`</p>
+
+<h2>4. Create persistence.xml</h2>
+
+<p>Create a file named persistence.xml under the folder src/main/resources/META-INF folder in the project to define the persistence unit required by JPA. Add the following to the persistence.xml to define a persistence unit named punit.</p>
+
+<pre><code>&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="{http://java.sun.com/xml/ns/persistence} {http://java.sun.com/xml/ns/persistence_2_0.xsd}"
+    version="2.0"&gt;
+
+    &lt;persistence-unit name="punit"&gt;
+    &lt;/persistence-unit&gt;
+
+&lt;/persistence&gt;
+</code></pre>
+
+<h2>5. Create the Spring Configuration File</h2>
+
+<p>As defined in the web.xml, create a file named applicationContext.xml under the folder src/main/resources folder in the project to define JPA and Hibernate related configurations. Note that any file created under src/main/resources folder in a maven project will be automagically added by Maven to the classpath. If STS(Spring Tool Suite) is the IDE, go ahead and enable the context, jpa, mvc and tx namespaces. The applicationContext.xml will be as shown below</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"&gt;
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven, base package for context component scan and base package for the jpa repositories scan.</p>
+
+<pre><code>    &lt;mvc:annotation-driven /&gt;
+
+    &lt;context:annotation-config /&gt;
+    &lt;context:component-scan base-package="com.github.elizabetht" /&gt;
+
+    &lt;jpa:repositories base-package="com.github.elizabetht.repository" /&gt;
+</code></pre>
+
+<p>Next, include the bean PersistenceAnnotationBeanPostProcessor. This is necessary to process the Persistence Unit, Persistence Context annotations and for injecting JPA related resources.</p>
+
+<pre><code>&lt;bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /&gt;
+</code></pre>
+
+<p>Include the bean for EntityManagerFactory which lists the various JPA related properties/resources.</p>
+
+<pre><code>&lt;bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+        &lt;property name="persistenceUnitName" value="punit" /&gt;
+        &lt;property name="dataSource" ref="dataSource" /&gt;
+        &lt;property name="jpaVendorAdapter"&gt;
+            &lt;bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+                &lt;property name="showSql" value="true" /&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="jpaPropertyMap"&gt;
+            &lt;map&gt;
+                &lt;entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" /&gt;
+                &lt;entry key="hibernate.hbm2ddl.auto" value="validate" /&gt;
+                &lt;entry key="hibernate.format_sql" value="true" /&gt;
+            &lt;/map&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for data source, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+        &lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;
+        &lt;property name="url" value="jdbc:mysql//&lt;include connection url&gt;:3306/studentEnrollment?autoReconnect=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;" /&gt;
+        &lt;property name="username" value="&lt;include username&gt;" /&gt;
+        &lt;property name="password" value="&lt;include password&gt;" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for transaction manager for scoping/controlling the transactions.</p>
+
+<pre><code>&lt;bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+        &lt;property name="entityManagerFactory" ref="entityManagerFactory" /&gt;
+&lt;/bean&gt;
+
+&lt;tx:annotation-driven transaction-manager="transactionManager" /&gt;
+</code></pre>
+
+<p>Thus ends the long configuration in applicationContext.xml</p>
+
+<h2>6. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;jsp&rdquo; under WEB-INF (This is where the jsp files will be created as indicated in the web.xml for the JSP TemplateBasePath).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="Jersey REST Spring Hibernate Signup Layout" alt="Jersey REST Spring Hibernate Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="Jersey REST Spring Hibernate Login Layout" alt="Jersey REST Spring Hibernate Login Layout" /></p>
+
+<p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under webapp folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/webapp">https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/webapp</a></p>
+
+<h2>7. Create packages for Resource, Service, Repository and Model tier classes</h2>
+
+<p>Create packages each for the Jersey Resource, Service, Repository and Model classes under the src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jersey-package.png" title="Jersey REST Spring Package Layout" alt="Jersey REST Spring Package Layout" /></p>
+
+<h2>8. Create classes for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity during signup. Create another POJO class named StudentLogin.java inside the same package com.github.elizabetht.model to include the Student Login details.</p>
+
+<p>Annotate the classes with @Component to be picked by the Context-Component Scan of the Jersey-Spring framework. Also annotate the classes with @XmlRootElement to indicate the XML Element.</p>
+
+<p>A reference link to the files for the Model classes can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/java/com/github/elizabetht/model</a></p>
+
+<h2>9. Create class for Repository Tier</h2>
+
+<p>Create an interface class named StudentRepository.java inside the package com.github.elizabetht.repository to support the repository tier database operations.</p>
+
+<p>There are two interface methods needed for the application&rsquo;s purpose.</p>
+
+<ul>
+<li>To Insert the Student Signup details into the Database</li>
+<li>To Verify the Student Login details from the Database</li>
+</ul>
+
+
+<pre><code>@Repository("studentRepository")
+public interface StudentRepository extends JpaRepository&lt;Student, Long&gt; {
+
+    @Query("select s from Student s where s.userName = :userName")
+    Student findByUserName(@Param("userName") String userName);
+
+}
+</code></pre>
+
+<p>The save() method is supported by the Hibernate implementation and hence no separate SQL statements are required for the data insert.</p>
+
+<h2>10. Create classes for Service Tier</h2>
+
+<p>Create an interface class named StudentService.java inside the package com.github.elizabetht.service to support the service tier operations.</p>
+
+<pre><code>public interface StudentService {
+    Student save(Student student);
+    boolean findByLogin(String userName, String password);
+    boolean findByUserName(String userName);
+}
+</code></pre>
+
+<p>Create a service tier implementation class (a POJO indeed) named StudentServiceImpl.java inside the package com.github.elizabetht.service. This is where the application logic goes - either to save the student details into the database or to verify the student (already saved) details from the database.</p>
+
+<pre><code>@Service("studentService")
+public class StudentServiceImpl implements StudentService {
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Transactional
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public boolean findByLogin(String userName, String password) {  
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null &amp;&amp; stud.getPassword().equals(password)) {
+            return true;
+        } 
+
+        return false;       
+    }
+
+    public boolean findByUserName(String userName) {
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+}
+</code></pre>
+
+<h2>11. Create class for Resource Tier</h2>
+
+<p>Create a Resource tier POJO class named StudentResource.java inside the package com.github.elizabetht.resource. This is where a REST API is implemented for each of the operation performed from the front end.</p>
+
+<pre><code>@Component
+@Path("studentResource")
+@XmlRootElement
+public class StudentResource {
+
+    @Autowired
+    private StudentService studentService;
+
+    @GET
+    @Path("signup")
+    @Produces(MediaType.TEXT_HTML)
+    public Response signup() {
+        return Response.ok(new Viewable("/signup")).build();
+    }
+
+    @POST
+    @Path("signup")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Response signup(@FormParam("userName") String userName,
+            @FormParam("password") String password,
+            @FormParam("firstName") String firstName,
+            @FormParam("lastName") String lastName,
+            @FormParam("dateOfBirth") String dateOfBirth,
+            @FormParam("emailAddress") String emailAddress)
+            throws ParseException {
+
+        if (userName == null || password == null || firstName == null
+                || lastName == null || dateOfBirth == null
+                || emailAddress == null) {
+            return Response.status(Status.PRECONDITION_FAILED).build();
+        }
+
+        Student student = new Student();
+        student.setUserName(userName);
+        student.setPassword(password);
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+
+        student.setDateOfBirth(new java.sql.Date(new SimpleDateFormat(
+                "MM/dd/yyyy").parse(dateOfBirth.substring(0, 10)).getTime()));
+
+        student.setEmailAddress(emailAddress);
+
+        if (studentService.findByUserName(userName)) {
+            Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
+            map.put("message", "User Name exists. Try another user name");
+            map.put("student", student);
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new Viewable("/signup", map)).build();
+        } else {
+            studentService.save(student);
+            return Response.ok().entity(new Viewable("/login")).build();
+        }
+    }
+
+    @GET
+    @Path("login")
+    @Produces(MediaType.TEXT_HTML)
+    public Response login() {
+        return Response.ok(new Viewable("/login")).build();
+    }
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Response login(@FormParam("userName") String userName,
+            @FormParam("password") String password) {
+
+        if (userName == null || password == null) {
+            return Response.status(Status.PRECONDITION_FAILED).build();
+        }
+
+        boolean found = studentService.findByLogin(userName, password);
+        if (found) {
+            return Response.ok().entity(new Viewable("/success")).build();
+        } else {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new Viewable("/failure")).build();
+        }
+    }
+}
+</code></pre>
+
+<h2>12. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the dataSource bean in applicationContext.xml</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>13. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>14. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST.git">https://github.com/elizabetht/StudentEnrollmentWithREST.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.1">https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.1</a></p>
+]]></content>
+  </entry>
+  
+</feed>

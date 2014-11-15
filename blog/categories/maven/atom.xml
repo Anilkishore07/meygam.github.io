@@ -1,0 +1,2335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Maven | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/maven/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T17:59:30-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building Jersey2 REST Client Using Spring With JUnit and JMock]]></title>
+    <link href="http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
+    <updated>2013-12-23T12:10:30-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+
+<!-- more -->
+
+
+<h2>1. Update pom.xml</h2>
+
+<p>To make the Maven Java Web Application project (<a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>) support the JUnit testing framework, add the following dependency to the existing pom.xml</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.jmock&lt;/groupId&gt;
+    &lt;artifactId&gt;jmock-junit4&lt;/artifactId&gt;
+    &lt;version&gt;2.6.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<h2>2. Create packages for Client tier classes</h2>
+
+<p>Create package for the Jersey Client classes under the src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jersey-client-package.png" title="Jersey REST Client Package Layout" alt="Jersey REST Client Package Layout" /></p>
+
+<h2>3. Create classes for Client tier</h2>
+
+<p>Create an interface class named StudentClientInterface.java inside the package com.github.elizabetht.client to support the client operations.</p>
+
+<pre><code>public interface StudentClientInterface {
+
+    public Response getSignup();
+
+    public Response postSignup(String userName, String password,
+            String firstName, String lastName, String dateOfBirth,
+            String emailAddress) throws Exception;
+
+    public Response getLogin();
+
+    public Response postLogin(String userName, String password);
+
+}
+</code></pre>
+
+<p>Create a client tier implementation class (a POJO indeed) named StudentClient.java inside the package com.github.elizabetht.client. This is where the client logic goes - either to access the GET/POST methods in the StudentResource.java class.</p>
+
+<pre><code>public class StudentClient implements StudentClientInterface {
+    private WebTarget target;
+
+    public StudentClient(WebTarget target) {
+        this.target = target;
+    }
+
+    public Response getSignup() {       
+        Response response = target.path("signup").request().get(Response.class);
+        return response;
+    }
+
+    public Response postSignup(String userName, String password,
+            String firstName, String lastName, String dateOfBirth,
+            String emailAddress) throws Exception {
+
+        Form form = new Form().param("userName", userName)
+                .param("password", password).param("firstName", firstName)
+                .param("lastName", lastName).param("dateOfBirth", dateOfBirth)
+                .param("emailAddress", emailAddress);
+        Response response = target.path("signup").request()
+                .post(Entity.form(form));
+
+        if (response.getStatus() == Status.INTERNAL_SERVER_ERROR
+                .getStatusCode()) {
+            throw new Exception();
+        }
+
+        if (response.getStatus() != Status.OK.getStatusCode()) {
+            throw new RuntimeException();
+        }
+
+        return response;
+    }
+
+    public Response getLogin() {
+        Response response = target.path("login").request().get(Response.class);
+
+        return response;
+    }
+
+    public Response postLogin(String userName, String password) {
+        Form form = new Form().param("userName", userName).param("password",
+                password);
+
+        Response response = target.path("login").request()
+                .post(Entity.form(form));
+
+        if (response.getStatus() != Status.OK.getStatusCode()) {
+            throw new RuntimeException();
+        }
+
+        return response;
+    }
+}
+</code></pre>
+
+<h2>4. Create packages for Client Test tier classes</h2>
+
+<p>Create package for the Client Test classes by right-clicking on the StudentClient.java class and choosing &ldquo;New->JUnit Test Case&rdquo; option. Specify the source folder as StudentEnrollmentWithREST/src/test/java folder (create the src/test/java folder if the folder does not exist) and specify the name for the test class.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jersey-client-test-package.png" title="Jersey REST Client Test Package Layout" alt="Jersey REST Client Test Package Layout" /></p>
+
+<h2>5. Extract Interfaces for Model and Resource tier classes</h2>
+
+<p>In order to support the use of JMock mocking framework alongside JUnit test cases, extract the interfaces out of the Model(Student.java) and Resource (StudentResource.java) tier classes. This is necessary in order to mock the objects.</p>
+
+<p>Extracting interfaces can be done by right-clicking on the class file and choosing &ldquo;Refactor->Extract Interface&rdquo; option.</p>
+
+<p>The StudentInterface.java (in src/main/java/com.github.elizabetht.model package) after the extraction looks as below.</p>
+
+<pre><code>public interface StudentInterface {
+
+    public Long getId();
+
+    public void setId(Long id);
+
+    public String getUserName();
+
+    public void setUserName(String userName);
+
+    public String getFirstName();
+
+    public void setFirstName(String firstName);
+
+    public String getLastName();
+
+    public void setLastName(String lastName);
+
+    public String getPassword();
+
+    public void setPassword(String password);
+
+    public String getEmailAddress();
+
+    public void setEmailAddress(String emailAddress);
+
+    public Date getDateOfBirth();
+
+    public void setDateOfBirth(Date dateOfBirth);
+
+}
+</code></pre>
+
+<p>Similarly, the StudentResourceInterface.java (in src/main/java/com.github.elizabetht.resource package) looks as below.</p>
+
+<pre><code>public interface StudentResourceInterface {
+
+    public Response signup();
+
+    public Response signup(String userName, String password, String firstName,
+            String lastName, String dateOfBirth, String emailAddress)
+            throws ParseException;
+
+    public Response login();
+
+    public Response login(String userName, String password);
+
+}
+</code></pre>
+
+<h2>6. Create Unit Test cases for StudentClient class</h2>
+
+<p>As a part of unit testing, each of the unit must be testable individually. While in reality, each unit would depend on other modules. This is where JMock comes into picture - to help to test a unit individually by mocking the dependencies.</p>
+
+<p>@Before annotation helps to define the environment that needs to be setup before running each test case. In this example, the context and mock objects are setup using the @Before annotation.</p>
+
+<pre><code>public class StudentClientUnitTest {
+    private Mockery context;
+    private StudentClient studentClient;
+    private WebTarget target;
+    private Builder builder;
+
+    @Before
+    public void beforeEachTest() {
+        context = new Mockery();
+        studentClient = new StudentClient(
+                ClientBuilder
+                        .newClient()
+                        .target("http://localhost:8080/StudentEnrollmentWithREST/webapi/studentResource/"));
+        target = context.mock(WebTarget.class);
+        builder = context.mock(Builder.class);
+    }
+
+    @Test
+    public void getSignupTest() {
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.ok(new Viewable("/signup")).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).get(Response.class);
+                will(returnValue(response));
+            }
+        });
+        studentClient.getSignup();
+        assertEquals(response.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postSignupTest() throws Exception {
+        String userName = "jersey";
+        String password = "jersey";
+        String firstName = "jersey";
+        String lastName = "jersey";
+        String dateOfBirth = "12-21-2013";
+        String emailAddress = "jersey@gmail.com";
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.ok(new Viewable("/success")).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postSignup(userName, password, firstName, lastName,
+                dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test(expected = Exception.class)
+    public void postSignupInvalidDateFormatTest() throws Exception {
+        String userName = "jersey";
+        String password = "jersey";
+        String firstName = "jersey";
+        String lastName = "jersey";
+        String dateOfBirth = "12/21/2013";
+        String emailAddress = "jersey@gmail.com";
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.status(Status.PRECONDITION_FAILED)
+                .build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postSignup(userName, password, firstName, lastName,
+                dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(), Status.PRECONDITION_FAILED.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test(expected = Exception.class)
+    public void postSignupBadRequestTest() throws Exception {
+        String userName = null;
+        String password = null;
+        String firstName = null;
+        String lastName = null;
+        String dateOfBirth = null;
+        String emailAddress = null;
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.status(Status.PRECONDITION_FAILED)
+                .build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postSignup(userName, password, firstName, lastName,
+                dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(), Status.PRECONDITION_FAILED.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void postSignupExistingUserTest() throws Exception {
+        String userName = "jersey";
+        String password = "jersey";
+        String firstName = "jersey";
+        String lastName = "jersey";
+        String dateOfBirth = "12/21/2013";
+        String emailAddress = "jersey@gmail.com";
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.status(Status.BAD_REQUEST).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postSignup(userName, password, firstName, lastName,
+                dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(), Status.BAD_REQUEST.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void getLoginTest() {
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.ok(new Viewable("/login")).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).get(Response.class);
+                will(returnValue(response));
+            }
+        });
+        studentClient.getLogin();
+        assertEquals(response.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postLoginTest() {
+        String userName = "jersey";
+        String password = "jersey";
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.ok(new Viewable("/success")).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postLogin(userName, password);
+        assertEquals(response.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void postLoginInvalidTest() {
+        String userName = "jersey";
+        String password = "jersey123";
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.status(Status.BAD_REQUEST).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postLogin(userName, password);
+        assertEquals(response.getStatus(), Status.BAD_REQUEST.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void postLoginBadRequestTest() {
+        String userName = null;
+        String password = null;
+        studentClient = new StudentClient(target);
+
+        final Response response = Response.status(Status.PRECONDITION_FAILED).build();
+        context.checking(new Expectations() {
+            {
+                oneOf(target).path(with(any(String.class)));
+                will(returnValue(target));
+                oneOf(target).request();
+                will(returnValue(builder));
+                oneOf(builder).post(with(any(Entity.class)));
+                will(returnValue(response));
+            }
+        });
+        studentClient.postLogin(userName, password);
+        assertEquals(response.getStatus(), Status.PRECONDITION_FAILED.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+}
+</code></pre>
+
+<h2>7. Create Unit Test cases for StudentResource class</h2>
+
+<p>In similar lines, create unit test cases for StudentResource class by mocking the external dependencies which the class depends on for its operation.</p>
+
+<pre><code>public class StudentResourceUnitTest {
+    private Mockery context;
+    private StudentService studentService;
+    private StudentResourceInterface studentResourceInterface;
+
+    @Before
+    public void beforeEachTest() throws Exception {
+        context = new Mockery();
+        studentService = context.mock(StudentService.class);
+        studentResourceInterface = new StudentResource();
+
+        Field field = studentResourceInterface.getClass().getDeclaredField(
+                "studentService");
+        field.setAccessible(true);
+        field.set(studentResourceInterface, studentService);
+    }
+
+    @Test
+    public void postSignupResourceTest() throws ParseException {
+        final String userName = "jersey";
+        String password = "jersey";
+        String firstName = "jersey";
+        String lastName = "jersey";
+        String dateOfBirth = "12/21/2013";
+        String emailAddress = "jersey@gmail.com";
+        final StudentInterface student = context.mock(StudentInterface.class);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByUserName(userName);
+                will(returnValue(false));
+                oneOf(studentService).save(with(any(StudentInterface.class)));
+                will(returnValue(student));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postSignupResourceForExistingUserTest() throws ParseException {
+        final String userName = "jersey";
+        String password = "jersey";
+        String firstName = "jersey";
+        String lastName = "jersey";
+        String dateOfBirth = "12/21/2013";
+        String emailAddress = "jersey@gmail.com";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByUserName(userName);
+                will(returnValue(true));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postSignupResourceForBadRequestTest() throws ParseException {
+        String userName = null;
+        String password = null;
+        String firstName = null;
+        String lastName = null;
+        String dateOfBirth = null;
+        String emailAddress = null;
+        final StudentResourceInterface studentResourceInterface = context
+                .mock(StudentResourceInterface.class);
+        final Response response = Response.status(Status.PRECONDITION_FAILED)
+                .build();
+        final Response response1 = Response.ok().entity(new Viewable("/login"))
+                .build();
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        userName = "jersey";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNonNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        password = "jersey";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        firstName = "jersey";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)),
+                        with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+
+        lastName = "jersey";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNull(String.class)), with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        dateOfBirth = "12/20/2013";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface)
+                        .signup(with(aNonNull(String.class)),
+                                with(aNonNull(String.class)),
+                                with(aNonNull(String.class)),
+                                with(aNonNull(String.class)),
+                                with(aNonNull(String.class)),
+                                with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        emailAddress = "jersey@gmail.com";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).signup(
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)));
+                will(returnValue(response1));
+            }
+        });
+        studentResourceInterface.signup(userName, password, firstName,
+                lastName, dateOfBirth, emailAddress);
+        assertEquals(response1.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postLoginResourceTest() throws ParseException {
+        final String userName = "jersey";
+        final String password = "jersey";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(userName, password);
+                will(returnValue(true));
+            }
+        });
+        studentResourceInterface.login(userName, password);
+
+        final String password1 = "jersey123";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(userName, password1);
+                will(returnValue(false));
+            }
+        });
+        studentResourceInterface.login(userName, password1);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void postLoginResourceForBadRequestTest() throws ParseException {
+        final String userName = null;
+        final String password = null;
+        final StudentResourceInterface studentResourceInterface = context
+                .mock(StudentResourceInterface.class);
+        final Response response = Response.status(Status.PRECONDITION_FAILED)
+                .build();
+        final Response response1 = Response.ok().entity(new Viewable("/login"))
+                .build();
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).login(
+                        with(aNull(String.class)), with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.login(userName, password);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        final String userName1 = "jersey";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface)
+                        .login(with(aNonNull(String.class)),
+                                with(aNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.login(userName1, password);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        final String password1 = "jersey";
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface)
+                        .login(with(aNull(String.class)),
+                                with(aNonNull(String.class)));
+                will(returnValue(response));
+            }
+        });
+        studentResourceInterface.login(userName, password1);
+        assertEquals(response.getStatus(),
+                Status.PRECONDITION_FAILED.getStatusCode());
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentResourceInterface).login(
+                        with(aNonNull(String.class)),
+                        with(aNonNull(String.class)));
+                will(returnValue(response1));
+            }
+        });
+        studentResourceInterface.login(userName1, password1);
+        assertEquals(response1.getStatus(), Status.OK.getStatusCode());
+
+        context.assertIsSatisfied();
+    }
+}
+</code></pre>
+
+<h2>8. Create Unit Test cases for StudentService class</h2>
+
+<p>Create unit test cases for StudentService class by mocking the external dependencies which the class depends on for its operation.</p>
+
+<pre><code>public class StudentServiceUnitTest {
+    private Mockery context;
+    private StudentRepository studentRepository;
+    private StudentService studentService;
+
+    @Before
+    public void beforeEachTest() throws Exception {
+        context = new Mockery();
+        studentRepository = context.mock(StudentRepository.class);
+        studentService = new StudentServiceImpl();
+
+        Field field = studentService.getClass().getDeclaredField(
+                "studentRepository");
+        field.setAccessible(true);
+        field.set(studentService, studentRepository);
+    }
+
+    @Test
+    public void findByLoginTest() {
+        final String userName = "j2eee";
+        final String password = "j2ee";
+        final StudentInterface studentInterface = null;
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository).findByUserName(userName);
+                will(returnValue(studentInterface));
+            }
+        });
+        studentService.findByLogin(userName, password);
+        assertNull(studentInterface);
+
+        final String userName1 = "j2ee";
+        final StudentInterface studentInterface1 = context
+                .mock(StudentInterface.class);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository).findByUserName(userName1);
+                will(returnValue(studentInterface1));
+                oneOf(studentInterface1).getPassword();
+                will(returnValue(password));
+            }
+        });
+        studentService.findByLogin(userName1, password);
+        assertNotNull(studentInterface1);
+        assertEquals("j2ee", password);
+
+        final String password1 = "j2eee";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository).findByUserName(userName1);
+                will(returnValue(studentInterface1));
+                oneOf(studentInterface1).getPassword();
+                will(returnValue(password1));
+            }
+        });
+        studentService.findByLogin(userName1, password1);
+        assertNotNull(studentInterface1);
+        assertNotEquals("j2ee", password1);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void findByLoginWithNullParametersTest() {
+        final String userName = null;
+        final String password = null;
+        studentService = context.mock(StudentService.class);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(with(aNull(String.class)),
+                        with(aNull(String.class)));
+                will(returnValue(false));
+            }
+        });
+        studentService.findByLogin(userName, password);
+
+        final String userName1 = "j2ee";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(with(aNonNull(String.class)),
+                        with(aNull(String.class)));
+                will(returnValue(false));
+            }
+        });
+        studentService.findByLogin(userName1, password);
+
+        final String password1 = "j2eee";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(with(aNull(String.class)),
+                        with(aNonNull(String.class)));
+                will(returnValue(false));
+            }
+        });
+        studentService.findByLogin(userName, password1);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentService).findByLogin(with(aNonNull(String.class)),
+                        with(aNonNull(String.class)));
+                will(returnValue(false));
+            }
+        });
+        studentService.findByLogin(userName1, password1);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void findByEmptyLoginTest() {
+        final String userName = "";
+        final String password = "";
+        final StudentInterface studentInterface = null;
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository).findByUserName(userName);
+                will(returnValue(studentInterface));
+            }
+        });
+        studentService.findByLogin(userName, password);
+        assertNull(studentInterface);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void findByUserNameTest() {
+        final String userName = "j2ee";
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository)
+                        .findByUserName(with(any(String.class)));
+                will(returnValue(with(any(StudentInterface.class))));
+            }
+        });
+        studentService.findByUserName(userName);
+
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void findByBadUserNameTest() {
+        final String userName = "j2eee";
+        final StudentInterface studentInterface = null;
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository)
+                        .findByUserName(with(any(String.class)));
+                will(returnValue(studentInterface));
+            }
+        });
+        studentService.findByUserName(userName);
+        assertNull(studentInterface);
+
+        final String userName1 = "j2ee";
+        final StudentInterface studentInterface1 = context
+                .mock(StudentInterface.class);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(studentRepository).findByUserName(userName1);
+                will(returnValue(studentInterface1));
+            }
+        });
+        studentService.findByUserName(userName1);
+        assertNotNull(studentInterface1);
+
+        context.assertIsSatisfied();
+    }
+}
+</code></pre>
+
+<h2>9. Running Test cases</h2>
+
+<p>Any of the test case or test class can be run by right clicking on the name of the test case or test class and choosing &ldquo;Run As->JUnit test case&rdquo;. Each of the test case developed should be tested to give a success output (indicated by the green bar in the JUnit output)</p>
+
+<h2>10. Code Coverage</h2>
+
+<p>Using tools like EclEmma, code coverage for the project can be measured. To install EclEmma, choose &ldquo;Help->Eclipse Marketplace&rdquo; and search for EclEmma in the search toolbar. Install the tool using the steps on-screen.</p>
+
+<p>Once the tool is installed, the code coverage for the project can be measured by choosing &ldquo;Coverage As->JUnit test case&rdquo; from the right click options on the project.</p>
+
+<p>Achieving a code coverage of about or above 80% is normally preferred according to industrial standards. Not only writing unit test cases for existing code, but developing test scenarios for which code is not in place is an important step in Test Driven Development (TDD). By iteratively following the TDD approach, the stability of the code could be significantly improved.</p>
+
+<h2>11. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST.git">https://github.com/elizabetht/StudentEnrollmentWithREST.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.2">https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.2</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
+    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <updated>2013-12-13T10:45:30-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project using Maven Template</h2>
+
+<p>To begin with, from the command line, create a Java Maven project with the template of jersey-quickstart-webapp by providing appropriate values for GroupId, Artifact Id, Version and Package for the project.</p>
+
+<pre><code>mvn archetype:generate -DarchetypeGroupId=org.glassfish.jersey.archetypes -DarchetypeArtifactId=jersey-quickstart-webapp -DarchetypeVersion=2.4.1
+</code></pre>
+
+<p>Import the project into the IDE using File->Import->Existing Maven Projects, select Root Directory where the Project is created (ideally the name of the Project or ArtifactId) and click on Finish. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
+
+<p><img src="/assets/images/elizabetht/jersey-layout.png" title="Jersey REST Spring Maven Project Layout" alt="Jersey REST Spring Maven Project Layout" /></p>
+
+<h2>2. Update pom.xml</h2>
+
+<p>To make the above Maven Java Web Application project support the Hibernate ORM and Jersey Container in Spring framework, add the following dependencies to the existing pom.xml</p>
+
+<ul>
+<li>jstl and servlet-api (for Javax Servlet Support)</li>
+<li>jersey-container-servlet, jersey-media-moxy, jersey-spring3, jersey-server and jersey-mvc-jsp (for Jersey Support)</li>
+<li>spring-core, spring-context, spring-web and spring-webmvc(for Spring Support)</li>
+<li>junit (for JUnit Support)</li>
+<li>commons-lang3 (for standard Java library support)</li>
+<li>mysql-connector-java (for MYSQL support)</li>
+<li>spring-jdbc (for data access with JDBC Spring)</li>
+<li>spring-orm (for ORM data access with Spring)</li>
+<li>spring-data-jpa (for JPA support)</li>
+<li>hibernate-validator and hibernate-entitymanager (for Hibernate Support)</li>
+<li>jta (for transaction support)</li>
+</ul>
+
+
+<pre><code>    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+            &lt;version&gt;2.5&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+            &lt;version&gt;1.2&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.containers&lt;/groupId&gt;
+            &lt;!-- &lt;artifactId&gt;jersey-container-servlet-core&lt;/artifactId&gt; --&gt;
+            &lt;!-- use the above artifactId if you need servlet 2.x compatibility --&gt;
+            &lt;artifactId&gt;jersey-container-servlet&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- uncomment this to get JSON support --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.media&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-media-moxy&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-spring3&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.core&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-server&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.glassfish.jersey.ext&lt;/groupId&gt;
+            &lt;artifactId&gt;jersey-mvc-jsp&lt;/artifactId&gt;
+            &lt;version&gt;${jersey.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+            &lt;version&gt;${spring.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.11&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-lang3&lt;/artifactId&gt;
+            &lt;version&gt;3.1&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.21&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+            &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+            &lt;version&gt;4.2.0.Final&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+            &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+            &lt;version&gt;4.1.9.Final&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.transaction&lt;/groupId&gt;
+            &lt;artifactId&gt;jta&lt;/artifactId&gt;
+            &lt;version&gt;1.1&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-data-jpa&lt;/artifactId&gt;
+            &lt;version&gt;1.3.0.RELEASE&lt;/version&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+
+    &lt;/dependencies&gt;
+    &lt;properties&gt;
+        &lt;jersey.version&gt;2.4.1&lt;/jersey.version&gt;
+        &lt;spring.version&gt;3.2.4.RELEASE&lt;/spring.version&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;/properties&gt;
+</code></pre>
+
+<h2>3. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A Welcome file.</li>
+<li>The Context Config Location.</li>
+<li>A ContextLoaderLister and RequestContextListener to integrate spring with the web application.</li>
+<li>A Spring Jersey Web Servlet. Specify the location of the provider packages, enable the JSON POJO Mapping Feature, provide the path where the JSP files for the project are stored to the JSP TemplateBasePath and enable the JSP MVC Feature. In this sample, a configuration file named applicationConfig.xml is created under src/main/resources folder  and the JSP files are placed under WEB-INF/jsp folder in the project layout.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+</ul>
+
+
+<p>&#8220;`
+&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo;?></p>
+
+<!-- This web.xml file is not required when using Servlet 3.0 container,
+     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
+
+
+<p><web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"></p>
+
+<pre><code>&lt;welcome-file-list&gt;
+    &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+&lt;/welcome-file-list&gt;
+
+&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+&lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.request.RequestContextListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+
+&lt;servlet&gt;
+    &lt;servlet-name&gt;Spring Jersey Web Servlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.glassfish.jersey.servlet.ServletContainer&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.provider.packages&lt;/param-name&gt;
+        &lt;param-value&gt;com.github.elizabetht&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;com.sun.jersey.api.json.POJOMappingFeature&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.mvc.templateBasePath.jsp&lt;/param-name&gt;
+        &lt;param-value&gt;/WEB-INF/jsp&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;jersey.config.server.provider.classnames&lt;/param-name&gt;
+        &lt;param-value&gt;org.glassfish.jersey.server.mvc.jsp.JspMvcFeature&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;Spring Jersey Web Servlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/webapi/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre>
+
+<p></web-app>
+&#8220;`</p>
+
+<h2>4. Create persistence.xml</h2>
+
+<p>Create a file named persistence.xml under the folder src/main/resources/META-INF folder in the project to define the persistence unit required by JPA. Add the following to the persistence.xml to define a persistence unit named punit.</p>
+
+<pre><code>&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="{http://java.sun.com/xml/ns/persistence} {http://java.sun.com/xml/ns/persistence_2_0.xsd}"
+    version="2.0"&gt;
+
+    &lt;persistence-unit name="punit"&gt;
+    &lt;/persistence-unit&gt;
+
+&lt;/persistence&gt;
+</code></pre>
+
+<h2>5. Create the Spring Configuration File</h2>
+
+<p>As defined in the web.xml, create a file named applicationContext.xml under the folder src/main/resources folder in the project to define JPA and Hibernate related configurations. Note that any file created under src/main/resources folder in a maven project will be automagically added by Maven to the classpath. If STS(Spring Tool Suite) is the IDE, go ahead and enable the context, jpa, mvc and tx namespaces. The applicationContext.xml will be as shown below</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"&gt;
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven, base package for context component scan and base package for the jpa repositories scan.</p>
+
+<pre><code>    &lt;mvc:annotation-driven /&gt;
+
+    &lt;context:annotation-config /&gt;
+    &lt;context:component-scan base-package="com.github.elizabetht" /&gt;
+
+    &lt;jpa:repositories base-package="com.github.elizabetht.repository" /&gt;
+</code></pre>
+
+<p>Next, include the bean PersistenceAnnotationBeanPostProcessor. This is necessary to process the Persistence Unit, Persistence Context annotations and for injecting JPA related resources.</p>
+
+<pre><code>&lt;bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /&gt;
+</code></pre>
+
+<p>Include the bean for EntityManagerFactory which lists the various JPA related properties/resources.</p>
+
+<pre><code>&lt;bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+        &lt;property name="persistenceUnitName" value="punit" /&gt;
+        &lt;property name="dataSource" ref="dataSource" /&gt;
+        &lt;property name="jpaVendorAdapter"&gt;
+            &lt;bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+                &lt;property name="showSql" value="true" /&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="jpaPropertyMap"&gt;
+            &lt;map&gt;
+                &lt;entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" /&gt;
+                &lt;entry key="hibernate.hbm2ddl.auto" value="validate" /&gt;
+                &lt;entry key="hibernate.format_sql" value="true" /&gt;
+            &lt;/map&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for data source, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+        &lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;
+        &lt;property name="url" value="jdbc:mysql//&lt;include connection url&gt;:3306/studentEnrollment?autoReconnect=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;" /&gt;
+        &lt;property name="username" value="&lt;include username&gt;" /&gt;
+        &lt;property name="password" value="&lt;include password&gt;" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for transaction manager for scoping/controlling the transactions.</p>
+
+<pre><code>&lt;bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+        &lt;property name="entityManagerFactory" ref="entityManagerFactory" /&gt;
+&lt;/bean&gt;
+
+&lt;tx:annotation-driven transaction-manager="transactionManager" /&gt;
+</code></pre>
+
+<p>Thus ends the long configuration in applicationContext.xml</p>
+
+<h2>6. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;jsp&rdquo; under WEB-INF (This is where the jsp files will be created as indicated in the web.xml for the JSP TemplateBasePath).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="Jersey REST Spring Hibernate Signup Layout" alt="Jersey REST Spring Hibernate Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="Jersey REST Spring Hibernate Login Layout" alt="Jersey REST Spring Hibernate Login Layout" /></p>
+
+<p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under webapp folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/webapp">https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/webapp</a></p>
+
+<h2>7. Create packages for Resource, Service, Repository and Model tier classes</h2>
+
+<p>Create packages each for the Jersey Resource, Service, Repository and Model classes under the src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jersey-package.png" title="Jersey REST Spring Package Layout" alt="Jersey REST Spring Package Layout" /></p>
+
+<h2>8. Create classes for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity during signup. Create another POJO class named StudentLogin.java inside the same package com.github.elizabetht.model to include the Student Login details.</p>
+
+<p>Annotate the classes with @Component to be picked by the Context-Component Scan of the Jersey-Spring framework. Also annotate the classes with @XmlRootElement to indicate the XML Element.</p>
+
+<p>A reference link to the files for the Model classes can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithREST/tree/master/src/main/java/com/github/elizabetht/model</a></p>
+
+<h2>9. Create class for Repository Tier</h2>
+
+<p>Create an interface class named StudentRepository.java inside the package com.github.elizabetht.repository to support the repository tier database operations.</p>
+
+<p>There are two interface methods needed for the application&rsquo;s purpose.</p>
+
+<ul>
+<li>To Insert the Student Signup details into the Database</li>
+<li>To Verify the Student Login details from the Database</li>
+</ul>
+
+
+<pre><code>@Repository("studentRepository")
+public interface StudentRepository extends JpaRepository&lt;Student, Long&gt; {
+
+    @Query("select s from Student s where s.userName = :userName")
+    Student findByUserName(@Param("userName") String userName);
+
+}
+</code></pre>
+
+<p>The save() method is supported by the Hibernate implementation and hence no separate SQL statements are required for the data insert.</p>
+
+<h2>10. Create classes for Service Tier</h2>
+
+<p>Create an interface class named StudentService.java inside the package com.github.elizabetht.service to support the service tier operations.</p>
+
+<pre><code>public interface StudentService {
+    Student save(Student student);
+    boolean findByLogin(String userName, String password);
+    boolean findByUserName(String userName);
+}
+</code></pre>
+
+<p>Create a service tier implementation class (a POJO indeed) named StudentServiceImpl.java inside the package com.github.elizabetht.service. This is where the application logic goes - either to save the student details into the database or to verify the student (already saved) details from the database.</p>
+
+<pre><code>@Service("studentService")
+public class StudentServiceImpl implements StudentService {
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Transactional
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public boolean findByLogin(String userName, String password) {  
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null &amp;&amp; stud.getPassword().equals(password)) {
+            return true;
+        } 
+
+        return false;       
+    }
+
+    public boolean findByUserName(String userName) {
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+}
+</code></pre>
+
+<h2>11. Create class for Resource Tier</h2>
+
+<p>Create a Resource tier POJO class named StudentResource.java inside the package com.github.elizabetht.resource. This is where a REST API is implemented for each of the operation performed from the front end.</p>
+
+<pre><code>@Component
+@Path("studentResource")
+@XmlRootElement
+public class StudentResource {
+
+    @Autowired
+    private StudentService studentService;
+
+    @GET
+    @Path("signup")
+    @Produces(MediaType.TEXT_HTML)
+    public Response signup() {
+        return Response.ok(new Viewable("/signup")).build();
+    }
+
+    @POST
+    @Path("signup")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Response signup(@FormParam("userName") String userName,
+            @FormParam("password") String password,
+            @FormParam("firstName") String firstName,
+            @FormParam("lastName") String lastName,
+            @FormParam("dateOfBirth") String dateOfBirth,
+            @FormParam("emailAddress") String emailAddress)
+            throws ParseException {
+
+        if (userName == null || password == null || firstName == null
+                || lastName == null || dateOfBirth == null
+                || emailAddress == null) {
+            return Response.status(Status.PRECONDITION_FAILED).build();
+        }
+
+        Student student = new Student();
+        student.setUserName(userName);
+        student.setPassword(password);
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+
+        student.setDateOfBirth(new java.sql.Date(new SimpleDateFormat(
+                "MM/dd/yyyy").parse(dateOfBirth.substring(0, 10)).getTime()));
+
+        student.setEmailAddress(emailAddress);
+
+        if (studentService.findByUserName(userName)) {
+            Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
+            map.put("message", "User Name exists. Try another user name");
+            map.put("student", student);
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new Viewable("/signup", map)).build();
+        } else {
+            studentService.save(student);
+            return Response.ok().entity(new Viewable("/login")).build();
+        }
+    }
+
+    @GET
+    @Path("login")
+    @Produces(MediaType.TEXT_HTML)
+    public Response login() {
+        return Response.ok(new Viewable("/login")).build();
+    }
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public Response login(@FormParam("userName") String userName,
+            @FormParam("password") String password) {
+
+        if (userName == null || password == null) {
+            return Response.status(Status.PRECONDITION_FAILED).build();
+        }
+
+        boolean found = studentService.findByLogin(userName, password);
+        if (found) {
+            return Response.ok().entity(new Viewable("/success")).build();
+        } else {
+            return Response.status(Status.BAD_REQUEST)
+                    .entity(new Viewable("/failure")).build();
+        }
+    }
+}
+</code></pre>
+
+<h2>12. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the dataSource bean in applicationContext.xml</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>13. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>14. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST.git">https://github.com/elizabetht/StudentEnrollmentWithREST.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.1">https://github.com/elizabetht/StudentEnrollmentWithREST/releases/tag/1.1</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using Hibernate With Spring]]></title>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
+    <updated>2013-11-21T09:41:30-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project using Maven Template</h2>
+
+<p>To begin with, in the IDE, create a Java Maven project with the template of maven-archetype-webapp (Filter the catalog based on the string &ldquo;webapp&rdquo;) by providing appropriate values for GroupId and Artifact Id for the project. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
+
+<p><img src="/assets/images/elizabetht/springlayout.png" title="Spring Hibernate Project Layout" alt="Hibernate Spring Maven Project Layout" /></p>
+
+<h2>2. Update pom.xml</h2>
+
+<p>To make the above Maven Java Web Application project support the Hibernate ORM in Spring framework, add the following dependencies to the existing pom.xml</p>
+
+<ul>
+<li>jstl, spring-webmvc and servlet-api (for Spring support)</li>
+<li>mysql-connector-java (for MYSQL support)</li>
+<li>spring-jdbc (for data access with JDBC Spring)</li>
+<li>spring-orm (for ORM data access with Spring)</li>
+<li>spring-data-jpa (for JPA support)</li>
+<li>hibernate-validator and hibernate-entitymanager (for Hibernate Support)</li>
+<li>jta (for transaction support)</li>
+</ul>
+
+
+<pre><code>&lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+        &lt;version&gt;3.2.4.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+        &lt;version&gt;2.5&lt;/version&gt;
+        &lt;scope&gt;provided&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+        &lt;version&gt;1.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;version&gt;5.1.21&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+        &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+        &lt;version&gt;4.2.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+        &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+        &lt;version&gt;4.1.9.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.transaction&lt;/groupId&gt;
+        &lt;artifactId&gt;jta&lt;/artifactId&gt;
+        &lt;version&gt;1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+        &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+        &lt;version&gt;3.2.0.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-data-jpa&lt;/artifactId&gt;
+        &lt;version&gt;1.3.0.RELEASE&lt;/version&gt;
+        &lt;exclusions&gt;
+            &lt;exclusion&gt;
+                &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+            &lt;/exclusion&gt;
+        &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+</code></pre>
+
+<h2>3. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A servlet and specify the location of the configuration file for the same. In this sample, a configuration file named springConfig.xml is created under WEB-INF/config folder in the project layout.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+<li>A ContextLoaderListener to integrate spring with the web application and provide the contextConfigLocation where the context files for JPA.</li>
+</ul>
+
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+
+&lt;servlet&gt;
+    &lt;servlet-name&gt;studentHibernateServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;/WEB-INF/config/servletConfig.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;studentHibernateServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.html&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+
+&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:/jpaContext.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+
+&lt;listener&gt;
+    &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+
+  &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+<h2>4. Create the Spring Configuration File</h2>
+
+<p>Create a Spring Bean Configuration file under the folder WEB-INF/config. If a STS(Spring Tool Suite) is the IDE, go ahead and enable the context and mvc namespaces. The servletConfig.xml will be as shown below</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"&gt;
+
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven and base package for the context component scan.</p>
+
+<pre><code>&lt;mvc:annotation-driven /&gt;
+
+&lt;context:component-scan base-package="com.github.elizabetht" /&gt;
+</code></pre>
+
+<p>Include the bean InternalResourceViewResolver of Spring to locate the jsp files</p>
+
+<pre><code>&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+    &lt;property name="prefix" value="/WEB-INF/jsp/" /&gt;
+    &lt;property name="suffix" value=".jsp" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for specifying a properties file (more on this later) which is to be used to store custom messages or properties. The following configuration allows to create a properties file named messages.properties under the src/main/resources folder in the project.</p>
+
+<pre><code>&lt;bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
+    &lt;property name="basename" value="messages" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<h2>5. Create persistence.xml</h2>
+
+<p>Create a file named persistence.xml under the folder src/main/resources/META-INF folder in the project to define the persistence unit required by JPA. Add the following to the persistence.xml to define a persistence unit named punit.</p>
+
+<pre><code>&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="{http://java.sun.com/xml/ns/persistence} {http://java.sun.com/xml/ns/persistence_2_0.xsd}"
+    version="2.0"&gt;
+
+    &lt;persistence-unit name="punit"&gt;
+    &lt;/persistence-unit&gt;
+
+&lt;/persistence&gt;
+</code></pre>
+
+<h2>6. Create jpaContext.xml</h2>
+
+<p>As defined in the web.xml, create a file named jpaContext.xml under the folder src/main/resources folder in the project to define JPA and Hibernate related configurations. Note that any file created under src/main/resources folder in a maven project will be automagically added by Maven to the classpath. If STS(Spring Tool Suite) is the IDE, go ahead and enable the context, jpa and tx namespaces. The jpaContext.xml will be as shown below</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"&gt;
+
+&lt;beans&gt;
+</code></pre>
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven and base package for the jpa repositories scan.</p>
+
+<pre><code>&lt;context:annotation-config /&gt;
+
+&lt;jpa:repositories base-package="com.github.elizabetht.repository" /&gt;
+</code></pre>
+
+<p>Next, include the bean PersistenceAnnotationBeanPostProcessor. This is necessary to process the Persistence Unit, Persistence Context annotations and for injecting JPA related resources.</p>
+
+<pre><code>&lt;bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /&gt;
+</code></pre>
+
+<p>Include the bean for EntityManagerFactory which lists the various JPA related properties/resources.</p>
+
+<pre><code>&lt;bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+        &lt;property name="persistenceUnitName" value="punit" /&gt;
+        &lt;property name="dataSource" ref="dataSource" /&gt;
+        &lt;property name="jpaVendorAdapter"&gt;
+            &lt;bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"&gt;
+                &lt;property name="showSql" value="true" /&gt;
+            &lt;/bean&gt;
+        &lt;/property&gt;
+        &lt;property name="jpaPropertyMap"&gt;
+            &lt;map&gt;
+                &lt;entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" /&gt;
+                &lt;entry key="hibernate.hbm2ddl.auto" value="validate" /&gt;
+                &lt;entry key="hibernate.format_sql" value="true" /&gt;
+            &lt;/map&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for data source, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+        &lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;
+        &lt;property name="url" value="jdbc:mysql//&lt;include connection url&gt;:3306/studentEnrollment?autoReconnect=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;" /&gt;
+        &lt;property name="username" value="&lt;include username&gt;" /&gt;
+        &lt;property name="password" value="&lt;include password&gt;" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for transaction manager for scoping/controlling the transactions.</p>
+
+<pre><code>&lt;bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+        &lt;property name="entityManagerFactory" ref="entityManagerFactory" /&gt;
+&lt;/bean&gt;
+
+&lt;tx:annotation-driven transaction-manager="transactionManager" /&gt;
+</code></pre>
+
+<p>Thus ends the long configuration in jpaContext.xml</p>
+
+<h2>7. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;jsp&rdquo; under WEB-INF (This is where the jsp files will be created as indicated in the servletConfig.xml for the InternalResourceViewResolver bean).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="Spring Hibernate Signup Layout" alt="Spring Hibernate Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="Spring Hibernate Login Layout" alt="Spring Hibernate Login Layout" /></p>
+
+<p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under webapp folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/webapp">https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/webapp</a></p>
+
+<h2>8. Create packages for Controller, Model, Repository and Service tier classes</h2>
+
+<p>Create packages each for the Spring Controller, Model, Repository and Service classes under the src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/spring-hibernate-package.png" title="Spring Hibernate Package Layout" alt="Spring Hibernate Package Layout" /></p>
+
+<h2>9. Create classes for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity during signup. Create another POJO class named StudentLogin.java inside the same package com.github.elizabetht.model to include the Student Login details.</p>
+
+<p>A reference link to the files for the Model classes can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/java/com/github/elizabetht/model</a></p>
+
+<h2>10. Create class for Repository Tier</h2>
+
+<p>Create an interface class named StudentRepository.java inside the package com.github.elizabetht.repository to support the repository tier database operations.</p>
+
+<p>There are two interface methods needed for the application&rsquo;s purpose.</p>
+
+<ul>
+<li>To Insert the Student Signup details into the Database</li>
+<li>To Verify the Student Login details from the Database</li>
+</ul>
+
+
+<pre><code>@Repository("studentRepository")
+public interface StudentRepository extends JpaRepository&lt;Student, Long&gt; {
+
+    @Query("select s from Student s where s.userName = :userName")
+    Student findByUserName(@Param("userName") String userName);
+
+}
+</code></pre>
+
+<p>The save() method is supported by the Hibernate implementation and hence no separate SQL statements are required for the data insert.</p>
+
+<h2>11. Create classes for Service Tier</h2>
+
+<p>Create an interface class named StudentService.java inside the package com.github.elizabetht.service to support the service tier operations.</p>
+
+<pre><code>public interface StudentService {
+    Student save(Student student);
+    boolean findByLogin(String userName, String password);
+    boolean findByUserName(String userName);
+}
+</code></pre>
+
+<p>Create a service tier implementation class (a POJO indeed) named StudentServiceImpl.java inside the package com.github.elizabetht.service. This is where the application logic goes - either to save the student details into the database or to verify the student (already saved) details from the database.</p>
+
+<pre><code>@Service("studentService")
+public class StudentServiceImpl implements StudentService {
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Transactional
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public boolean findByLogin(String userName, String password) {  
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null &amp;&amp; stud.getPassword().equals(password)) {
+            return true;
+        } 
+
+        return false;       
+    }
+
+    public boolean findByUserName(String userName) {
+        Student stud = studentRepository.findByUserName(userName);
+
+        if(stud != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+}
+</code></pre>
+
+<h2>12. Create class for Controller Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the routing logic of the application goes - whether a signup or login action is called.</p>
+
+<pre><code>@Controller
+@SessionAttributes("student")
+public class StudentController {
+
+    @Autowired
+    private StudentService studentService;
+
+    @RequestMapping(value="/signup", method=RequestMethod.GET)
+    public String signup(Model model) {
+        Student student = new Student();        
+        model.addAttribute("student", student);     
+        return "signup";
+    }
+
+    @RequestMapping(value="/signup", method=RequestMethod.POST)
+    public String signup(@Valid @ModelAttribute("student") Student student, BindingResult result, Model model) {        
+        if(result.hasErrors()) {
+            return "signup";
+        } else if(studentService.findByUserName(student.getUserName())) {
+            model.addAttribute("message", "User Name exists. Try another user name");
+            return "signup";
+        } else {
+            studentService.save(student);
+            model.addAttribute("message", "Saved student details");
+            return "redirect:login.html";
+        }
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.GET)
+    public String login(Model model) {          
+        StudentLogin studentLogin = new StudentLogin();     
+        model.addAttribute("studentLogin", studentLogin);
+        return "login";
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public String login(@Valid @ModelAttribute("studentLogin") StudentLogin studentLogin, BindingResult result) {
+        if (result.hasErrors()) {
+            return "login";
+        } else {
+            boolean found = studentService.findByLogin(studentLogin.getUserName(), studentLogin.getPassword());
+            if (found) {                
+                return "success";
+            } else {                
+                return "failure";
+            }
+        }
+
+    }
+}
+</code></pre>
+
+<h2>13. Create messages.properties file</h2>
+
+<p>As seen above, the @Valid annotation is used to validate the input parameters of the form reaching the method and the result of the validation is stored in BindingResult object. In order to validate specific fields, (refer the classes created for the Model tier - <a href="https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithSpring/tree/master/src/main/java/com/github/elizabetht/model</a>), use annotations like @NotEmpty, @Size, @Email and @NotNull from the various validations available from the Hibernate Validator.</p>
+
+<p>The Custom messages that should be displayed when any of the above mentioned validators fail is specified in the messages.properties file. Create a file named messages.properties under src/main/resources folder and include the following</p>
+
+<pre><code>NotEmpty=Field cannot be blank
+NotNull=Field cannot be blank
+
+Email=Email Address not valid/well-formed
+Past=Date of Birth must be in the past 
+
+Size={0} must be between {2} and {1} characters long
+typeMismatch=Invalid format
+</code></pre>
+
+<h2>14. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the dataSource bean in jpaContext.xml</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>15. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>16. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithSpring.git">https://github.com/elizabetht/StudentEnrollmentWithSpring.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithSpring/releases/tag/1.6">https://github.com/elizabetht/StudentEnrollmentWithSpring/releases/tag/1.6</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using MyBatis With Spring]]></title>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
+    <updated>2013-11-21T09:41:09-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project using Maven Template</h2>
+
+<p>To begin with, in the IDE, create a Java Maven project with the template of maven-archetype-webapp (Filter the catalog based on the string &ldquo;webapp&rdquo;) by providing appropriate values for GroupId and Artifact Id for the project. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
+
+<p><img src="/assets/images/elizabetht/mybatislayout.png" title="MyBatis Project Layout" alt="MyBatis Maven Project Layout" /></p>
+
+<h2>2. Update pom.xml</h2>
+
+<p>To make the above Maven Java Web Application project support the MyBatis framework, add the following dependencies to the existing pom.xml</p>
+
+<ul>
+<li>mybatis (for MyBatis support)</li>
+<li>mybatis-spring (for MyBatis-Spring integration support)</li>
+<li>jstl, spring-webmvc, servlet-api and spring-context-support (for Spring support)</li>
+<li>spring-test (may be optional, needed if Spring-test support is needed)</li>
+<li>mysql-connector-java (for MYSQL support)</li>
+</ul>
+
+
+<pre><code>&lt;dependency&gt;
+        &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+        &lt;version&gt;3.1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+        &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
+        &lt;version&gt;1.1.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-context-support&lt;/artifactId&gt;
+        &lt;version&gt;3.1.1.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+        &lt;version&gt;3.1.1.RELEASE&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;version&gt;5.1.21&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+        &lt;version&gt;1.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+        &lt;version&gt;3.2.4.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+        &lt;version&gt;2.5&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre>
+
+<h2>3. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A servlet and specify the location of the configuration file for the same. In this sample, a configuration file named springConfig.xml is created under WEB-INF/config folder in the project layout.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+</ul>
+
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+
+&lt;servlet&gt;
+    &lt;servlet-name&gt;myBatisServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;/WEB-INF/config/springConfig.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;myBatisServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.html&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+
+  &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+<h2>4. Create the Spring Configuration File</h2>
+
+<p>Create a Spring Bean Configuration file under the folder WEB-INF/config. If STS(Spring Tool Suite) is the IDE, go ahead and enable the context, mvc and tx namespaces. The springConfig.xml will be as shown below</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"&gt;
+
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>After enabling the required namespaces, include the following (in between the &lt;beans&gt; and &lt;/beans&gt; tags) to indicate that the application is annotation driven and base package for the context component scan.</p>
+
+<pre><code>&lt;mvc:annotation-driven /&gt;
+
+&lt;context:component-scan base-package="com.github.elizabetht" /&gt;
+</code></pre>
+
+<p>Include the bean InternalResourceViewResolver of Spring to locate the jsp files</p>
+
+<pre><code>&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+    &lt;property name="prefix" value="/WEB-INF/jsp/" /&gt;
+    &lt;property name="suffix" value=".jsp" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for data source, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+    &lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;
+    &lt;property name="url" value="jdbc:mysql//&lt;include connection url&gt;:3306/studentEnrollment?autoReconnect=true&amp;amp;createDatabaseIfNotExist=true&amp;amp;" /&gt;
+    &lt;property name="username" value="&lt;include username&gt;" /&gt;
+    &lt;property name="password" value="&lt;include password&gt;" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for transaction manager for scoping/controlling the transactions, that takes the data source defined above as reference (dependent)</p>
+
+<pre><code>&lt;tx:annotation-driven transaction-manager="transactionManager" /&gt;
+&lt;bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"&gt;
+    &lt;property name="dataSource" ref="dataSource" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Coming to the MyBatis specific configurations, include the bean for sqlSessionFactory which is the central configuration in a MyBatis application. This bean takes in three properties
+- dataSource (already configured above)&nbsp;
+- typeAliasesPackage (location where the model classes of this application resides)&nbsp;
+- mapperLocations (location where the mapper xml files for the model resides - this is not needed here as annotation based configurations are used instead)&nbsp;</p>
+
+<p>More details of this can be read at <a href="http://mybatis.github.io/mybatis-3/">http://mybatis.github.io/mybatis-3/</a></p>
+
+<pre><code>&lt;bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"&gt;
+    &lt;property name="dataSource" ref="dataSource" /&gt;
+    &lt;property name="typeAliasesPackage" value="com.github.elizabetht.model"/&gt;
+    &lt;property name="mapperLocations" value="classpath*:com/github/elizabetht/mappers/*.xml" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Include the bean for sqlSession</p>
+
+<pre><code>&lt;bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"&gt;
+    &lt;constructor-arg index="0" ref="sqlSessionFactory" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<p>Next and finally, include the bean for MapperScannerConfigurer</p>
+
+<pre><code>&lt;bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"&gt;
+    &lt;property name="basePackage" value="com.github.elizabetht.mappers" /&gt;
+&lt;/bean&gt;
+</code></pre>
+
+<h2>5. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;jsp&rdquo; under WEB-INF (This is where the jsp files will be created as indicated in the springConfig.xml for the InternalResourceViewResolver bean).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="MyBatis Signup Layout" alt="MyBatis Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="MyBatis Login Layout" alt="MyBatis Login Layout" /></p>
+
+<p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under webapp folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/webapp">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/webapp</a></p>
+
+<h2>6. Create packages for Controller, Model, Service and Mappers</h2>
+
+<p>Create packages each for the Spring Controller, Model and Service classes under the src/main/java folder. Also create a package for the MyBatis Mapper class under the same src/main/java folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/mybatis-package.png" title="MyBatis Package Layout" alt="MyBatis Package Layout" /></p>
+
+<h2>7. Create classes for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity during signup. Create another POJO class named StudentLogin.java inside the same package com.github.elizabetht.model to include the Student Login details.</p>
+
+<p>A reference link to the files for the Model classes can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/java/com/github/elizabetht/model">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/tree/master/src/main/java/com/github/elizabetht/model</a></p>
+
+<h2>8. Create classes for MyBatis Mapper</h2>
+
+<p>A Mapper in MyBatis framework is similar to the Repository tier in a Spring environment. Crude SQL queries takes its place here.
+Create an interface class named StudentMapper.java inside the package com.github.elizabetht.mapper to support the database operations.</p>
+
+<p>There are two interface methods needed for the application&rsquo;s purpose.</p>
+
+<ul>
+<li>To Insert the Student Signup details into the Database</li>
+<li>To Verify the Student Login details from the Database</li>
+</ul>
+
+
+<pre><code>public interface StudentMapper {
+    @Insert("INSERT INTO student(userName, password, firstName,"
+            + "lastName, dateOfBirth, emailAddress) VALUES"
+            + "(#{userName},#{password}, #{firstName}, #{lastName},"
+            + "#{dateOfBirth}, #{emailAddress})")
+    @Options(useGeneratedKeys=true, keyProperty="id", flushCache=true, keyColumn="id")
+    public void insertStudent(Student student);
+
+    @Select("SELECT USERNAME as userName, PASSWORD as password, "
+            + "FIRSTNAME as firstName, LASTNAME as lastName, "
+            + "DATEOFBIRTH as dateOfBirth, EMAILADDRESS as emailAddress "
+            + "FROM student WHERE userName = #{userName}")
+    public Student getStudentByUserName(String userName);
+
+
+}
+</code></pre>
+
+<h2>9. Create classes for Service Tier</h2>
+
+<p>Create an interface class named StudentService.java inside the package com.github.elizabetht.service to support the service tier operations.</p>
+
+<pre><code>public interface StudentService {
+    void insertStudent(Student student);
+    boolean getStudentByLogin(String userName, String password);
+    boolean getStudentByUserName(String userName);
+}
+</code></pre>
+
+<p>Create a service tier implementation class (a POJO indeed) named StudentServiceImpl.java inside the package com.github.elizabetht.service. This is where the application logic goes - either to save the student details into the database or to verify the student (already saved) details from the database.</p>
+
+<pre><code>@Service("studentService")
+public class StudentServiceImpl implements StudentService {
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Transactional
+    public void insertStudent(Student student) {        
+        studentMapper.insertStudent(student);
+    }
+
+    public boolean getStudentByLogin(String userName, String password) {        
+        Student student = studentMapper.getStudentByUserName(userName);
+
+        if(student != null &amp;&amp; student.getPassword().equals(password)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean getStudentByUserName(String userName) {
+        Student student = studentMapper.getStudentByUserName(userName);
+
+        if(student != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+}
+</code></pre>
+
+<p><blockquote><p>When using MyBatis with Spring, a mapper can be directly injected into the service tier. This is probably the strongest point of the Spring integration of MyBatis. This is the only tool that I am aware that lets to build the application with no imports to it.</p><footer><strong>@EduardoMacarron <a href="https://twitter.com/EduardoMacarron">https://twitter.com/EduardoMacarron</a></strong></footer></blockquote></p>
+
+<h2>10. Create class for Controller Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the routing logic of the application goes - whether a signup or login action is called.</p>
+
+<pre><code>@Controller
+@SessionAttributes("student")
+public class StudentController {
+
+    @Autowired
+    private StudentService studentService;
+
+    @RequestMapping(value="/signup", method=RequestMethod.GET)
+    public String signup(Model model) {
+        Student student = new Student();
+        model.addAttribute("student", student);
+        return "signup";
+    }
+
+    @RequestMapping(value="/signup", method=RequestMethod.POST)
+    public String signup(@ModelAttribute("student") Student student, Model model) {
+        if(studentService.getStudentByUserName(student.getUserName())) {
+            model.addAttribute("message", "User Name exists. Try another user name");
+            return "signup";
+        } else {
+            studentService.insertStudent(student);
+            model.addAttribute("message", "Saved student details");
+            return "redirect:login.html";
+        }
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.GET)
+    public String login(Model model) {
+        StudentLogin studentLogin = new StudentLogin();
+        model.addAttribute("studentLogin", studentLogin);
+        return "login";
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public String login(@ModelAttribute("studentLogin") StudentLogin studentLogin) {
+        boolean found = studentService.getStudentByLogin(studentLogin.getUserName(), studentLogin.getPassword());
+        if (found) {                
+            return "success";
+        } else {                
+            return "failure";
+        }
+    }
+}
+</code></pre>
+
+<h2>11. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the dataSource bean in springConfig.xml</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>12. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>13. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git">https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7</a></p>
+]]></content>
+  </entry>
+  
+</feed>

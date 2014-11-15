@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Struts2 | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/struts2/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T17:59:30-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using Struts 2]]></title>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-struts-2/"/>
+    <updated>2013-11-21T09:41:45-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-struts-2</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Struts 2 framework. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project</h2>
+
+<p>To begin with, in the IDE, create a Java Dynamic Web project for the application. While creating the dynamic web project, enable the checkbox to generate web.xml deployment descriptor.</p>
+
+<p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
+
+<p><img src="/assets/assets/images/elizabetht/elizabetht/strutslayout.png" title="Struts Dynamic Web Project Layout" alt="Struts Dynamic Web Project Layout" /></p>
+
+<h2>2. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A Struts Dispatcher named Struts Prepare and Execute Filter to handle both the preparation and execution phases of Struts dispatching process.</li>
+<li>A Filter mapping to map the dispatcher created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+</ul>
+
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0"&gt;
+  &lt;display-name&gt;StudentEnrollmentWithStruts&lt;/display-name&gt;
+  &lt;filter&gt;
+          &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+          &lt;filter-class&gt;org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;
+  &lt;/filter&gt;
+  &lt;filter-mapping&gt;
+          &lt;filter-name&gt;struts2&lt;/filter-name&gt;
+          &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;  
+&lt;/web-app&gt;
+</code></pre>
+
+<h2>3. Add JARs to the project</h2>
+
+<p>Add the following JARs from the web (or their latest equivalent) to the WEB-INF/lib folder under WebContent directory in the project.</p>
+
+<ul>
+<li>asm-3.3.jar (for bytecode manipulation framework support)</li>
+<li>asm-commons-3.3.jar (for bytecode manipulation framework support)</li>
+<li>commons-fileupload-1.3.jar (for file upload capability to your servlets and web applications support)</li>
+<li>commons-io-2.0.1.jar (for library of utilities to assist with developing IO functionality)</li>
+<li>commons-lang-2.4.jar (for manipulation of core classes by providing helper utilities)</li>
+<li>commons-lang3-3.1.jar (for manipulation of core classes by providing helper utilities)</li>
+<li>freemarker-2.3.19.jar (for UI tag templates support)</li>
+<li>javassist-3.11.0.GA.jar (for JAVA programming ASSISTance support)</li>
+<li>mysql-connector-java-5.1.26-bin.jar (for MYSQL data access support)</li>
+<li>ognl-3.0.6.jar (for Object Graph Navigation Language (OGNL) support)</li>
+<li>struts2-bootstrap-plugin-1.6.1.jar (for Bootstrap support)</li>
+<li>struts2-convention-plugin-2.3.15.1.jar (for the zero configuration and naming convention support)</li>
+<li>struts2-core-2.3.15.1.jar (for Struts Framework library support)</li>
+<li>struts2-jquery-plugin-3.6.1.jar (for JQuery support)</li>
+<li>xwork-core-2.3.15.1.jar (for XWork 2 library support)</li>
+</ul>
+
+
+<p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
+
+<p><img src="/assets/assets/images/elizabetht/elizabetht/strutsliblayout.png" title="Struts Library Layout" alt="Struts Library Layout" /></p>
+
+<h2>4. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;content&rdquo; under WEB-INF (This is where the jsp files will be created).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/assets/images/elizabetht/elizabetht/struts-signup.png" title="Struts Signup Layout" alt="Struts Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/assets/images/elizabetht/elizabetht/login.png" title="Struts Login Layout" alt="Struts Login Layout" /></p>
+
+<p>The main actions for this application are as follows:</p>
+
+<ul>
+<li>Signup (To Insert the Student Signup details into the Database)</li>
+<li>Login (To Verify the Student Login details from the Database)</li>
+</ul>
+
+
+<p>In order to display a success (result) page after the login action is complete, create a login-success.jsp page to indicate the login success (The page name will follow the semantics: &lt;action name&gt;-&lt;result name&gt;.jsp). Similarly, to indicate a login failure (result), create a page login-failure.jsp (login is the action and failure is the result). Also create a signup-failure.jsp page to indicate the signup failure, possibly due to an already existing username (signup is the action and failure is the result). These are just pages used to display the contents - no processing logic involved.</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets.</p>
+
+<p>The Struts 2 UI component tags are used to create the page elements like the form, textfield, password and hidden fields. The Struts Bootstrap tags are used for the Twitter Bootstrap integration. The Struts jQuery tags are used to include the AJAX functionality of submitting the form outside from the modal window and to use the UI widgets like the datepicker.</p>
+
+<p>A reference link to the files under WebContent folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithStruts/tree/master/WebContent">https://github.com/elizabetht/StudentEnrollmentWithStruts/tree/master/WebContent</a></p>
+
+<h2>5. Create packages</h2>
+
+<p>Create packages each for the Struts Actions(equivalent to Controller), Service, Repository and Model classes under the src folder.
+Also create package for the utilities class under the src folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/assets/images/elizabetht/elizabetht/struts-package.png" title="Struts Package Layout" alt="Struts Package Layout" /></p>
+
+<h2>6. Create class for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity.</p>
+
+<pre><code>public class Student {
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String password;
+    private String emailAddress;
+    private Date dateOfBirth;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+}
+</code></pre>
+
+<h2>7. Create db.properties file</h2>
+
+<p>Create a file named db.properties under the src folder, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>dbDriver=com.mysql.jdbc.Driver
+connectionUrl=jdbc:mysql://&lt;include connection url&gt;:3306/studentEnrollment
+userName=&lt;include username&gt;
+password=&lt;include password&gt;
+</code></pre>
+
+<h2>8. Create utility class </h2>
+
+<p>Create a POJO class named DbUtil.java under the package com.github.elizabetht.util to include a helper class functionality that would load the db.properties file and get the database connection.</p>
+
+<pre><code>public class DbUtil {
+    private static Connection dbConnection = null;
+
+    public static Connection getConnection() {
+        if (dbConnection != null) {
+            return dbConnection;
+        } else {
+            try {
+                InputStream inputStream = DbUtil.class.getClassLoader()
+                        .getResourceAsStream("db.properties");
+                Properties properties = new Properties();
+                if (properties != null) {
+                    properties.load(inputStream);
+
+                    String dbDriver = properties.getProperty("dbDriver");
+                    String connectionUrl = properties
+                            .getProperty("connectionUrl");
+                    String userName = properties.getProperty("userName");
+                    String password = properties.getProperty("password");
+
+                    Class.forName(dbDriver).newInstance();
+                    dbConnection = DriverManager.getConnection(connectionUrl,
+                            userName, password);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return dbConnection;
+        }
+    }
+}
+</code></pre>
+
+<h2>9. Create class for Repository tier</h2>
+
+<p>Create a Repository tier POJO class named StudentRepository.java under the package com.github.elizabetht.repository to support the database operations of saving the student details, verifying the student login details and checking if the username exists when a save is attempted.</p>
+
+<pre><code>public class StudentRepository {
+    private Connection dbConnection;
+
+    public StudentRepository() {
+        dbConnection = DbUtil.getConnection();
+    }
+
+    public void save(String userName, String password, String firstName,
+            String lastName, String dateOfBirth, String emailAddress) {
+        if (dbConnection != null) {
+            try {
+                PreparedStatement prepStatement = dbConnection
+                        .prepareStatement("insert into student(userName, password, firstName, lastName, dateOfBirth, emailAddress) values (?, ?, ?, ?, ?, ?)");
+                prepStatement.setString(1, userName);
+                prepStatement.setString(2, password);
+                prepStatement.setString(3, firstName);
+                prepStatement.setString(4, lastName);               
+
+                prepStatement.setDate(5, new java.sql.Date(new SimpleDateFormat("MM/dd/yyyy")
+                .parse(dateOfBirth.substring(0, 10)).getTime()));
+
+                prepStatement.setString(6, emailAddress);
+
+                prepStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {                
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean findByUserName(String userName) {
+        if (dbConnection != null) {
+            try {
+                PreparedStatement prepStatement = dbConnection
+                        .prepareStatement("select count(*) from student where userName = ?");
+                prepStatement.setString(1, userName);
+
+                ResultSet result = prepStatement.executeQuery();
+                if (result != null) {
+                    while (result.next()) {
+                        if (result.getInt(1) == 1) {
+                            return true;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public boolean findByLogin(String userName, String password) {
+        if (dbConnection != null) {
+            try {
+                PreparedStatement prepStatement = dbConnection
+                        .prepareStatement("select password from student where userName = ?");
+                prepStatement.setString(1, userName);
+
+                ResultSet result = prepStatement.executeQuery();
+                if (result != null) {
+                    while (result.next()) {
+                        if (result.getString(1).equals(password)) {
+                            return true;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+}
+</code></pre>
+
+<h2>10. Create class for Service Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentService.java inside the package com.github.elizabetht.service. This layer acts as a median between the Controller and Repository tier classes.</p>
+
+<pre><code>public class StudentService {
+
+    private StudentRepository studentRepository;
+
+    public StudentService() {
+        studentRepository = new StudentRepository();
+    }
+
+    public String save(String userName, String password,
+            String firstName, String lastName, String dateOfBirth,
+            String emailAddress) {
+        if (studentRepository != null) {
+            if (studentRepository.findByUserName(userName)) {
+                return "SignupFailure-UserNameExists";
+            }
+            studentRepository.save(userName, password, firstName, lastName,
+                    dateOfBirth, emailAddress);
+            return "SignupSuccess";
+        } else {
+            return "SignupFailure";
+        }
+    }
+
+    public String findByLogin(String userName, String password) {
+        String result = "LoginFailure";
+        if (studentRepository != null) {
+            boolean status = studentRepository.findByLogin(userName, password);
+            if (status) {
+                result = "LoginSuccess";
+            }
+        }
+        return result;
+    }
+}
+</code></pre>
+
+<h2>11. Create Action classes for Controller tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the routing logic of the application goes - whether a signup or login action is called. For simplicity sake, two separate action classes are created for each of the operation.</p>
+
+<p>Each of the Action class has to implement the execute() method. Based on the String result returned from the execute() method of the action class, the appropriate view page is rendered.</p>
+
+<p>In most cases, the action class is extended from the general ActionSupport class, which has a lot of easy to use convenient features. So, extend the ActionSupport class in the Action class, unless you have a reason not to!</p>
+
+<p>The following snippet shows the SignupAction class.
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@SuppressWarnings(&ldquo;serial&rdquo;)
+</span><span class='line'>public class SignupAction extends ActionSupport {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;private String pageName;
+</span><span class='line'>private String userName;
+</span><span class='line'>private String password;
+</span><span class='line'>private String firstName;
+</span><span class='line'>private String lastName;
+</span><span class='line'>private String dateOfBirth;
+</span><span class='line'>private String emailAddress;
+</span><span class='line'>
+</span><span class='line'>@Action("signup-input")
+</span><span class='line'>public String input() throws Exception {
+</span><span class='line'>    return "signup";
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Override
+</span><span class='line'>@Action(value = "signup", results = { @Result(name = "login-input", location = "login-input", type = "redirect") })
+</span><span class='line'>public String execute() throws Exception {
+</span><span class='line'>    String result = "";
+</span><span class='line'>    StudentService studentService = new StudentService();
+</span><span class='line'>
+</span><span class='line'>    if (pageName != null &amp;&amp; studentService != null) {
+</span><span class='line'>        if (pageName.equals("signup")) {
+</span><span class='line'>            result = studentService.save(userName, password, firstName,
+</span><span class='line'>                    lastName, dateOfBirth, emailAddress);
+</span><span class='line'>            if (result.equals("SignupSuccess")) {
+</span><span class='line'>                return "login-input";
+</span><span class='line'>            } else {
+</span><span class='line'>                return "failure";
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    return SUCCESS;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getPageName() {
+</span><span class='line'>    return pageName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public void setPageName(String pageName) {
+</span><span class='line'>    this.pageName = pageName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getUserName() {
+</span><span class='line'>    return userName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "UserName is a required field")
+</span><span class='line'>@StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "12", minLength = "6", message = "UserName must be of length between 6 and 12")
+</span><span class='line'>public void setUserName(String userName) {
+</span><span class='line'>    this.userName = userName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getPassword() {
+</span><span class='line'>    return password;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "Password is a required field")
+</span><span class='line'>@StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "12", minLength = "6", message = "Password must be of length between 6 and 12")
+</span><span class='line'>public void setPassword(String password) {
+</span><span class='line'>    this.password = password;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getFirstName() {
+</span><span class='line'>    return firstName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "FirstName is a required field")
+</span><span class='line'>public void setFirstName(String firstName) {
+</span><span class='line'>    this.firstName = firstName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getLastName() {
+</span><span class='line'>    return lastName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "LastName is a required field")
+</span><span class='line'>public void setLastName(String lastName) {
+</span><span class='line'>    this.lastName = lastName;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getEmailAddress() {
+</span><span class='line'>    return emailAddress;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "EmailAddress is a required field")
+</span><span class='line'>@EmailValidator(type = ValidatorType.FIELD, message = "Email Address must be valid")
+</span><span class='line'>public void setEmailAddress(String emailAddress) {
+</span><span class='line'>    this.emailAddress = emailAddress;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public String getDateOfBirth() {
+</span><span class='line'>    return dateOfBirth;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@RequiredStringValidator(type = ValidatorType.FIELD, message = "DateOfBirth is a required field")
+</span><span class='line'>public void setDateOfBirth(String dateOfBirth) {
+</span><span class='line'>    this.dateOfBirth = dateOfBirth;
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Similar to the SignupAction class, the LoginAction class also implements the execute() method as shown below</p>
+
+<pre><code>@SuppressWarnings("serial")
+public class LoginAction extends ActionSupport {
+
+    private String pageName;
+    private String userName;
+    private String password;
+
+    @Action("login-input")
+    public String input() throws Exception {
+        return "login";
+    }
+
+    @Action("login")
+    public String execute() throws Exception {
+        String result = "";
+        StudentService studentService = new StudentService();
+
+        if (pageName != null &amp;&amp; studentService != null) {
+            if (pageName.equals("login")) {
+                result = studentService.findByLogin(userName, password);
+                if (result.equals("LoginFailure")) {
+                    return "failure";
+                } else {
+                    return "success";
+                }
+            }
+        }
+        return SUCCESS;
+    }
+
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    @RequiredStringValidator(type = ValidatorType.FIELD, message = "UserName is a required field")
+    @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "12", minLength = "6", message = "UserName must be of length between 6 and 12")
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @RequiredStringValidator(type = ValidatorType.FIELD, message = "Password is a required field")
+    @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "12", minLength = "6", message = "Password must be of length between 6 and 12")
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+}
+</code></pre>
+
+<p>The @Action annotation is used to specify the incoming requested URL and results to be rendered. For results other than SUCCESS (or the equivalent success string), the resulting view will be rendered based on the value of the result. For instance, in SignupAction class, if &ldquo;failure&rdquo; string is returned from the execute() method, the result will be appended to the @Action value (which is &ldquo;signup&rdquo;, in this case) and the signup-failure.jsp page will be rendered. Similarly, in LoginAction class, if &ldquo;failure&rdquo; string is returned from the execute() method, the login-failure.jsp page will be rendered.</p>
+
+<p>If SUCCESS (or the equivalent success string) is returned from the execute() method, the actual value of action will be the resulting view, unless there are no results specified using the @Result annotation. For instance, in LoginAction class, there are no @Result annotations used and hence, login-success.jsp will be rendered when execute() method returns a SUCCESS string.</p>
+
+<p>But if there are results specified with @Result annotation as in SignupAction class, the name and location given by the results array will determine the view rendered - in this case, login-input action will be rendered (which is in-turn, an action specified by the LoginAction class).</p>
+
+<h2>12. Add Validators to the Form Fields</h2>
+
+<p>As shown in the above snippets of SignupAction and LoginAction classes, add the following required validators to the setter methods for the fields.</p>
+
+<p>@RequiredStringValidator is used to check that a String field is not empty.</p>
+
+<p>@StringLengthFieldValidator is used to check that a String field is of the right length. It assumes that the field is a String. If neither minLength nor maxLength is set, nothing will be done.</p>
+
+<p>@EmailValidator is used to check that a field is a valid e-mail address if it contains a non-empty String.</p>
+
+<h2>13. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the db.properties file.</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>14. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>15. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithStruts.git">https://github.com/elizabetht/StudentEnrollmentWithStruts.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithStruts/releases/tag/1.4">https://github.com/elizabetht/StudentEnrollmentWithStruts/releases/tag/1.4</a></p>
+]]></content>
+  </entry>
+  
+</feed>

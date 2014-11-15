@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Automating the Release of Java Artifacts Using Jenkins on Windows - The Story of Experiments with Technology</title>
+  <meta name="author" content="Meygam Inc">
+
+  
+  <meta name="description" content="This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Story of Experiments with Technology" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-45942294-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Story of Experiments with Technology</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.meygam.com/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Automating the Release of Java Artifacts Using Jenkins on Windows</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-05T08:21:00-06:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:21 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post <a href="http://elizabetht.github.io/blog/2014/01/13/jenkins-snapshot-upload/">Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows</a>. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+
+<!-- more -->
+
+
+<h2>1. Generate SSH Keys for Github (without passphrase)</h2>
+
+<p>Jenkins does not support passphrases for SSH Keys and so generate the SSH Key for Gihub account without passphrase. Follow the directions given under <a href="https://help.github.com/articles/generating-ssh-keys">Generating SSH Keys</a>, generate a SSH Key without passphrase and upload to Github account.</p>
+
+<h2>2. Force Jenkins to run as user with SSH Key</h2>
+
+<p>On Windows, Jenkins uses the SSH Key of the user it is running as, which is located under C:\Users\<username>.ssh. Hence, Jenkins must be run as the user with &lsquo;username&rsquo;.</p>
+
+<p>Type &lsquo;services.msc&rsquo; in a command prompt to open up Services Management. Right click on the Jenkins service and select Properties.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-services-properties.png" title="Jenkins Services Management" alt="Jenkins Services Management" /></p>
+
+<p>From the Jenkins Properties windows, navigate to Log on tab. Choose Log on as &lsquo;This account&rsquo;, enter the details of the account (use the Browse option to choose/check the name of the account) and click Ok. The account credentials will generally match the log in account for the Windows as shown in the snapshot below</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-logon.png" title="Jenkins Logon" alt="Jenkins Logon" /></p>
+
+<p>Once the changes are saved, restart the Jenkins service from the Services Management by Right clicking on Jenkins service and choose Restart as shown below</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-services-restart.png" title="Jenkins Restart" alt="Jenkins Restart" /></p>
+
+<h2>3. Install Plugins</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+
+<p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
+
+<ul>
+<li>Jenkins Release Plugin (for Maven release)</li>
+</ul>
+
+
+<h2>4. Configure System</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+
+<p>Proceed to the Maven Release Plug-in section. Enable Nexus-Pro support, enter the Nexus URL, Nexus User Credentials and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-nexus-pro.png" title="Jenkins Nexus-Pro" alt="Jenkins Nexus-Pro" /></p>
+
+<h2>5. Create a New Jenkins Job</h2>
+
+<p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a maven2/3 project&rdquo; as option and click on OK as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
+
+<p>From the New Job Configuration screen, proceed to the Source Code Management section and specify the Git Repository URL for the project as shown below. From the additional behaviors section, click on &ldquo;Add&rdquo; and select Check out to specific local branch. Enter the branch name as master and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-sourcecodemgmt-release.png" title="Jenkins Source Code Management for Release" alt="Jenkins Source Code Management for Release" /></p>
+
+<p>Proceed to the Build Environment section, enable Maven Release Build option and enter the release goals.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-maven-releasebuild.png" title="Jenkins Maven Release Build" alt="Jenkins Maven Release Build" /></p>
+
+<p>Proceed to the Build section, enter the maven goals for building a snapshot as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
+
+<p>Proceed to the Build Settings section. Select the option for Email Notification and enter the values for the email recipients as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
+
+<h2>6. Configure settings.xml</h2>
+
+<p>In order to upload the built Maven artifacts to the artifactory server, configure the Jenkins settings.xml found in C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\Maven_3.1\conf folder with the same parameters as found in the default settings.xml (usually found under C:\Program Files\Apache Software Foundation\apache-maven-3.1.0\conf for a Windows machine) of the Maven installation on the system.</p>
+
+<p>Typically, the server section for staging repository needs to be configured with httpHeaders in the settings.xml for the Maven Release.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;servers&gt;
+</span><span class='line'>    &lt;server&gt;
+</span><span class='line'>      &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;
+</span><span class='line'>      &lt;username&gt;username&lt;/username&gt;
+</span><span class='line'>      &lt;password&gt;password&lt;/password&gt;
+</span><span class='line'>    &lt;configuration&gt;
+</span><span class='line'>      &lt;httpHeaders&gt;
+</span><span class='line'>        &lt;property&gt;
+</span><span class='line'>          &lt;name&gt;User-Agent&lt;/name&gt;
+</span><span class='line'>          &lt;value&gt;Maven m2Release (java:${java.vm.version} ${env.BUILD_TAG }&lt;/value&gt;
+</span><span class='line'>        &lt;/property&gt;
+</span><span class='line'>      &lt;/httpHeaders&gt;
+</span><span class='line'>      &lt;/configuration&gt;
+</span><span class='line'>    &lt;/server&gt;
+</span><span class='line'>&lt;/servers&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Also, a profile section needs to be configured for the PGP Signature, the details of how to Generate PGP Signatures with Maven can be found from the section Generate a Key Pair at <a href="https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven">How to Generate PGP Signatures With Maven</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;profiles&gt;
+</span><span class='line'>    &lt;profile&gt;
+</span><span class='line'>      &lt;id&gt;gpg-release&lt;/id&gt;
+</span><span class='line'>      &lt;properties&gt;
+</span><span class='line'>          &lt;gpg.passphrase&gt;passphrase&lt;/gpg.passphrase&gt;
+</span><span class='line'>          &lt;gpg.useagent&gt;true&lt;/gpg.useagent&gt;
+</span><span class='line'>          &lt;gpg.defaultKeyring&gt;false&lt;/gpg.defaultKeyring&gt;
+</span><span class='line'>          &lt;gpg.homedir&gt;C:/Users/Sara/AppData/Roaming/gnupg&lt;/gpg.homedir&gt;
+</span><span class='line'>          &lt;gpg.publicKeyring&gt;C:/Users/Sara/AppData/Roaming/gnupg/pubring.gpg&lt;/gpg.publicKeyring&gt;
+</span><span class='line'>          &lt;gpg.secretKeyring&gt;C:/Users/Sara/AppData/Roaming/gnupg/secring.gpg&lt;/gpg.secretKeyring&gt;
+</span><span class='line'>      &lt;/properties&gt; 
+</span><span class='line'>    &lt;/profile&gt;
+</span><span class='line'>&lt;/profiles&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>6. Update pom.xml</h2>
+
+<p>The pom.xml file for the project needs to be configured with the following plugins under the build section.</p>
+
+<ul>
+<li>maven-enforcer-plugin</li>
+<li>maven-release-plugin</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;build&gt;
+</span><span class='line'>    &lt;plugins&gt;
+</span><span class='line'>      &lt;plugin&gt;
+</span><span class='line'>          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+</span><span class='line'>          &lt;artifactId&gt;maven-enforcer-plugin&lt;/artifactId&gt;
+</span><span class='line'>          &lt;version&gt;1.2&lt;/version&gt;
+</span><span class='line'>          &lt;executions&gt;
+</span><span class='line'>              &lt;execution&gt;
+</span><span class='line'>                  &lt;id&gt;enforce-maven&lt;/id&gt;
+</span><span class='line'>                  &lt;goals&gt;
+</span><span class='line'>                      &lt;goal&gt;enforce&lt;/goal&gt;
+</span><span class='line'>                  &lt;/goals&gt;
+</span><span class='line'>                  &lt;configuration&gt;
+</span><span class='line'>                      &lt;rules&gt;
+</span><span class='line'>                          &lt;requireMavenVersion&gt;
+</span><span class='line'>                              &lt;version&gt;(,2.1.0),(2.1.0,2.2.0),(2.2.0,)&lt;/version&gt;
+</span><span class='line'>                              &lt;message&gt;Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures
+</span><span class='line'>                                  and checksums respectively.&lt;/message&gt;
+</span><span class='line'>                          &lt;/requireMavenVersion&gt;
+</span><span class='line'>                      &lt;/rules&gt;
+</span><span class='line'>                  &lt;/configuration&gt;
+</span><span class='line'>              &lt;/execution&gt;
+</span><span class='line'>          &lt;/executions&gt;
+</span><span class='line'>      &lt;/plugin&gt;
+</span><span class='line'>  &lt;/plugins&gt;
+</span><span class='line'>
+</span><span class='line'>  &lt;pluginManagement&gt;
+</span><span class='line'>      &lt;plugins&gt;
+</span><span class='line'>          &lt;plugin&gt;
+</span><span class='line'>              &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+</span><span class='line'>              &lt;artifactId&gt;maven-release-plugin&lt;/artifactId&gt;
+</span><span class='line'>              &lt;version&gt;2.4.2&lt;/version&gt;
+</span><span class='line'>              &lt;configuration&gt;
+</span><span class='line'>                  &lt;tagBase&gt;https://github.com/elizabetht/StudentEnrollmentWithREST/tags&lt;/tagBase&gt;
+</span><span class='line'>                  &lt;mavenExecutorId&gt;forked-path&lt;/mavenExecutorId&gt;
+</span><span class='line'>                  &lt;useReleaseProfile&gt;false&lt;/useReleaseProfile&gt;
+</span><span class='line'>                  &lt;arguments&gt;-Psonatype-oss-release&lt;/arguments&gt;
+</span><span class='line'>              &lt;/configuration&gt;
+</span><span class='line'>          &lt;/plugin&gt;
+</span><span class='line'>      &lt;/plugins&gt;
+</span><span class='line'>  &lt;/pluginManagement&gt;
+</span><span class='line'>&lt;/build&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Update the pom.xml with a profile section for the maven-gpg-plugin</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;profiles&gt;
+</span><span class='line'>  &lt;profile&gt;
+</span><span class='line'>      &lt;id&gt;sign&lt;/id&gt;
+</span><span class='line'>      &lt;build&gt;
+</span><span class='line'>          &lt;plugins&gt;
+</span><span class='line'>              &lt;plugin&gt;
+</span><span class='line'>                  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+</span><span class='line'>                  &lt;artifactId&gt;maven-gpg-plugin&lt;/artifactId&gt;
+</span><span class='line'>                  &lt;executions&gt;
+</span><span class='line'>                      &lt;execution&gt;
+</span><span class='line'>                          &lt;id&gt;sign-artifacts&lt;/id&gt;
+</span><span class='line'>                          &lt;phase&gt;verify&lt;/phase&gt;
+</span><span class='line'>                          &lt;goals&gt;
+</span><span class='line'>                              &lt;goal&gt;sign&lt;/goal&gt;
+</span><span class='line'>                          &lt;/goals&gt;
+</span><span class='line'>                      &lt;/execution&gt;
+</span><span class='line'>                  &lt;/executions&gt;
+</span><span class='line'>              &lt;/plugin&gt;
+</span><span class='line'>          &lt;/plugins&gt;
+</span><span class='line'>      &lt;/build&gt;
+</span><span class='line'>  &lt;/profile&gt;
+</span><span class='line'>&lt;/profiles&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add a distribution management section to pom.xml to specify the snapshot and staging repository URLs.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;distributionManagement&gt;
+</span><span class='line'>  &lt;repository&gt;
+</span><span class='line'>      &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;
+</span><span class='line'>      &lt;url&gt;https://oss.sonatype.org/service/local/staging/deploy/maven2&lt;/url&gt;
+</span><span class='line'>  &lt;/repository&gt;
+</span><span class='line'>  &lt;snapshotRepository&gt;
+</span><span class='line'>      &lt;id&gt;sonatype-nexus-snapshots&lt;/id&gt;
+</span><span class='line'>      &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+</span><span class='line'>  &lt;/snapshotRepository&gt;
+</span><span class='line'>&lt;/distributionManagement&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>8. Build Now</h2>
+
+<p>Once the above configuration steps are complete, click on &ldquo;Build Now&rdquo; under the Jenkins -> Upload REST Release Artifacts (or the respective Job name) to build the project based on the configuration.</p>
+
+<p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build. Verify that the build succeeds.</p>
+
+<h2>9. Perform Maven Release</h2>
+
+<p>Once the build succeeds and snapshots are uploaded to the snapshot repository, click on &ldquo;Perform Maven Release&rdquo; under Jenkins -> Upload REST Release Artifacts (or the respective Job name) to start the Maven Release process.</p>
+
+<p>Verify that the Release version and the next Development Version are correct. Enable &lsquo;Specify custom SCM comment prefix&rsquo; to enter a custom SCM Comment. Enable &lsquo;Specify custom SCM tag&rsquo; to enter a custom SCM tag. Click on Schedule Maven Release Build.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-perform-maven-release.png" title="Jenkins Perform Maven Release" alt="Jenkins Perform Maven Release" /></p>
+
+<p>Once the release process succeeds, the staging repository will be uploaded with the release artifacts.</p>
+
+<p>Thus the entire process of performing the maven release of artifacts to the staging repository and triggering emails to the recipients can be automated with a click of a button through Jenkins. The staging repository can be taken then through the steps of Close (if its still open) and Release to complete the promotion of the artifacts.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Elizabeth Thomas</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-02-05T08:21:00-06:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:21 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/continuous-integration/'>continuous integration</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/" data-via="" data-counturl="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/01/17/wordpress-on-aws/" title="Previous Post: WordPress on AWS">&laquo; WordPress on AWS</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/03/01/jenkins-android/" title="Next Post: Automating the Continuous Integration of Android Projects with Gradle using Jenkins on Windows">Automating the Continuous Integration of Android Projects with Gradle using Jenkins on Windows &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/">Provisioning an Apache Server With Dockers and Vagrant</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/">Connecting to Open VPN Server From iOS Device</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/01/jenkins-android/">Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/05/jenkins-release-upload/">Automating the Release of Java Artifacts Using Jenkins on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/17/wordpress-on-aws/">WordPress on AWS</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Meygam Inc
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'SaravanaKumar';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/';
+        var disqus_url = 'http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

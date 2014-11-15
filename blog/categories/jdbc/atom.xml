@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jdbc | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/jdbc/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T17:59:30-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building Java Web Application Using JDBC]]></title>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/"/>
+    <updated>2013-11-21T09:41:55-06:00</updated>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with JDBC. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
+
+<!-- more -->
+
+
+<h2>1. Create Java Web Application Project</h2>
+
+<p>To begin with, in the IDE, create a Java Dynamic Web project for the application. While creating the dynamic web project, enable the checkbox to generate web.xml deployment descriptor.</p>
+
+<p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
+
+<p><img src="/assets/images/elizabetht/jdbclayout.png" title="JDBC Dynamic Web Project Layout" alt="JDBC Dynamic Web Project Layout" /></p>
+
+<h2>2. Modify web.xml</h2>
+
+<p>Modify the contents of the web.xml to include the following:</p>
+
+<ul>
+<li>A servlet and the corresponding class in the source folder that would handle the HTTP requests.</li>
+<li>A servlet-mapping to map the servlet created in the above step that should be invoked when the client specifies the url matching the url pattern.</li>
+<li>A welcome file list, which can be used optionally to include the welcome file for the application.</li>
+</ul>
+
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0"&gt;
+  &lt;display-name&gt;StudentEnrollmentWithJDBC&lt;/display-name&gt;
+
+  &lt;welcome-file-list&gt;
+    &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+  &lt;/welcome-file-list&gt;
+
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;studentJDBCServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.github.elizabetht.controller.StudentController&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;studentJDBCServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/StudentController&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+<h2>3. Add JARs to the project</h2>
+
+<p>Add the following JARs from the web (or their latest equivalent) to the WEB-INF/lib folder under WebContent directory in the project.</p>
+
+<ul>
+<li>mysql-connector-java-5.1.26-bin.jar (for MYSQL data access support)</li>
+<li>jstl.jar and standard.jar (for JSTL Expression language support)</li>
+<li>ojdbc5.jar (for Oracle JDBC Driver support)</li>
+</ul>
+
+
+<p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
+
+<p><img src="/assets/images/elizabetht/jdbcliblayout.png" title="JDBC Library Layout" alt="JDBC Library Layout" /></p>
+
+<h2>4. Create JSP Files for Student Signup/Login</h2>
+
+<p>Create a folder named &ldquo;content&rdquo; under WebContent (This is where the jsp files will be created).</p>
+
+<p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/signup.png" title="JDBC Signup Layout" alt="JDBC Signup Layout" /></p>
+
+<p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
+
+<p><img src="/assets/images/elizabetht/login.png" title="JDBC Login Layout" alt="JDBC Login Layout" /></p>
+
+<p>The main actions for this application are as follows:</p>
+
+<ul>
+<li>Signup (To Insert the Student Signup details into the Database)</li>
+<li>Login (To Verify the Student Login details from the Database)</li>
+</ul>
+
+
+<p>In order to display a success (result) page after the login action is complete, create a success.jsp page to indicate the login success. Similarly, to indicate a login failure (result), create a page failure.jsp. These are just pages used to display the contents - no processing logic involved.</p>
+
+<p>This application uses twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> and <a href="http://bootswatch.com/united/">http://bootswatch.com/united/</a> as style sheets. It also uses a datepicker stylesheet as well to pop up a calendar for the DateOfBirth field in the Student Signup page (<a href="http://www.eyecon.ro/bootstrap-datepicker/">http://www.eyecon.ro/bootstrap-datepicker/</a>).</p>
+
+<p>A reference link to the files under WebContent folder of this application can be found at <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC/tree/master/WebContent">https://github.com/elizabetht/StudentEnrollmentWithJDBC/tree/master/WebContent</a></p>
+
+<h2>5. Create packages</h2>
+
+<p>Create packages each for the Controller, Repository and Model tiers under the src folder.
+Also create package for the utilities class under the src folder.</p>
+
+<p>A sample snapshot of the project after the package creation is as shown below:</p>
+
+<p><img src="/assets/images/elizabetht/jdbc-package.png" title="JDBC Package Layout" alt="JDBC Package Layout" /></p>
+
+<h2>6. Create class for Model Tier</h2>
+
+<p>Create a POJO class named Student.java inside the package com.github.elizabetht.model to include the details of the Student model entity.</p>
+
+<pre><code>public class Student {
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String password;
+    private String emailAddress;
+    private Date dateOfBirth;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+}
+</code></pre>
+
+<h2>7. Create db.properties file</h2>
+
+<p>Create a file named db.properties under the src folder, where the properties of the MYSQL DB like url, username and password can be specified. Replace &lt;include connection url&gt; with the actual connection url for connecting to the MYSQL DB. Likewise, replace &lt;include username&gt; and &lt;include password&gt; with the actual username and password values.</p>
+
+<pre><code>dbDriver=com.mysql.jdbc.Driver
+connectionUrl=jdbc:mysql://&lt;include connection url&gt;:3306/studentEnrollment
+userName=&lt;include username&gt;
+password=&lt;include password&gt;
+</code></pre>
+
+<h2>8. Create utility class </h2>
+
+<p>Create a POJO class named DbUtil.java under the package com.github.elizabetht.util to include a helper class functionality that would load the db.properties file and get the database connection.</p>
+
+<pre><code>public class DbUtil {
+    private static Connection dbConnection = null;
+
+    public static Connection getConnection() {
+        if (dbConnection != null) {
+            return dbConnection;
+        } else {
+            try {
+                InputStream inputStream = DbUtil.class.getClassLoader()
+                        .getResourceAsStream("db.properties");
+                Properties properties = new Properties();
+                if (properties != null) {
+                    properties.load(inputStream);
+
+                    String dbDriver = properties.getProperty("dbDriver");
+                    String connectionUrl = properties
+                            .getProperty("connectionUrl");
+                    String userName = properties.getProperty("userName");
+                    String password = properties.getProperty("password");
+
+                    Class.forName(dbDriver).newInstance();
+                    dbConnection = DriverManager.getConnection(connectionUrl,
+                            userName, password);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return dbConnection;
+        }
+    }
+}
+</code></pre>
+
+<h2>9. Create class for Repository tier</h2>
+
+<p>Create a Repository tier POJO class named StudentRepository.java under the package com.github.elizabetht.repository to support the database operations of saving the student details, verifying the student login details and checking if the username exists when a save is attempted.</p>
+
+<pre><code>public class StudentRepository {
+    private Connection dbConnection;
+
+    public StudentRepository() {
+        dbConnection = DbUtil.getConnection();
+    }
+
+    public void save(String userName, String password, String firstName, String lastName, String dateOfBirth, String emailAddress) {
+        try {
+            PreparedStatement prepStatement = dbConnection.prepareStatement("insert into student(userName, password, firstName, lastName, dateOfBirth, emailAddress) values (?, ?, ?, ?, ?, ?)");
+            prepStatement.setString(1, userName);
+            prepStatement.setString(2, password);
+            prepStatement.setString(3, firstName);
+            prepStatement.setString(4, lastName);
+            prepStatement.setDate(5, new java.sql.Date(new SimpleDateFormat("MM/dd/yyyy")
+            .parse(dateOfBirth.substring(0, 10)).getTime()));
+            prepStatement.setString(6, emailAddress);
+
+            prepStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {            
+            e.printStackTrace();
+        }
+    }
+
+    public boolean findByUserName(String userName) {
+        try {
+            PreparedStatement prepStatement = dbConnection.prepareStatement("select count(*) from student where userName = ?");
+            prepStatement.setString(1, userName);   
+
+            ResultSet result = prepStatement.executeQuery();
+            if (result != null) {   
+                while (result.next()) {
+                    if (result.getInt(1) == 1) {
+                        return true;
+                    }               
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean findByLogin(String userName, String password) {
+        try {
+            PreparedStatement prepStatement = dbConnection.prepareStatement("select password from student where userName = ?");
+            prepStatement.setString(1, userName);           
+
+            ResultSet result = prepStatement.executeQuery();
+            if (result != null) {
+                while (result.next()) {
+                    if (result.getString(1).equals(password)) {
+                        return true;
+                    }
+                }               
+            }           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+}
+</code></pre>
+
+<h2>10. Create class for Controller Tier</h2>
+
+<p>Create a Controller tier POJO class named StudentController.java inside the package com.github.elizabetht.controller. This is where the servicing logic of the application goes - whether a signup or login action is called.</p>
+
+<pre><code>@SuppressWarnings("serial")
+public class StudentController extends HttpServlet {
+    private StudentRepository studentRepository;
+
+    private static String STUDENT_SIGNUP = "content/signup.jsp";
+    private static String STUDENT_LOGIN = "content/login.jsp";
+    private static String LOGIN_SUCCESS = "content/success.jsp";
+    private static String LOGIN_FAILURE = "content/failure.jsp";
+
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public StudentController() {
+        super();
+        studentRepository = new StudentRepository();
+    }
+
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {    
+        String forward = STUDENT_SIGNUP;
+        RequestDispatcher view = request.getRequestDispatcher(forward);
+        view.forward(request, response);
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        String pageName = request.getParameter("pageName");
+        String forward = "";        
+
+        if (studentRepository != null) {
+            if (pageName.equals("signup")) {
+                if (studentRepository.findByUserName(request
+                        .getParameter("userName"))) {
+                    request.setAttribute("message", "User Name exists. Try another user name");
+                    forward = STUDENT_SIGNUP;
+                    RequestDispatcher view = request
+                            .getRequestDispatcher(forward);
+                    view.forward(request, response);
+                    return;
+                }
+
+                studentRepository.save(request.getParameter("userName"),
+                        request.getParameter("password"),
+                        request.getParameter("firstName"),
+                        request.getParameter("lastName"),
+                        request.getParameter("dateOfBirth"),
+                        request.getParameter("emailAddress"));
+                forward = STUDENT_LOGIN;
+            } else if (pageName.equals("login")) {
+                boolean result = studentRepository.findByLogin(
+                        request.getParameter("userName"),
+                        request.getParameter("password"));
+                if (result == true) {
+                    forward = LOGIN_SUCCESS;
+                } else {
+                    forward = LOGIN_FAILURE;
+                }
+            }
+        }
+        RequestDispatcher view = request.getRequestDispatcher(forward);
+        view.forward(request, response);
+    }
+}
+</code></pre>
+
+<h2>11. Create the DB Schema in a MYSQL DB</h2>
+
+<p>Connect to the MySQL DB which is to be used for this application and create a new DB Schema named studentEnrollment using the MySQL Workbench.
+This is necessary as the DB Schema name of studentEnrollment is specified in the db.properties file.</p>
+
+<p>Once the studentEnrollment DB Schema is created, create a table named student inside the DB Schema using the CREATE TABLE statement as follows:</p>
+
+<pre><code>CREATE TABLE `student` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOfBirth` datetime NOT NULL,
+  `emailAddress` varchar(255) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `password` varchar(8) NOT NULL,
+  `userName` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+</code></pre>
+
+<h2>12. Deploying the Application on Tomcat Server</h2>
+
+<p>Once the above steps are complete and the project is successfully built, the Java web application is ready to deployed on the Tomcat Server 7.</p>
+
+<p>The Java web application can be deployed locally by right clicking on the project and choosing the &ldquo;Run As->Run on Server&rdquo; option.</p>
+
+<p>The same can be deployed remotely on any native server that supports Tomcat by copying the WAR file (Right click on the project and choose Export as WAR File option) to /var/lib/tomcat7 folder (or appropriate tomcat directory) and restarting the tomcat server.</p>
+
+<h2>13. Clone or Download code</h2>
+
+<p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC.git">https://github.com/elizabetht/StudentEnrollmentWithJDBC.git</a></p>
+
+<p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithJDBC/releases/tag/1.2">https://github.com/elizabetht/StudentEnrollmentWithJDBC/releases/tag/1.2</a></p>
+]]></content>
+  </entry>
+  
+</feed>
