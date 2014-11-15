@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Docker | My Octopress Blog]]></title>
+  <link href="http://meygam.github.io/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://meygam.github.io/"/>
+  <updated>2014-11-15T14:20:51-06:00</updated>
+  <id>http://meygam.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Provisioning an Apache Server With Dockers and Vagrant]]></title>
+    <link href="http://meygam.github.io/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/"/>
+    <updated>2014-09-11T00:00:00-05:00</updated>
+    <id>http://meygam.github.io/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant</id>
+    <content type="html"><![CDATA[<p>At the end of this blog we will provision a server with vagrant and run apache in a docker container.</p>
+
+<p>To understand dockers, visit <a href="https://docs.docker.com/">https://docs.docker.com/</a></p>
+
+<p>You can download the docker file &amp; vagrant file used in this blog from <a href="https://github.com/meygam/docker-apache-ubuntu.git">https://github.com/meygam/docker-apache-ubuntu.git</a></p>
+
+<h3>Docker File</h3>
+
+<p>To run a docker container, we need an docker image. You could either pull a publicly available images from <a href="https://registry.hub.docker.com/">https://registry.hub.docker.com/</a> or build your own. In our case we will build our own docker image from a ubuntu base image.</p>
+
+<p>Docker file to have apache installed in it looks like below. Will take a look what each line does.</p>
+
+<p><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="no">FROM</span>    <span class="ss">ubuntu</span><span class="p">:</span><span class="mi">14</span><span class="o">.</span><span class="mo">04</span>
+<span class="lineno">2</span>     <span class="no">MAINTAINER</span> <span class="no">Saravana</span> <span class="no">Kumar</span> <span class="no">Periyasamy</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#58;&amp;#115;&amp;#97;&amp;#x72;&amp;#97;&amp;#118;&amp;#97;&amp;#110;&amp;#97;&amp;#107;&amp;#117;&amp;#x6d;&amp;#97;&amp;#114;&amp;#46;&amp;#112;&amp;#101;&amp;#114;&amp;#x69;&amp;#x79;&amp;#97;&amp;#115;&amp;#97;&amp;#109;&amp;#121;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d;&quot;</span><span class="o">&gt;&amp;</span><span class="c1">#115;&amp;#97;&amp;#x72;&amp;#97;&amp;#118;&amp;#x61;&amp;#x6e;&amp;#x61;&amp;#107;&amp;#x75;&amp;#x6d;&amp;#97;&amp;#x72;&amp;#46;&amp;#x70;&amp;#x65;&amp;#114;&amp;#x69;&amp;#x79;&amp;#97;&amp;#115;&amp;#97;&amp;#x6d;&amp;#x79;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#x2e;&amp;#99;&amp;#x6f;&amp;#109;&lt;/a&gt;&lt;/p&gt;</span>
+<span class="lineno">3</span> 
+<span class="lineno">4</span> <span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="no">RUN</span>     <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="lineno">5</span> <span class="no">RUN</span>     <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache2</span>
+<span class="lineno">6</span> <span class="no">CMD</span>     <span class="n">service</span> <span class="n">apache2</span> <span class="n">start</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">tail</span> <span class="o">-</span><span class="n">f</span>    <span class="sr">/var/</span><span class="n">log</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">error</span><span class="o">.</span><span class="n">log</span>
+<span class="lineno">7</span> <span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+<span class="lineno">8</span> 
+<span class="lineno">9</span> <span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span></code></pre></div></p>
+
+<p>Line#1: takes the base image ubuntu, tag 14.04.
+Line#2: is the maintainers meta data for this new docker image.
+Line#&frac34;: Runs apt-get update and installs apache2.
+Line#5: Starts Apache and tails the apache logs. This will be the default command that will run when a new container is created from this docker image. Tailing the log helps to have a foreground process, and it is required if this container has to be run in background.</p>
+
+<h3>Vagrant File</h3>
+
+<p>To build docker image from this file we need a mahcine with docker installed. To make life easier, we will use Vagrant to build and run this container. If you are new to vagrant, go to this link get started - <a href="http://docs.vagrantup.com/v2/getting-started/index.html">http://docs.vagrantup.com/v2/getting-started/index.html</a></p>
+
+<p>Here is the vagrant file to build an image from docker file, run the docker and forward the port 80 from vm to host on port 18080.</p>
+
+<pre><code>VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+config.vm.box = "hashicorp/precise64"
+
+config.vm.network "forwarded_port", guest: 80, host: 18080
+
+config.vm.provision "docker" do |d|
+d.build_image "/vagrant", args: "-t speriyasamy/apache2"
+d.run "apache2", image: "speriyasamy/apache2", args: "-p 80:80"
+end
+end
+</code></pre>
+
+<p>Once you bring up the vagrant, it should install docker, build the docker image and use the same image to run the container.</p>
+
+<pre><code>vagarnt up
+</code></pre>
+
+<p>You can verify this by ssh into the vagrant box.</p>
+
+<pre><code>vagarnt ssh
+</code></pre>
+
+<p>And list the docker container using the below command and you should see a apache container running</p>
+
+<pre><code>docker ps
+</code></pre>
+
+<p>{<1>}<img src="/content/images/2014/Sep/Untitled.png" alt="" /></p>
+
+<p>And now you can access the apache from your host machine using <a href="http://localhost:18080">http://localhost:18080</a></p>
+
+<p>{<2>}<img src="/content/images/2014/Sep/Untitled-1.png" alt="" /></p>
+
+<h3>Manual Steps</h3>
+
+<p>If you prefer not to use Vagrant, install the docker on your host machine and run the below command manually.</p>
+
+<pre><code>docker build &lt;&lt;Dockerfile_Folder&gt;&gt; -t "speriyasamy/apache2"
+</code></pre>
+
+<p>And to run a contianer manually from this image, use the below command</p>
+
+<pre><code>docker run -d speriyasamy/apache2
+</code></pre>
+
+<h3>Commonly used docker commands</h3>
+
+<pre><code>#list images available on your host machine 
+docker images
+
+#list all the docker containers including inactive ones
+docker ps -a
+
+#pull a docker image from docker hub
+docker pull speriyasamy/docker-openfire-centos
+
+#stop container
+docker stop &lt;&lt;cotainer id&gt;&gt;
+
+#start container
+docker start &lt;&lt;cotainer id&gt;&gt;
+
+#remove container
+docker rm &lt;&lt;cotainer id&gt;&gt;
+
+#remove docker images
+docker rmi &lt;&lt;cotainer id&gt;&gt;
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
