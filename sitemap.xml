@@ -6,14 +6,19 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>http://blog.meygam.com//blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/</loc>
+    <lastmod>2014-03-13T00:00:00-05:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.meygam.com//blog/archives/</loc>
-    <lastmod>2014-11-15T16:43:57-06:00</lastmod>
+    <lastmod>2014-11-15T17:18:22-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.meygam.com//</loc>
-    <lastmod>2014-11-15T16:43:57-06:00</lastmod>
+    <lastmod>2014-11-15T17:18:22-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
