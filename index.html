@@ -9,7 +9,7 @@
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many &hellip;">
+  <meta name="description" content="At the end of this blog we will provision a server with vagrant and run apache in a docker container. To understand dockers, visit https://docs. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,48 +83,6 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/11/15/welcome-to-jekyll/">Welcome to Jekyll!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-11-15T07:18:13-06:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:18 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>You’ll find this post in your <code>_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code>jekyll serve --watch</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
-
-<p>To add new posts, simply add a file in the <code>_posts</code> directory that follows the convention <code>YYYY-MM-DD-name-of-post.ext</code> and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
-
-<p>Jekyll also offers powerful support for code snippets:</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-<span class="c1">#=&gt; prints &#39;Hi, Tom&#39; to STDOUT.</span></code></pre></div>
-
-
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://github.com/jekyll/jekyll-help">Jekyll’s dedicated Help repository</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/">Provisioning an Apache Server With Dockers and Vagrant</a></h1>
     
     
@@ -168,7 +126,7 @@ Line#5: Starts Apache and tails the apache logs. This will be the default comman
 
 <h3>Vagrant File</h3>
 
-<p>To build docker image from this file we need a mahcine with docker installed. To make life easier, we will use Vagrant to build and run this container. If you are new to vagrant, go to this link get started - <a href="http://docs.vagrantup.com/v2/getting-started/index.html">http://docs.vagrantup.com/v2/getting-started/index.html</a></p>
+<p>To build docker image from this file we need a computer with docker installed. To make life easier, we will use Vagrant to build and run this container. If you are new to vagrant, go to this link get started - <a href="http://docs.vagrantup.com/v2/getting-started/index.html">http://docs.vagrantup.com/v2/getting-started/index.html</a></p>
 
 <p>Here is the vagrant file to build an image from docker file, run the docker and forward the port 80 from vm to host on port 18080.</p>
 
@@ -190,11 +148,11 @@ Line#5: Starts Apache and tails the apache logs. This will be the default comman
 
 <p>You can verify this by ssh into the vagrant box, <code>vagarnt ssh</code>, and list the docker container using <code>docker ps</code> and you should see a apache container running.</p>
 
-<p>{<1>}<img src="/content/images/2014/Sep/Untitled.png" alt="" /></p>
+<p><img src="/assets/2014/sep/docker.png" alt="Docker Screenshot" /></p>
 
 <p>Now you can access the apache from your host machine using <a href="http://localhost:18080">http://localhost:18080</a></p>
 
-<p>{<2>}<img src="/content/images/2014/Sep/Untitled-1.png" alt="" /></p>
+<p><img src="/assets/2014/sep/apache.png" alt="Apache Screenshot" /></p>
 
 <h3>Manual Steps</h3>
 
@@ -249,10 +207,6 @@ docker rmi &lt;&lt;cotainer id&gt;&gt;
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/11/15/welcome-to-jekyll/">Welcome to Jekyll!</a>
-      </li>
     
       <li class="post">
         <a href="/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/">Provisioning an Apache Server With Dockers and Vagrant</a>
