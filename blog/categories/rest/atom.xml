@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Rest | The Story of Experiments with Technology]]></title>
-  <link href="http://blog.meygam.com//blog/categories/rest/atom.xml" rel="self"/>
-  <link href="http://blog.meygam.com//"/>
-  <updated>2014-11-15T18:40:37-06:00</updated>
-  <id>http://blog.meygam.com//</id>
+  <title><![CDATA[Category: Rest | My Octopress Blog]]></title>
+  <link href="http://meygam.github.io/blog/categories/rest/atom.xml" rel="self"/>
+  <link href="http://meygam.github.io/"/>
+  <updated>2014-11-15T18:40:56-06:00</updated>
+  <id>http://meygam.github.io/</id>
   <author>
-    <name><![CDATA[Meygam Inc]]></name>
+    <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
-    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <link href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
     <updated>2013-12-13T10:45:30-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <id>http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
