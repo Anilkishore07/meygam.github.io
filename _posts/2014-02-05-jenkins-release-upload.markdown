@@ -4,7 +4,7 @@ title: "Automating the Release of Java Artifacts using Jenkins on Windows"
 author: swapna
 date: 2014-02-05 08:21:00 -0600
 comments: true
-categories: [Continuous Integration]
+categories: [Continuous Integration, Java, Jenkins]
 ---
 This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post [Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows](http://elizabetht.github.io/blog/2014/01/13/jenkins-snapshot-upload/). The details of the actual application are explained in the earlier post given by the link [Building Java Web Application Using Jersey REST With Spring](http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/).
 

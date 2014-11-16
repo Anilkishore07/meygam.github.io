@@ -4,7 +4,7 @@ title: "Automating the Deployment and Upload of Snapshot Java Artifacts using Je
 author: swapna
 date: 2014-01-13 16:50:30 -0600
 comments: true
-categories: [Continuous Integration]
+categories: [Continuous Integration, Java]
 ---
 This post will show how to automate the deployment process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - to build the project, run the unit tests, upload the built artifacts to a Sonatype Snapshot repository, run the Cobertura Code Coverage reports and deploy the application to the Amazon EC2. The details of the actual application are explained in the earlier post given by the link [Building Java Web Application Using Jersey REST With Spring](http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/).
 

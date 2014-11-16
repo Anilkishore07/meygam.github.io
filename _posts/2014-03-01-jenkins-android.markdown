@@ -4,7 +4,7 @@ title: "Automating the Continuous Integration of Android Projects with Gradle us
 author: swapna
 date: 2014-03-01 08:21:00 -0600
 comments: true
-categories: [Continuous Integration]
+categories: [Continuous Integration, Android, Java]
 ---
 This post will show how to automate the deployment process of a Android Application using Jenkins Continuous Integration - to build the project, run the unit tests (if any), archive the built artifacts and run the Android lint reports. 
 

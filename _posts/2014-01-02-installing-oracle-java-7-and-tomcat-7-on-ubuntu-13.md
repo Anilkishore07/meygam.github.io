@@ -3,7 +3,7 @@ layout: post
 title:  "Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13"
 author: saravana
 date:   2014-01-17
-categories: ubuntu java tomcat
+categories: [Ubuntu, Java, Tomcat]
 ---
 Setting up a new Ubuntu server with Java 7 & Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.
 

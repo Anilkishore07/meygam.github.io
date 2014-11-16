@@ -4,7 +4,7 @@ title: "Building Jersey2 REST Client Using Spring with JUnit and JMock"
 author: swapna
 date: 2013-12-23 12:10:30 -0600
 comments: true
-categories: [Hibernate, Spring, Maven, Jersey2, JUnit/JMock, EclEmma]
+categories: [Hibernate, Spring, Maven, Jersey2, JUnit/JMock, EclEmma, Java]
 ---
 This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link [Building Java Web Application Using Jersey REST With Spring](http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/).
 

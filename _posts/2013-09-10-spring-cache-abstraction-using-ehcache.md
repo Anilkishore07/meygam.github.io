@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Spring Cache abstraction using Ehcache"
+author: saravana
+date:   2014-09-10
+categories: [Spring, Java, EhCache]
+---
 In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer http://ehcache.org/documentation/recipes/spring-annotations for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it's easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change. 
 
 Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.
