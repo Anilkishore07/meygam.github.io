@@ -7,6 +7,8 @@ categories: [Ubuntu, Java, Tomcat]
 ---
 Setting up a new Ubuntu server with Java 7 & Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.
 
+<!-- more -->
+
 ### Install Oracle Java 7
 Run the below commands to install Oracle Java 7 - steps followed from <a href="http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html" target="_blank">INSTALL ORACLE JAVA 7 IN UBUNTU VIA PPA REPOSITORY</a> 
 

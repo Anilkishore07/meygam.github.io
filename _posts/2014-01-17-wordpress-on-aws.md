@@ -7,6 +7,8 @@ categories: [AWS, Wordpress]
 ---
 In this blog I am going to cover the step by step instructions to host your own WordPress blog in AWS. Hosting your own blog has some advantages, you can install any plugins/themes you want and publish any content you like. Having said that it’s not for everyone. If you are a basic user better you create account in wordpress.com. I wanted to run my own blog engine, primarily because I am a techie.
 
+<!-- more -->
+
 ### Architecture for WordPress on AWS
 
 At a minimum WordPress needs a web server, to serve your blog and a database instance, to store your blog contents. You can install both web server and the database instance in just one server. But for high availability and better backup mechanism I choose to keep the web server and database instance separate. Below is the architecture that we are going to follow. I will talk about each components in following sections.
