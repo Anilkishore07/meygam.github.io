@@ -7,6 +7,8 @@ categories: dockers vagrant
 ---
 At the end of this blog we will provision a server with vagrant and run apache in a docker container.
 
+<!-- more -->
+
 To understand dockers, visit https://docs.docker.com/
 
 You can download the docker file & vagrant file used in this blog from https://github.com/meygam/docker-apache-ubuntu.git

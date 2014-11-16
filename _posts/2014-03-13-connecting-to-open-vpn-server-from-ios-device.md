@@ -12,6 +12,8 @@ To connect iOS device to Open VPN server we need
 * Client Certificate
 * CA Certificate (if its self signed)
 
+<!-- more -->
+
 
 ###Install Open VPN app
 
