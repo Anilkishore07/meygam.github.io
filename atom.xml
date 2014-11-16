@@ -4,7 +4,7 @@
   <title><![CDATA[The Story of Experiments with Technology]]></title>
   <link href="http://blog.meygam.com//atom.xml" rel="self"/>
   <link href="http://blog.meygam.com//"/>
-  <updated>2014-11-15T19:40:05-06:00</updated>
+  <updated>2014-11-15T20:09:00-06:00</updated>
   <id>http://blog.meygam.com//</id>
   <author>
     <name><![CDATA[Meygam Inc]]></name>
@@ -70,11 +70,11 @@ Line#5: Starts Apache and tails the apache logs. This will be the default comman
 
 <p>You can verify this by ssh into the vagrant box, <code>vagarnt ssh</code>, and list the docker container using <code>docker ps</code> and you should see a apache container running.</p>
 
-<p><img src="http://blog.meygam.com//assets/2014/sep/docker.png" alt="Docker Screenshot" /></p>
+<p><img src="http://blog.meygam.com//assets/images/2014/Sep/docker.png" alt="Docker Screenshot" /></p>
 
 <p>Now you can access the apache from your host machine using <a href="http://localhost:18080">http://localhost:18080</a></p>
 
-<p><img src="http://blog.meygam.com//assets/2014/sep/apache.png" alt="Apache Screenshot" /></p>
+<p><img src="http://blog.meygam.com//assets/images/2014/Sep/apache.png" alt="Apache Screenshot" /></p>
 
 <h3>Manual Steps</h3>
 
