@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://blog.meygam.com//sitemap.xml 
+Sitemap: http://meygam.github.io/sitemap.xml 
