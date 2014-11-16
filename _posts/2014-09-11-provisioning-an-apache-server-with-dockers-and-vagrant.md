@@ -57,11 +57,11 @@ Use `vagarnt up` to bring the vm up. It should install docker, build the docker 
 
 You can verify this by ssh into the vagrant box, `vagarnt ssh`, and list the docker container using `docker ps` and you should see a apache container running.
 
-![Docker Screenshot](/assets/2014/sep/docker.png)
+![Docker Screenshot](/assets/images/2014/Sep/docker.png)
 
 Now you can access the apache from your host machine using http://localhost:18080
 
-![Apache Screenshot](/assets/2014/sep/apache.png)
+![Apache Screenshot](/assets/images/2014/Sep/apache.png)
 
 
 ###Manual Steps
