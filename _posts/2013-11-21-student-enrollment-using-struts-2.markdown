@@ -16,7 +16,7 @@ To begin with, in the IDE, create a Java Dynamic Web project for the application
 
 The sample web application directory structure is shown below with a standard deployment descriptor web.xml
 
-![Struts Dynamic Web Project Layout](/assets/assets/images/elizabetht/elizabetht/strutslayout.png "Struts Dynamic Web Project Layout")
+![Struts Dynamic Web Project Layout](/assets/images/elizabetht/strutslayout.png "Struts Dynamic Web Project Layout")
 
 2. Modify web.xml
 -----------------
@@ -62,7 +62,7 @@ Add the following JARs from the web (or their latest equivalent) to the WEB-INF/
 
 The sample lib folder structure is shown below with the necessary JARs added for the project.
 
-![Struts Library Layout](/assets/assets/images/elizabetht/elizabetht/strutsliblayout.png "Struts Library Layout") 
+![Struts Library Layout](/assets/images/elizabetht/strutsliblayout.png "Struts Library Layout") 
 
 4. Create JSP Files for Student Signup/Login
 --------------------------------------------
@@ -70,11 +70,11 @@ Create a folder named "content" under WEB-INF (This is where the jsp files will 
 
 Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:
 
-![Struts Signup Layout](/assets/assets/images/elizabetht/elizabetht/struts-signup.png "Struts Signup Layout")
+![Struts Signup Layout](/assets/images/elizabetht/struts-signup.png "Struts Signup Layout")
 
 Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:
 
-![Struts Login Layout](/assets/assets/images/elizabetht/elizabetht/login.png "Struts Login Layout")
+![Struts Login Layout](/assets/images/elizabetht/login.png "Struts Login Layout")
 
 The main actions for this application are as follows:
 
@@ -96,7 +96,7 @@ Also create package for the utilities class under the src folder.
 
 A sample snapshot of the project after the package creation is as shown below:
 
-![Struts Package Layout](/assets/assets/images/elizabetht/elizabetht/struts-package.png "Struts Package Layout")
+![Struts Package Layout](/assets/images/elizabetht/struts-package.png "Struts Package Layout")
 
 6. Create class for Model Tier
 --------------------------------
