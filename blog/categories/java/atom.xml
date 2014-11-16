@@ -1,23 +1,496 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Java | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/java/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:36:41-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Java | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:40:37-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
+    <title type="html"><![CDATA[Spring Cache Abstraction Using Ehcache]]></title>
+    <link href="http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache/"/>
+    <updated>2014-09-10T00:00:00-05:00</updated>
+    <id>http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache</id>
+    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
+
+<!-- more -->
+
+
+<p>Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.</p>
+
+<ul>
+<li>Add the Ehcache dependency to the project</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
+
+
+<p>Note: Without adding the dependency you might see the error</p>
+
+<pre><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: Lnet/sf/ehcache/CacheManager;
+</code></pre>
+
+<ul>
+<li>Include the cache namespace and schema location in the Spring Configuration file.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
+
+
+<ul>
+<li>Configure the application to use annotation driven</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
+
+
+<ul>
+<li>Define the cacheManager bean</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
+
+
+<ul>
+<li>Configure the ehcache.xml
+Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
+
+
+<p>Note: Without defaultCache defined, below error will be thrown</p>
+
+<pre><code>Cannot resolve reference to bean 'cacheManager' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'cacheManager' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Cannot resolve reference to bean 'ehcache' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ehcache' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Invocation of init method failed; nested exception is net.sf.ehcache.CacheException: Illegal configuration. No default cache is configured.
+</code></pre>
+
+<ul>
+<li>Add the @Cacheable annotation to the code</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
+
+
+<h4>Common issues one might face in using the Spring Cache abstraction</h4>
+
+<ul>
+<li>Cache key collision:
+The default key generator is a simple one and it is easy to get key collisions using this. Refer the DefaultKeyGenerator.java code to see how it works. Also when you have an array as a parameter, the default key generator produces different key for each execution.</li>
+</ul>
+
+
+<p>It’s better to use your own key generator. Below is the sample one I used</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
+
+
+<p>And you can set this as your default key generator in the Spring configuration file like below.</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
+
+
+<ul>
+<li>Application context is loaded more than once:</li>
+</ul>
+
+
+<p>Sometimes due to misconfiguration the application context gets loaded twice and due to that you might get the error. Make sure you name the cacheManager in the ehcache.xml and you are not loading the application context twice.</p>
+
+<pre><code>Another unnamed CacheManager already exists in the same VM. 
+Please provide unique names for each CacheManager in the config or do one of following:
+1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
+2. Shutdown the earlier cacheManager before creating new one with same name.
+The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows]]></title>
+    <link href="http://blog.meygam.com//blog/2014/03/01/jenkins-android/"/>
+    <updated>2014-03-01T08:21:00-06:00</updated>
+    <id>http://blog.meygam.com//blog/2014/03/01/jenkins-android</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Android Application using Jenkins Continuous Integration - to build the project, run the unit tests (if any), archive the built artifacts and run the Android lint reports.</p>
+
+<!-- more -->
+
+
+<h2>1. Install Jenkins as a Windows Service</h2>
+
+<p>Navigate to jenkins-ci.org website using an Internet browser and download the Windows native package (the link is underlined for easy identification) as shown from the right side pane of the Download Jenkins tab.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
+
+<p>Once the download is complete, uncompress the zip file and click on the jenkins-1.xxx.msi file. Proceed through the configuration steps to install the Jenkins as a Windows service.</p>
+
+<h2>2. Modify Default Jenkins Port</h2>
+
+<p>By default Jenkins runs on the port 8080. In order to avoid conflict with other applications, the default port can be modified by editing the jenkins.xml found under C:\Program Files (x86)\Jenkins location. As shown below, modify the httpPort to 8082.</p>
+
+<pre><code>&lt;service&gt;
+  &lt;id&gt;jenkins&lt;/id&gt;
+  &lt;name&gt;Jenkins&lt;/name&gt;
+  &lt;description&gt;This service runs Jenkins continuous integration system.&lt;/description&gt;
+  &lt;env name="JENKINS_HOME" value="%BASE%"/&gt;
+  &lt;!--
+    if you'd like to run Jenkins with a specific version of Java, specify a full path to java.exe.
+    The following value assumes that you have java in your PATH.
+  --&gt;
+  &lt;executable&gt;%BASE%\jre\bin\java&lt;/executable&gt;
+  &lt;arguments&gt;-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar "%BASE%\jenkins.war" --httpPort=8082&lt;/arguments&gt;
+  &lt;!--
+    interactive flag causes the empty black Java window to be displayed.
+    I'm still debugging this.
+  &lt;interactive /&gt;
+  --&gt;
+  &lt;logmode&gt;rotate&lt;/logmode&gt;
+
+  &lt;onfailure action="restart" /&gt;
+&lt;/service&gt;
+</code></pre>
+
+<p>Once the modification is saved in jenkins.xml file, restart the Jenkins service from the Windows Task Manager->Services and right clicking on the Jenkins service and choose Stop Service to stop the service as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
+
+<p>Once the status of the service changes to stopped, restart the service by right clicking on the Jenkins service and choose Start Service to start the service again.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
+
+<p>Navigate to localhost:8082 to verify if the Jenkins restart was successful as shown below - Jenkins Dashboard will be displayed. Note that it takes a while before the Jenkins service becomes available.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
+
+<h2>3. Install Plugins</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+
+<p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
+
+<ul>
+<li>Git Plugin (for integrating Git with Jenkins)</li>
+<li>Gradle Plugin (for integrating Gradle with Jenkins)</li>
+<li>Android Lint Plugin (for integration Lint with Jenkins)</li>
+</ul>
+
+
+<h2>4. Configure System</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+
+<p>Navigate to the Global Properties section and click on Add to add an Environment Variable ANDROID_HOME as shown in the snapshot below. Enter the name as ANDROID_HOME and enter the path of the location where the Android SDK is stored on windows.</p>
+
+<p><img src="/assets/images/elizabetht/androidhome.png" title="Jenkins Android Home Configuration" alt="Jenkins Android Home Configuration" /></p>
+
+<p>Navigate to the JDK section and click on &ldquo;Add JDK&rdquo; to add the JDK installation as shown in the snapshot below. Specify a JDK Name, choose the JDK Version to install and follow the on-screen instructions to save the Oracle Login credentials. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
+
+<p>Next, proceed to the Git section and click on &ldquo;Add Git&rdquo; to add the Git installation as shown in the snapshot below. Specify Git Name, specify the path to Git executable and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
+
+<p>Next, proceed to the Gradle section and click on &ldquo;Add Gradle&rdquo; to add the Gradle installation as shown in the snapshot below. Specify Gradle Name, choose the appropriate version (at the time of writing, I used Gradle 1.10) and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/gradleinstall.png" title="Jenkins Gradle Installation" alt="Jenkins Gradle Installation" /></p>
+
+<p>Next, proceed to the Email Notification section and enter the SMTP Server details as shown below. Click on the Advanced button to add the further details required and Save the changes. Click on &ldquo;Test configuration by sending test e-mail&rdquo;, enter the test e-mail recipient and click on &ldquo;Test configuration&rdquo; to see if the email is successfully sent.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
+
+<h2>5. Create a New Jenkins Job</h2>
+
+<p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a free-style software project&rdquo; as option and click on OK as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-newjob.png" title="Jenkins Android New Job" alt="Jenkins Android New Job" /></p>
+
+<p>From the New Job Configuration screen, proceed to the Source Code Management section. Save the Git credentials by clicking on &ldquo;Add&rdquo; as shown below and entering the details in the following dialog. Save the changes by clicking on &ldquo;Add&rdquo; as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-add-credentials.png" title="Jenkins Android Add Credentials" alt="Jenkins Android Add Credentials" /></p>
+
+<p>Specify the Git Repository URL for the project, choose the saved credentials from the drop-down list as shown in the snapshot below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
+
+<p>Next, from the Build Triggers section, select the options desired as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-build-triggers.png" title="Android Build Triggers" alt="Android Build Triggers" /></p>
+
+<p>Proceed to the Build section, choose &ldquo;Invoke Gradle script&rdquo; from the drop-down list of choices for &ldquo;Add build step&rdquo;. Choose the appropriate Gradle version which is configured, enter the tasks to be built and select the options as desired. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-build.png" title="Android Build" alt="Android Build" /></p>
+
+<p>Proceed to the Post-build Actions section, click on &ldquo;Publish Android Lint results&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and specify the location where the Lint results should be stored in the Jenkins workspace for the job.</p>
+
+<p>Similarly, click on &ldquo;Archive the artifacts&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and the specify the format of APK files to be archived after every build. Additionally, options from Advanced section such as &ldquo;Discard all but the last successful/stable artifact to save disk space&rdquo; could be enabled for saving disk space.</p>
+
+<p>Click on &ldquo;E-mail Notification&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and enter the values for the email recipients as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-post-build.png" title="Android Post Build" alt="Android Post Build" /></p>
+
+<h2>6. Build Now</h2>
+
+<p>Once the above configuration steps are complete, click on &ldquo;Build Now&rdquo; under the Jenkins -> Build Android Application (or the respective Job name) to build the project based on the configuration.</p>
+
+<p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build. Clicking on any successful build outcome shows the artifacts that were archived as part of the build, the change that started the build and the lint results as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-build-outcome.png" title="Android Build Outcome" alt="Android Build Outcome" /></p>
+
+<p>Thus the entire process of building the project an Android application project whenever a SCM change is triggered or under another condition, running lint reports, archiving the artifacts built, publishing lint reports and triggering emails to the recipients can be automated with a click of a button through Jenkins.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Automating the Release of Java Artifacts Using Jenkins on Windows]]></title>
+    <link href="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/"/>
+    <updated>2014-02-05T08:21:00-06:00</updated>
+    <id>http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post <a href="http://elizabetht.github.io/blog/2014/01/13/jenkins-snapshot-upload/">Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows</a>. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+
+<!-- more -->
+
+
+<h2>1. Generate SSH Keys for Github (without passphrase)</h2>
+
+<p>Jenkins does not support passphrases for SSH Keys and so generate the SSH Key for Gihub account without passphrase. Follow the directions given under <a href="https://help.github.com/articles/generating-ssh-keys">Generating SSH Keys</a>, generate a SSH Key without passphrase and upload to Github account.</p>
+
+<h2>2. Force Jenkins to run as user with SSH Key</h2>
+
+<p>On Windows, Jenkins uses the SSH Key of the user it is running as, which is located under C:\Users\<username>.ssh. Hence, Jenkins must be run as the user with &lsquo;username&rsquo;.</p>
+
+<p>Type &lsquo;services.msc&rsquo; in a command prompt to open up Services Management. Right click on the Jenkins service and select Properties.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-services-properties.png" title="Jenkins Services Management" alt="Jenkins Services Management" /></p>
+
+<p>From the Jenkins Properties windows, navigate to Log on tab. Choose Log on as &lsquo;This account&rsquo;, enter the details of the account (use the Browse option to choose/check the name of the account) and click Ok. The account credentials will generally match the log in account for the Windows as shown in the snapshot below</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-logon.png" title="Jenkins Logon" alt="Jenkins Logon" /></p>
+
+<p>Once the changes are saved, restart the Jenkins service from the Services Management by Right clicking on Jenkins service and choose Restart as shown below</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-services-restart.png" title="Jenkins Restart" alt="Jenkins Restart" /></p>
+
+<h2>3. Install Plugins</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+
+<p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
+
+<ul>
+<li>Jenkins Release Plugin (for Maven release)</li>
+</ul>
+
+
+<h2>4. Configure System</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+
+<p>Proceed to the Maven Release Plug-in section. Enable Nexus-Pro support, enter the Nexus URL, Nexus User Credentials and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-nexus-pro.png" title="Jenkins Nexus-Pro" alt="Jenkins Nexus-Pro" /></p>
+
+<h2>5. Create a New Jenkins Job</h2>
+
+<p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a maven2/3 project&rdquo; as option and click on OK as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
+
+<p>From the New Job Configuration screen, proceed to the Source Code Management section and specify the Git Repository URL for the project as shown below. From the additional behaviors section, click on &ldquo;Add&rdquo; and select Check out to specific local branch. Enter the branch name as master and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-sourcecodemgmt-release.png" title="Jenkins Source Code Management for Release" alt="Jenkins Source Code Management for Release" /></p>
+
+<p>Proceed to the Build Environment section, enable Maven Release Build option and enter the release goals.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-maven-releasebuild.png" title="Jenkins Maven Release Build" alt="Jenkins Maven Release Build" /></p>
+
+<p>Proceed to the Build section, enter the maven goals for building a snapshot as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
+
+<p>Proceed to the Build Settings section. Select the option for Email Notification and enter the values for the email recipients as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
+
+<h2>6. Configure settings.xml</h2>
+
+<p>In order to upload the built Maven artifacts to the artifactory server, configure the Jenkins settings.xml found in C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\Maven_3.1\conf folder with the same parameters as found in the default settings.xml (usually found under C:\Program Files\Apache Software Foundation\apache-maven-3.1.0\conf for a Windows machine) of the Maven installation on the system.</p>
+
+<p>Typically, the server section for staging repository needs to be configured with httpHeaders in the settings.xml for the Maven Release.</p>
+
+<pre><code>&lt;servers&gt;
+    &lt;server&gt;
+      &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;
+      &lt;username&gt;username&lt;/username&gt;
+      &lt;password&gt;password&lt;/password&gt;
+      &lt;configuration&gt;
+      &lt;httpHeaders&gt;
+        &lt;property&gt;
+          &lt;name&gt;User-Agent&lt;/name&gt;
+          &lt;value&gt;Maven m2Release (java:${java.vm.version} ${env.BUILD_TAG }&lt;/value&gt;
+        &lt;/property&gt;
+      &lt;/httpHeaders&gt;
+      &lt;/configuration&gt;
+    &lt;/server&gt;
+&lt;/servers&gt;
+</code></pre>
+
+<p>Also, a profile section needs to be configured for the PGP Signature, the details of how to Generate PGP Signatures with Maven can be found from the section Generate a Key Pair at <a href="https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven">How to Generate PGP Signatures With Maven</a></p>
+
+<pre><code>&lt;profiles&gt;
+    &lt;profile&gt;
+        &lt;id&gt;gpg-release&lt;/id&gt;
+        &lt;properties&gt;
+            &lt;gpg.passphrase&gt;passphrase&lt;/gpg.passphrase&gt;
+            &lt;gpg.useagent&gt;true&lt;/gpg.useagent&gt;
+            &lt;gpg.defaultKeyring&gt;false&lt;/gpg.defaultKeyring&gt;
+            &lt;gpg.homedir&gt;C:/Users/Sara/AppData/Roaming/gnupg&lt;/gpg.homedir&gt;
+            &lt;gpg.publicKeyring&gt;C:/Users/Sara/AppData/Roaming/gnupg/pubring.gpg&lt;/gpg.publicKeyring&gt;
+            &lt;gpg.secretKeyring&gt;C:/Users/Sara/AppData/Roaming/gnupg/secring.gpg&lt;/gpg.secretKeyring&gt;
+        &lt;/properties&gt;   
+    &lt;/profile&gt;
+&lt;/profiles&gt;
+</code></pre>
+
+<h2>6. Update pom.xml</h2>
+
+<p>The pom.xml file for the project needs to be configured with the following plugins under the build section.</p>
+
+<ul>
+<li>maven-enforcer-plugin</li>
+<li>maven-release-plugin</li>
+</ul>
+
+
+<pre><code>    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-enforcer-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.2&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;enforce-maven&lt;/id&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;enforce&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;rules&gt;
+                                &lt;requireMavenVersion&gt;
+                                    &lt;version&gt;(,2.1.0),(2.1.0,2.2.0),(2.2.0,)&lt;/version&gt;
+                                    &lt;message&gt;Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures
+                                        and checksums respectively.&lt;/message&gt;
+                                &lt;/requireMavenVersion&gt;
+                            &lt;/rules&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+
+        &lt;pluginManagement&gt;
+            &lt;plugins&gt;
+                &lt;plugin&gt;
+                    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                    &lt;artifactId&gt;maven-release-plugin&lt;/artifactId&gt;
+                    &lt;version&gt;2.4.2&lt;/version&gt;
+                    &lt;configuration&gt;
+                        &lt;tagBase&gt;https://github.com/elizabetht/StudentEnrollmentWithREST/tags&lt;/tagBase&gt;
+                        &lt;mavenExecutorId&gt;forked-path&lt;/mavenExecutorId&gt;
+                        &lt;useReleaseProfile&gt;false&lt;/useReleaseProfile&gt;
+                        &lt;arguments&gt;-Psonatype-oss-release&lt;/arguments&gt;
+                    &lt;/configuration&gt;
+                &lt;/plugin&gt;
+            &lt;/plugins&gt;
+        &lt;/pluginManagement&gt;
+    &lt;/build&gt;
+</code></pre>
+
+<p>Update the pom.xml with a profile section for the maven-gpg-plugin</p>
+
+<pre><code>    &lt;profiles&gt;
+        &lt;profile&gt;
+            &lt;id&gt;sign&lt;/id&gt;
+            &lt;build&gt;
+                &lt;plugins&gt;
+                    &lt;plugin&gt;
+                        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                        &lt;artifactId&gt;maven-gpg-plugin&lt;/artifactId&gt;
+                        &lt;executions&gt;
+                            &lt;execution&gt;
+                                &lt;id&gt;sign-artifacts&lt;/id&gt;
+                                &lt;phase&gt;verify&lt;/phase&gt;
+                                &lt;goals&gt;
+                                    &lt;goal&gt;sign&lt;/goal&gt;
+                                &lt;/goals&gt;
+                            &lt;/execution&gt;
+                        &lt;/executions&gt;
+                    &lt;/plugin&gt;
+                &lt;/plugins&gt;
+            &lt;/build&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+</code></pre>
+
+<p>Add a distribution management section to pom.xml to specify the snapshot and staging repository URLs.</p>
+
+<pre><code>    &lt;distributionManagement&gt;
+        &lt;repository&gt;
+            &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;
+            &lt;url&gt;https://oss.sonatype.org/service/local/staging/deploy/maven2&lt;/url&gt;
+        &lt;/repository&gt;
+        &lt;snapshotRepository&gt;
+            &lt;id&gt;sonatype-nexus-snapshots&lt;/id&gt;
+            &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots&lt;/url&gt;
+        &lt;/snapshotRepository&gt;
+    &lt;/distributionManagement&gt;
+</code></pre>
+
+<h2>8. Build Now</h2>
+
+<p>Once the above configuration steps are complete, click on &ldquo;Build Now&rdquo; under the Jenkins -> Upload REST Release Artifacts (or the respective Job name) to build the project based on the configuration.</p>
+
+<p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build. Verify that the build succeeds.</p>
+
+<h2>9. Perform Maven Release</h2>
+
+<p>Once the build succeeds and snapshots are uploaded to the snapshot repository, click on &ldquo;Perform Maven Release&rdquo; under Jenkins -> Upload REST Release Artifacts (or the respective Job name) to start the Maven Release process.</p>
+
+<p>Verify that the Release version and the next Development Version are correct. Enable &lsquo;Specify custom SCM comment prefix&rsquo; to enter a custom SCM Comment. Enable &lsquo;Specify custom SCM tag&rsquo; to enter a custom SCM tag. Click on Schedule Maven Release Build.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-perform-maven-release.png" title="Jenkins Perform Maven Release" alt="Jenkins Perform Maven Release" /></p>
+
+<p>Once the release process succeeds, the staging repository will be uploaded with the release artifacts.</p>
+
+<p>Thus the entire process of performing the maven release of artifacts to the staging repository and triggering emails to the recipients can be automated with a click of a button through Jenkins. The staging repository can be taken then through the steps of Close (if its still open) and Release to complete the promotion of the artifacts.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13]]></title>
-    <link href="http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
+    <link href="http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
+    <id>http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
     <content type="html"><![CDATA[<p>Setting up a new Ubuntu server with Java 7 &amp; Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.</p>
 
 <!-- more -->
@@ -70,6 +543,257 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 </code></pre>
 
 <p> Note: I don&rsquo;t use tomcat7 from ubuntu repository as it some times screws up my Oracle Java installation and installs Open JDK.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Automating the Deployment and Upload of Snapshot Java Artifacts Using Jenkins on Windows]]></title>
+    <link href="http://blog.meygam.com//blog/2014/01/13/jenkins-snapshot-upload/"/>
+    <updated>2014-01-13T16:50:30-06:00</updated>
+    <id>http://blog.meygam.com//blog/2014/01/13/jenkins-snapshot-upload</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - to build the project, run the unit tests, upload the built artifacts to a Sonatype Snapshot repository, run the Cobertura Code Coverage reports and deploy the application to the Amazon EC2. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+
+<!-- more -->
+
+
+<h2>1. Install Jenkins as a Windows Service</h2>
+
+<p>Navigate to jenkins-ci.org website using an Internet browser and download the Windows native package (the link is underlined for easy identification) as shown from the right side pane of the Download Jenkins tab.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
+
+<p>Once the download is complete, uncompress the zip file and click on the jenkins-1.xxx.msi file. Proceed through the configuration steps to install the Jenkins as a Windows service.</p>
+
+<h2>2. Modify Default Jenkins Port</h2>
+
+<p>By default Jenkins runs on the port 8080. In order to avoid conflict with other applications, the default port can be modified by editing the jenkins.xml found under C:\Program Files (x86)\Jenkins location. As shown below, modify the httpPort to 8082.</p>
+
+<pre><code>&lt;service&gt;
+  &lt;id&gt;jenkins&lt;/id&gt;
+  &lt;name&gt;Jenkins&lt;/name&gt;
+  &lt;description&gt;This service runs Jenkins continuous integration system.&lt;/description&gt;
+  &lt;env name="JENKINS_HOME" value="%BASE%"/&gt;
+  &lt;!--
+    if you'd like to run Jenkins with a specific version of Java, specify a full path to java.exe.
+    The following value assumes that you have java in your PATH.
+  --&gt;
+  &lt;executable&gt;%BASE%\jre\bin\java&lt;/executable&gt;
+  &lt;arguments&gt;-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar "%BASE%\jenkins.war" --httpPort=8082&lt;/arguments&gt;
+  &lt;!--
+    interactive flag causes the empty black Java window to be displayed.
+    I'm still debugging this.
+  &lt;interactive /&gt;
+  --&gt;
+  &lt;logmode&gt;rotate&lt;/logmode&gt;
+
+  &lt;onfailure action="restart" /&gt;
+&lt;/service&gt;
+</code></pre>
+
+<p>Once the modification is saved in jenkins.xml file, restart the Jenkins service from the Windows Task Manager->Services and right clicking on the Jenkins service and choose Stop Service to stop the service as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
+
+<p>Once the status of the service changes to stopped, restart the service by right clicking on the Jenkins service and choose Start Service to start the service again.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
+
+<p>Navigate to localhost:8082 to verify if the Jenkins restart was successful as shown below - Jenkins Dashboard will be displayed. Note that it takes a while before the Jenkins service becomes available.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
+
+<h2>3. Install Plugins</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+
+<p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
+
+<ul>
+<li>GitHub Plugin (for integrating Github with Jenkins)</li>
+<li>Jenkins Cobertura Plugin (for Cobertura support)</li>
+<li>Deploy to Container Plugin (for deploying the WAR to the Tomcat Container on EC2 instance)</li>
+<li>Jenkins Artifactory Plugin (for deploying the built Maven artifacts to the Snapshot repository)</li>
+</ul>
+
+
+<h2>4. Configure System</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+
+<p>Navigate to the JDK section and click on &ldquo;Add JDK&rdquo; to add the JDK installation as shown in the snapshot below. Specify a JDK Name, choose the JDK Version to install and follow the on-screen instructions to save the Oracle Login credentials. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
+
+<p>Next, proceed to the Git section and click on &ldquo;Add Git&rdquo; to add the Git installation as shown in the snapshot below. Specify Git Name, specify the path to Git executable and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
+
+<p>Next, proceed to the Maven section and click on &ldquo;Add Maven&rdquo; to add the Maven installation as shown in the snapshot below. Specify Maven Name, choose the Maven Version to install and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-maven.png" title="Jenkins Maven Installation" alt="Jenkins Maven Installation" /></p>
+
+<p>Proceed to the Git plugin section and enter the values for Github Username and Email Address as credentials as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-git.png" title="Jenkins Gitplugin Credentials" alt="Jenkins Gitplugin Credentials" /></p>
+
+<p>Proceed to the Artifactory section and click on &ldquo;Add&rdquo; to add the information about the artifactory servers. Specify the URL for the snapshot repository and provide the deployer credentials created from the Artifactory server website as shown below. Click on &ldquo;Test Connection&rdquo; to test if the connection parameters are good to save and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-artifactory.png" title="Jenkins Artifactory Servers Configuration" alt="Jenkins Artifactory Servers Configuration" /></p>
+
+<p>Next, proceed to the Email Notification section and enter the SMTP Server details as shown below. Click on the Advanced button to add the further details required and Save the changes. Click on &ldquo;Test configuration by sending test e-mail&rdquo;, enter the test e-mail recipient and click on &ldquo;Test configuration&rdquo; to see if the email is successfully sent.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
+
+<h2>5. Create a New Jenkins Job</h2>
+
+<p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a maven2/3 project&rdquo; as option and click on OK as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
+
+<p>From the New Job Configuration screen, proceed to the Source Code Management section and specify the Git Repository URL for the project as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
+
+<p>Next, from the Build Triggers section, select the options desired as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-buildtriggers.png" title="Jenkins Build Triggers" alt="Jenkins Build Triggers" /></p>
+
+<p>Proceed to the Build section, enter the maven goals for building a snapshot as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
+
+<p>Proceed to the Build Settings section. Select the option for Email Notification and enter the values for the email recipients as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
+
+<p>Under the Post-build Actions, click on &ldquo;Add post-build action&rdquo; button and select &ldquo;Deploy war/ear to a container&rdquo;. In the Amazon EC2, a Tomcat Manager (manager as username) instance has to be configured with roles manager-gui and manager-script to allow the remote deployment of the WAR/EAR to the Tomcat Container. The configuration steps can be found in the link <a href="https://help.ubuntu.com/13.04/serverguide/tomcat.html">https://help.ubuntu.com/13.04/serverguide/tomcat.html</a> under the section of &ldquo;Tomcat administration webapps&rdquo;</p>
+
+<p>Once the Tomcat Manager webapp configuration is complete in the Amazon EC2 instance, enter the details necessary for the deployment as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-deploy.png" title="Jenkins Deployment" alt="Jenkins Deployment" /></p>
+
+<p>Similarly, from the Post-build Actions, click on &ldquo;Add post-build action&rdquo; button and select &ldquo;Publish Cobertura Coverage Report&rdquo;. Enter the Cobertura XML Report Pattern as shown below and save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-cobertura.png" title="Jenkins Cobertura Coverage Report" alt="Jenkins Cobertura Coverage Report" /></p>
+
+<h2>6. Configure settings.xml</h2>
+
+<p>In order to upload the built Maven artifacts to the artifactory server, configure the Jenkins settings.xml found in C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\Maven_3.1\conf folder with the same parameters as found in the default settings.xml (usually found under C:\Program Files\Apache Software Foundation\apache-maven-3.1.0\conf for a Windows machine) of the Maven installation on the system.</p>
+
+<p>Typically, the server section needs to be configured in the settings.xml for Jenkins matching with the details of the Artifactory server.</p>
+
+<pre><code>&lt;servers&gt;
+    &lt;server&gt;
+      &lt;id&gt;sonatype-nexus-snapshots&lt;/id&gt;
+      &lt;username&gt;username&lt;/username&gt;
+      &lt;password&gt;password&lt;/password&gt;
+    &lt;/server&gt;
+    &lt;server&gt;
+      &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;
+      &lt;username&gt;username&lt;/username&gt;
+      &lt;password&gt;password&lt;/password&gt;
+    &lt;/server&gt;
+&lt;/servers&gt;
+</code></pre>
+
+<h2>7. Update pom.xml</h2>
+
+<p>The pom.xml file for the project needs to be configured with the following plugins under the build section for the deployment to snapshot repository and for running the Cobertura Coverage report.</p>
+
+<ul>
+<li>maven-compiler-plugin</li>
+<li>maven-deploy-plugin</li>
+<li>cobertura-maven-plugin</li>
+</ul>
+
+
+<p>Also add parent, scm and developer section to comply with the requirements put forth by the Artifactory server management as shown below.</p>
+
+<pre><code>    &lt;parent&gt;
+        &lt;groupId&gt;org.sonatype.oss&lt;/groupId&gt;
+        &lt;artifactId&gt;oss-parent&lt;/artifactId&gt;
+        &lt;version&gt;7&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;scm&gt;
+        &lt;connection&gt;scm:git:git@github.com:elizabetht/StudentEnrollmentWithREST.git&lt;/connection&gt;
+        &lt;developerConnection&gt;scm:git:git@github.com:elizabetht/StudentEnrollmentWithREST.git&lt;/developerConnection&gt;
+        &lt;url&gt;git@github.com:elizabetht/StudentEnrollmentWithREST.git&lt;/url&gt;
+        &lt;tag&gt;StudentEnrollmentWithREST-1.3&lt;/tag&gt;
+    &lt;/scm&gt;
+    &lt;developers&gt;
+        &lt;developer&gt;
+            &lt;id&gt;elizabetht&lt;/id&gt;
+            &lt;name&gt;Elizabeth Thomas&lt;/name&gt;
+            &lt;email&gt;email2eliza@gmail.com&lt;/email&gt;
+        &lt;/developer&gt;
+    &lt;/developers&gt;
+
+    &lt;build&gt;
+        &lt;finalName&gt;StudentEnrollmentWithREST&lt;/finalName&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.5.1&lt;/version&gt;
+                &lt;inherited&gt;true&lt;/inherited&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.6&lt;/source&gt;
+                    &lt;target&gt;1.6&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-deploy-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.8.1&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;default-deploy&lt;/id&gt;
+                        &lt;phase&gt;deploy&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;deploy&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;                   
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                &lt;artifactId&gt;cobertura-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.6&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;formats&gt;
+                        &lt;format&gt;html&lt;/format&gt;
+                        &lt;format&gt;xml&lt;/format&gt;
+                    &lt;/formats&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;package&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;cobertura&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+</code></pre>
+
+<h2>8. Build Now</h2>
+
+<p>Once the above configuration steps are complete, click on &ldquo;Build Now&rdquo; under the Jenkins -> Upload REST Snapshot Artifacts (or the respective Job name) to build the project based on the configuration.</p>
+
+<p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build.</p>
+
+<p>The timestamp of the WAR deployed to Amazon EC2 instance can be checked to see if the deployment is successful. In the same way, the snapshot repository can be checked to see if the upload of the artifacts is successful.</p>
+
+<p>Thus the entire process of building the project along with unit tests whenever a SCM change is triggered or under another condition, running code coverage reports, uploading the artifacts built to the snapshot artifactory repository, deploying the WAR to the remote server container and triggering emails to the recipients can be automated with a click of a button through Jenkins.</p>
 ]]></content>
   </entry>
   

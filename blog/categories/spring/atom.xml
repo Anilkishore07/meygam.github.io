@@ -1,23 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Spring | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/spring/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:36:41-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Spring | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/spring/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:40:37-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
+    <title type="html"><![CDATA[Spring Cache Abstraction Using Ehcache]]></title>
+    <link href="http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache/"/>
+    <updated>2014-09-10T00:00:00-05:00</updated>
+    <id>http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache</id>
+    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
+
+<!-- more -->
+
+
+<p>Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.</p>
+
+<ul>
+<li>Add the Ehcache dependency to the project</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
+
+
+<p>Note: Without adding the dependency you might see the error</p>
+
+<pre><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: Lnet/sf/ehcache/CacheManager;
+</code></pre>
+
+<ul>
+<li>Include the cache namespace and schema location in the Spring Configuration file.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
+
+
+<ul>
+<li>Configure the application to use annotation driven</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
+
+
+<ul>
+<li>Define the cacheManager bean</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
+
+
+<ul>
+<li>Configure the ehcache.xml
+Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
+
+
+<p>Note: Without defaultCache defined, below error will be thrown</p>
+
+<pre><code>Cannot resolve reference to bean 'cacheManager' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'cacheManager' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Cannot resolve reference to bean 'ehcache' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ehcache' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Invocation of init method failed; nested exception is net.sf.ehcache.CacheException: Illegal configuration. No default cache is configured.
+</code></pre>
+
+<ul>
+<li>Add the @Cacheable annotation to the code</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
+
+
+<h4>Common issues one might face in using the Spring Cache abstraction</h4>
+
+<ul>
+<li>Cache key collision:
+The default key generator is a simple one and it is easy to get key collisions using this. Refer the DefaultKeyGenerator.java code to see how it works. Also when you have an array as a parameter, the default key generator produces different key for each execution.</li>
+</ul>
+
+
+<p>It’s better to use your own key generator. Below is the sample one I used</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
+
+
+<p>And you can set this as your default key generator in the Spring configuration file like below.</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
+
+
+<ul>
+<li>Application context is loaded more than once:</li>
+</ul>
+
+
+<p>Sometimes due to misconfiguration the application context gets loaded twice and due to that you might get the error. Make sure you name the cacheManager in the ehcache.xml and you are not loading the application context twice.</p>
+
+<pre><code>Another unnamed CacheManager already exists in the same VM. 
+Please provide unique names for each CacheManager in the config or do one of following:
+1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
+2. Shutdown the earlier cacheManager before creating new one with same name.
+The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Building Jersey2 REST Client Using Spring With JUnit and JMock]]></title>
-    <link href="http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
+    <link href="http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
     <updated>2013-12-23T12:10:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
+    <id>http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->
@@ -930,9 +1035,9 @@
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
     <updated>2013-12-13T10:45:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -1484,9 +1589,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Hibernate With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
     <updated>2013-11-21T09:41:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -1952,9 +2057,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using MyBatis With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
     <updated>2013-11-21T09:41:09-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
