@@ -2,7 +2,7 @@
 layout: post
 title:  "Overview of Microstrategy features"
 author: saravana
-date:   2014-06-20
+date:   2013-06-20
 categories: [Microstrategy]
 ---
 In my previous blog [Microstrategy 9 Installation on a new Windows 2008 server](/microstrategy-9-installation-on-a-new-windows-2008-server/) we looked at installing the MSTR. Here let's look at the features we installed. Below is the list of all the features from MSTR.

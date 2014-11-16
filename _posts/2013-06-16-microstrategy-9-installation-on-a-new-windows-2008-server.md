@@ -2,7 +2,7 @@
 layout: post
 title:  "Microstrategy 9 Installation on a new Windows 2008 server"
 author: saravana
-date:   2014-06-16
+date:   2013-06-16
 categories: [Microstrategy]
 ---
 Since my customer has decided to go with the Microstrategy(MSTR) as analytics and reporting tool, I got curious about this tool and wanted to know more on its capabilities. I got an opportunity to go for a free training from MSTR, and I got the evaluation CD & a nice notebook J. I thought I will install it and explore it for 30 days… Lets see how far I go!
