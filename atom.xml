@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[The Story of Experiments with Technology]]></title>
-  <link href="http://blog.meygam.com//atom.xml" rel="self"/>
-  <link href="http://blog.meygam.com//"/>
-  <updated>2014-11-15T18:41:56-06:00</updated>
-  <id>http://blog.meygam.com//</id>
+  <title><![CDATA[My Octopress Blog]]></title>
+  <link href="http://meygam.github.io/atom.xml" rel="self"/>
+  <link href="http://meygam.github.io/"/>
+  <updated>2014-11-15T18:42:41-06:00</updated>
+  <id>http://meygam.github.io/</id>
   <author>
-    <name><![CDATA[Meygam Inc]]></name>
+    <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Provisioning an Apache Server With Dockers and Vagrant]]></title>
-    <link href="http://blog.meygam.com//blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/"/>
+    <link href="http://meygam.github.io/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant/"/>
     <updated>2014-09-11T00:00:00-05:00</updated>
-    <id>http://blog.meygam.com//blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant</id>
+    <id>http://meygam.github.io/blog/2014/09/11/provisioning-an-apache-server-with-dockers-and-vagrant</id>
     <content type="html"><![CDATA[<p>At the end of this blog we will provision a server with vagrant and run apache in a docker container.</p>
 
 <!-- more -->
@@ -70,11 +70,11 @@ Line#5: Starts Apache and tails the apache logs. This will be the default comman
 
 <p>You can verify this by ssh into the vagrant box, <code>vagarnt ssh</code>, and list the docker container using <code>docker ps</code> and you should see a apache container running.</p>
 
-<p><img src="http://blog.meygam.com//assets/2014/sep/docker.png" alt="Docker Screenshot" /></p>
+<p><img src="http://meygam.github.io/assets/2014/sep/docker.png" alt="Docker Screenshot" /></p>
 
 <p>Now you can access the apache from your host machine using <a href="http://localhost:18080">http://localhost:18080</a></p>
 
-<p><img src="http://blog.meygam.com//assets/2014/sep/apache.png" alt="Apache Screenshot" /></p>
+<p><img src="http://meygam.github.io/assets/2014/sep/apache.png" alt="Apache Screenshot" /></p>
 
 <h3>Manual Steps</h3>
 
@@ -115,584 +115,10 @@ docker rmi &lt;&lt;cotainer id&gt;&gt;
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Spring Cache Abstraction Using Ehcache]]></title>
-    <link href="http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache/"/>
-    <updated>2014-09-10T00:00:00-05:00</updated>
-    <id>http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache</id>
-    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
-
-<!-- more -->
-
-
-<p>Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.</p>
-
-<ul>
-<li>Add the Ehcache dependency to the project</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
-
-
-<p>Note: Without adding the dependency you might see the error</p>
-
-<pre><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: Lnet/sf/ehcache/CacheManager;
-</code></pre>
-
-<ul>
-<li>Include the cache namespace and schema location in the Spring Configuration file.</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
-
-
-<ul>
-<li>Configure the application to use annotation driven</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
-
-
-<ul>
-<li>Define the cacheManager bean</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
-
-
-<ul>
-<li>Configure the ehcache.xml
-Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
-
-
-<p>Note: Without defaultCache defined, below error will be thrown</p>
-
-<pre><code>Cannot resolve reference to bean 'cacheManager' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'cacheManager' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Cannot resolve reference to bean 'ehcache' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ehcache' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Invocation of init method failed; nested exception is net.sf.ehcache.CacheException: Illegal configuration. No default cache is configured.
-</code></pre>
-
-<ul>
-<li>Add the @Cacheable annotation to the code</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
-
-
-<h4>Common issues one might face in using the Spring Cache abstraction</h4>
-
-<ul>
-<li>Cache key collision:
-The default key generator is a simple one and it is easy to get key collisions using this. Refer the DefaultKeyGenerator.java code to see how it works. Also when you have an array as a parameter, the default key generator produces different key for each execution.</li>
-</ul>
-
-
-<p>It’s better to use your own key generator. Below is the sample one I used</p>
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
-
-
-<p>And you can set this as your default key generator in the Spring configuration file like below.</p>
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
-
-
-<ul>
-<li>Application context is loaded more than once:</li>
-</ul>
-
-
-<p>Sometimes due to misconfiguration the application context gets loaded twice and due to that you might get the error. Make sure you name the cacheManager in the ehcache.xml and you are not loading the application context twice.</p>
-
-<pre><code>Another unnamed CacheManager already exists in the same VM. 
-Please provide unique names for each CacheManager in the config or do one of following:
-1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
-2. Shutdown the earlier cacheManager before creating new one with same name.
-The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Overview of Microstrategy Features]]></title>
-    <link href="http://blog.meygam.com//blog/2014/06/20/overview-of-microstrategy-features/"/>
-    <updated>2014-06-20T00:00:00-05:00</updated>
-    <id>http://blog.meygam.com//blog/2014/06/20/overview-of-microstrategy-features</id>
-    <content type="html"><![CDATA[<p>In my previous blog <a href="http://blog.meygam.com//microstrategy-9-installation-on-a-new-windows-2008-server/">Microstrategy 9 Installation on a new Windows 2008 server</a> we looked at installing the MSTR. Here let&rsquo;s look at the features we installed. Below is the list of all the features from MSTR.</p>
-
-<!-- more -->
-
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm1-1.png" alt="" /></p>
-
-<p>The below picture will give us the overview of how all these features are related.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm2-1.png" alt="" /></p>
-
-<p>Let&rsquo;s look at each one of them in detail</p>
-
-<h4>Microstrategy Intelligence Server</h4>
-
-<p>Microstrategy Intelligence Server is the architectural foundation for the Microstrategy platform. This communicates to the various data sources, and runs the reports and distributes to MSTR Desktop and Web users. Intelligence server ensures the scalability and fault tolerance required for analysis of terabyte databases and millions of users.</p>
-
-<p>Below are the sub-features installed as part of MSTR Intelligence server. We will cover these features in detail when we explore the Intelligence server in detail.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm3-1.png" alt="" /></p>
-
-<h4>Microstrategy Web universal</h4>
-
-<p>MSTR Web enables the users to create and/or run the reports in web.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm4-1.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Web Universal.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm5-1.png" alt="" /></p>
-
-<h4>Microstrategy Office</h4>
-
-<p>MSTR Office is a plugin for Microsoft Office and lets the user to run reports from Office tools. I could not show the screen shot for this product, I didn&rsquo;t install this feature as I don&rsquo;t have the MS Office in my VM.</p>
-
-<p>Below are the sub-features installed as part of MSTR Office.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm6.png" alt="" /></p>
-
-<h4>Microstrategy Mobile</h4>
-
-<p>MSTR Mobile enables the users to view the reports from mobile devices.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm7.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Mobile.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm8.png" alt="" /></p>
-
-<h4>Microstrategy Desktop Products</h4>
-
-<p>MSTR Desktop allows the user to create and/or run the reports in the Desktop.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm9.png" alt="" /></p>
-
-<p>MSTR Architect helps to map the data model to the business model.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm10.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Desktop.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm11.png" alt="" /></p>
-
-<h4>Microstrategy Object Manager</h4>
-
-<p>MSTR Object Manager is used to migrate MSTR objects from one environment to another.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm12.png" alt="" /></p>
-
-<h4>Microstrategy Command Manager</h4>
-
-<p>Command Manager is used to create scripts to automate common administrative tasks.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm13.png" alt="" /></p>
-
-<h4>Microstrategy Enterprise Manager</h4>
-
-<p>MSTR Enterprise Manager provides the usage details of the MSTR Intelligence Server. The core of Enterprise Manager is nothing but a MSTR project with set of predefined reports, and the metrics and attributes to create your own reports. You can run reports that help you to:</p>
-
-<ul>
-<li>Allocate system resources based on data warehouse usage trends</li>
-<li>Research efficient aggregation, partitioning, and indexing strategies</li>
-<li>Profile users based on their system resource usage</li>
-<li>Determine the optimal time to run scheduled jobs, load data, or perform routine system and database maintenance</li>
-<li>Determine the most popular reports so you can schedule and cache them, thus increasing their response time and reducing the load on the system</li>
-<li>Identify unused objects from your metadata repository so they can be deleted later</li>
-<li>Identify peak usage times and patterns and, if necessary, change your Intelligence Server configuration to respond appropriately</li>
-<li>Determine whether you need to add more threads to the database connection threads if queue times are long</li>
-<li>Find which tables are the most used, and create indexes to improve performance</li>
-</ul>
-
-
-<h4>Microstrategy Integrity Manager</h4>
-
-<p>MSTR Integrity Manager is used to automate the report testing.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm14.jpg" alt="" /></p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/mstr_integrity_manager.png" alt="" /></p>
-
-<h4>Microstrategy System Manager</h4>
-
-<p>Microstrategy System Manager helps to automate the configuration of MSTR products in larger environments.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm15.png" alt="" /></p>
-
-<h4>Microstrategy SDK</h4>
-
-<p>MSTR SDK enables the developers to extend and integrate MSTR platform through a set of APIs that exposes all platform functionality. It helps to embed intelligence in any custom application.</p>
-
-<h4>Microstrategy Narrowcast Sever</h4>
-
-<p>MSTR Narrowcast server delivers the report in mail/phone based on the schedules.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm16.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Narrowcast Server.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm17.png" alt="" /></p>
-
-<h4>Other Components</h4>
-
-<p>This installs the drivers to access Cubes from Analysis Servers and Sequelink ODBC Socket server to talk to multiple data sources.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/062313_1702_overviewofm18-1.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Microstrategy 9 Installation on a New Windows 2008 Server]]></title>
-    <link href="http://blog.meygam.com//blog/2014/06/16/microstrategy-9-installation-on-a-new-windows-2008-server/"/>
-    <updated>2014-06-16T00:00:00-05:00</updated>
-    <id>http://blog.meygam.com//blog/2014/06/16/microstrategy-9-installation-on-a-new-windows-2008-server</id>
-    <content type="html"><![CDATA[<p>Since my customer has decided to go with the Microstrategy(MSTR) as analytics and reporting tool, I got curious about this tool and wanted to know more on its capabilities. I got an opportunity to go for a free training from MSTR, and I got the evaluation CD &amp; a nice notebook J. I thought I will install it and explore it for 30 days… Lets see how far I go!</p>
-
-<!-- more -->
-
-
-<p>The installation of actual MSTR seems to be simple, but setting up the windows server for the installtion took more time. It would have been simpler if MSTR gave the VM with MSTR services installed in it. Anyways lets assume we have the Windows Server 2008 ready and let see how to install the MSTR. The prerequites are mentioned in the MSTR website <a href="http://www.microstrategy.com/evaluation-edition">http://www.microstrategy.com/evaluation-edition</a></p>
-
-<h3>System Requirements</h3>
-
-<ul>
-<li>x86 or x64 compatible CPU</li>
-<li>4 GB RAM</li>
-<li>Minimum storage space required: Three times the amount of RAM available to Intelligence Server. For example, an Intelligence Server that is provided 4 GB of RAM requires 12 GB of hard drive space.</li>
-<li>Windows 2003 Standard Edition SP2 (on x86 or x64) ,Windows 2003 Enterprise Edition SP2 (on x86 or x64) ,Windows 2003 Standard Edition R2 SP2 (on x86 or x64) ,Windows 2003 Enterprise Edition R2 SP2 (on x86 or x64) ,Windows Vista Business Edition SP2 (on x86 or x64), Windows Vista Enterprise Edition SP2 (on x86 or x64) ,Windows 7 Professional Edition SP1(on x86 or x64), Windows 7 Enterprise Edition SP1 (on x86 or x64) ,Windows 8 all editions (on x86 or x64) ,Windows 2008 Standard Edition SP2 on x64 ,Windows 2008 Enterprise Edition SP2 on x64 ,Windows 2008 Standard Edition R2 SP1 on x64 ,Windows 2008 Enterprise Edition R2 SP1 on x64 ,Windows Server 2012 Standard (on x64)</li>
-<li>Microsoft Internet Information Services (IIS) * version 6.x, 7.0.x, 7.5.x, or 8.x.</li>
-<li>Microsoft .NET Framework 4.0 or 4.5. This must be installed prior to installing MicroStrategy.</li>
-<li>Microsoft Internet Explorer version 7.x, 8.x, 9.x, or 10.x.</li>
-<li>Adobe® Reader® version 9.x, 10.x or 11.x.</li>
-<li>Adobe® Flash® Player version 10.1.x, 10.3.x, or 11.x.</li>
-<li>16-bit color display or higher</li>
-<li>Windows fonts display set to small fonts (96 dpi)</li>
-</ul>
-
-
-<p>Insert the DVD and double click on the DVD, it will open the below window, click on &ldquo;Begin Microstrategy Platform Installation&rdquo;.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate1.png" alt="" /></p>
-
-<p>Select the language and click &ldquo;Ok&rdquo;</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate2.png" alt="" /></p>
-
-<p>Click &ldquo;Next&rdquo;</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate3.png" alt="" /></p>
-
-<p>Accept the license agreements and click &ldquo;Next&rdquo;</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate4.png" alt="" /></p>
-
-<p>The license kay can be obtained form <a href="http://www.microstrategy.com/LicenseKey.">http://www.microstrategy.com/LicenseKey.</a> Promo code is required to get the license key. I got one with the evaluation DVD pack. License ley will be sent to your registered email address. Yes, you will have to register to get the license key.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate5.png" alt="" /></p>
-
-<p>Change the installation folders if needed. I prefer it to have the default installation path.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate6.png" alt="" /></p>
-
-<p>Select the features you want to install. Since I am evaluating I installed all the features except the &ldquo;Microstrategy office&rdquo; as it required MS Office to be installed in the server, and I don&rsquo;t have one on my server.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate7.png" alt="" /></p>
-
-<p>After this I got an error saying &ldquo;Adobe Acrobat Reader 7 or greater&rdquo; is needed. I downloaded and installed the acrobat reader. Then I got the below errors</p>
-
-<pre><code>MicroStrategy Common Files requirements:MISSING: Microsoft .Net Framework v4.0
-MicroStrategy Desktop Products requirements:MISSING: Microsoft .Net Framework v4.0
-MicroStrategy Object Manager requirements:
-OK
-MicroStrategy Command Manager requirements:
-OK
-MicroStrategy Enterprise Manager requirements:
-OK
-MicroStrategy Intelligence Server requirements:
-OK
-MicroStrategy Web Universal requirements:
-MISSING: Microsoft Internet Information Server Version 5.0 or greater.
-MISSING: Microsoft .Net Framework v4.0
-MicroStrategy Web Services requirements:
-MISSING: Microsoft Internet Information Server Version 5.0 or greater.
-MISSING: Microsoft .Net Framework v4.0
-MicroStrategy Mobile Server (ASP .NET) requirements:
-MISSING: Microsoft Internet Information Server Version 5.0 or greater.
-MISSING: Microsoft .Net Framework v4.0
-MicroStrategy SDK requirements:
-OK
-MicroStrategy Integrity Manager requirements:
-OK
-MicroStrategy Office requirements:
-MISSING: Microsoft .Net Framework v4.0
-MISSING: Microsoft Office XP or higher.
-MISSING: Windows Installer 4.5 or higher.
-(Windows Installer 4.5 redistributables can be found in
-..\Utilities\3rdParty\WindowsInstaller45 folder
-on the MicroStrategy product installation media.)
-SequeLink ODBC Socket Server requirements:
-OK
-MicroStrategy Narrowcast Administrator requirements:
-OK
-MicroStrategy Delivery Engine requirements:
-OK
-MicroStrategy Subscription Portal requirements:
-MISSING: Microsoft Internet Information Server Version 5.0 or greater.
-MicroStrategy Tutorial - Reporting requirements:
-OK
-MicroStrategy Analytics Modules requirements:
-OK
-MicroStrategy MDX Cube Provider requirements:
-MISSING: Microsoft Internet Information Server Version 5.0 or greater.
-MISSING: Microsoft .Net Framework v4.0
-</code></pre>
-
-<p>I got below message after installing Microsoft .Net 4.0 and IIS.</p>
-
-<pre><code>MicroStrategy Mobile Server (ASP .NET) requirements:
-MISSING Web Server feature: Security\Windows Authentication
-MISSING Web Server feature: Application Development\ASP
-</code></pre>
-
-<p>I had to enable the ASP &amp; Windows Authentication services for the IIS as shown below.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate8.png" alt="" /></p>
-
-<p>Since it&rsquo;s the new server, I didn&rsquo;t get a chance to enable the ASP and ASP.Net extensions in the IIS. Good that MSTR installation recognizes that and showed me the below pop up.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate9.png" alt="" /></p>
-
-<p>Leave the default and click &ldquo;Next&rdquo;</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate10.png" alt="" /></p>
-
-<p> This is to just an information that you will get the activation key in the mail.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate11.png" alt="" /></p>
-
-<p>Enter the instance name, location, use and click &ldquo;Next&rdquo;</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate12.png" alt="" /></p>
-
-<p>Enter your information and click &ldquo;Next&rdquo;.. In case if you select &ldquo;I am not an employee…&rdquo; option then it will prompt you an one more window where it will ask you to entert one of the Employee&rsquo;s information associated with this project.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate13.png" alt="" /></p>
-
-<p>The installation will start now. It took me hours to finish the installation as my VM&rsquo;s processor and memory are under the required specifications.  Select to get the activation code in email. You need to activate the software within 7 days from the installation.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate14.png" alt="" /></p>
-
-<p>The installed components and it details are listed once the installation is complete.</p>
-
-<pre><code>Component Install:
-- MicroStrategy Desktop Analyst
-- MicroStrategy Desktop Designer
-- MicroStrategy Architect
-- MicroStrategy Server Administrator
-- MicroStrategy Object Manager
-- MicroStrategy Command Manager
-- MicroStrategy Enterprise Manager
-- MicroStrategy System Manager
-- MicroStrategy Intelligence Server
-- MicroStrategy Report Services
-- MicroStrategy OLAP Services
-- MicroStrategy Distribution Services
-- MicroStrategy Transaction Services
-- MicroStrategy Web Universal - MicroStrategy Web Server (ASP .NET)
-- MicroStrategy Web Universal - MicroStrategy Web Server (JSP)
-- MicroStrategy Web Universal Analyst
-- MicroStrategy Web Universal Professional
-- MicroStrategy Web Universal Reporter
-- MicroStrategy Mobile - BlackBerry® Device Client Application
-- MicroStrategy Mobile - MicroStrategy Mobile Server (ASP .NET)
-- MicroStrategy Mobile - MicroStrategy Mobile Server (JSP)
-- MicroStrategy Portlets
-- MicroStrategy GIS Connectors
-- MicroStrategy SDK
-- MicroStrategy Integrity Manager
-- MicroStrategy Tutorial - Reporting
-- MicroStrategy Analytics Modules
-- MicroStrategy Narrowcast Administrator
-- MicroStrategy Delivery Engine
-- MicroStrategy Subscription Portal
-- MicroStrategy Tutorial - Delivery
-- SequeLink ODBC Socket Server
-- MicroStrategy MDX Cube Provider
-Target Directories:
-- MicroStrategy Desktop Products: C:\Program Files\MicroStrategy\Desktop
-- MicroStrategy Object Manager: C:\Program Files\MicroStrategy\Object Manager
-- MicroStrategy Command Manager: C:\Program Files\MicroStrategy\Command Manager
-- MicroStrategy Enterprise Manager: C:\Program Files\MicroStrategy\Enterprise Manager
-- MicroStrategy System Manager: C:\Program Files\MicroStrategy\System Manager
-- MicroStrategy Intelligence Server: C:\Program Files\MicroStrategy\Intelligence Server
-- MicroStrategy Web Universal - MicroStrategy Web Server (ASP .NET): C:\Program Files\MicroStrategy\Web ASPx
-- MicroStrategy Web Universal - MicroStrategy Web Server (JSP): C:\Program Files\MicroStrategy\Web JSP
-- MicroStrategy Mobile - BlackBerry® Device Client Application: C:\Program Files\MicroStrategy\Mobile Clients
-- MicroStrategy Mobile Server - MicroStrategy Mobile Server (ASP .NET): C:\Program Files\MicroStrategy\Mobile Server ASPx
-- MicroStrategy Mobile Server - MicroStrategy Mobile Server (JSP): C:\Program Files\MicroStrategy\Mobile Server JSP
-- MicroStrategy SDK: C:\Program Files\MicroStrategy\SDK
-- MicroStrategy Portlets: C:\Program Files\MicroStrategy\Portlets
-- MicroStrategy GIS Connectors: C:\Program Files\MicroStrategy\GISConnectors
-- MicroStrategy Integrity Manager: C:\Program Files\MicroStrategy\Integrity Manager
-- MicroStrategy Tutorial - Reporting: C:\Program Files\MicroStrategy\Tutorial Reporting
-- MicroStrategy Analytics Modules: C:\Program Files\MicroStrategy\Analytics Modules
-- MicroStrategy Narrowcast Administrator: C:\Program Files\MicroStrategy\Narrowcast Server\Delivery Engine
-- MicroStrategy Tutorial - Delivery: C:\Program Files\MicroStrategy\Narrowcast Server\Tutorial
-- MicroStrategy Subscription Portal: C:\Program Files\MicroStrategy\Narrowcast Server\Subscription Portal
-- MicroStrategy Health Center: C:\Program Files\Common Files\MicroStrategy\HealthCenter
-- MicroStrategy MDX Cube Provider: C:\Program Files\MicroStrategy\MDX Cube Provider
-- MicroStrategy Common Files: C:\Program Files\Common Files\MicroStrategy
-Program Folder: MicroStrategy
-Log file:
-C:\Program Files\Common Files\MicroStrategy\install.log
-MicroStrategy Web Server (ASP .NET) Virtual Directory: MicroStrategy
-MicroStrategy Mobile Server (ASP .NET) Virtual Directory: MicroStrategyMobile
-MicroStrategy Subscription Portal Virtual Directory: NarrowcastServer
-MicroStrategy MDX Cube Provider Virtual Directory: MicroStrategyMDX
-License Details:
-Contract ID: 76053
-License Key Group: 1
-License Key Issue Date: 7/18/2012
-GA installation
-MicroStrategy Intelligence Server Module
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Intelligence Server Universal Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Narrowcast Server Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Report Services Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy OLAP Services Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Distribution Services Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Transaction Services Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Intelligence Server Clustering Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Intelligence Server MultiSource Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-Maximum number of Concurrent Users allowed: 50
-MicroStrategy Web Reporter Module
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Web Universal Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Web Analyst Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Web Professional Option
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy Desktop Products
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-MicroStrategy Desktop Analyst Module
-Maximum number of Named Users allowed: 500
-MicroStrategy Desktop Designer Option
-Maximum number of Named Users allowed: 500
-MicroStrategy Architect
-Maximum number of Named Users allowed: 500
-MicroStrategy Server Administrator
-MicroStrategy Command Manager
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-Maximum number of Managed Named Users allowed: 500
-MicroStrategy Enterprise Manager
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-Maximum number of Managed Named Users allowed: 500
-MicroStrategy Object Manager
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-Maximum number of Managed Named Users allowed: 500
-MicroStrategy SDK
-Production Version
-MicroStrategy Analytics Modules
-Evaluation Version
-MicroStrategy Integrity Manager
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-Maximum number of Named Users allowed: 1
-Maximum number of Managed Named Users allowed: 500
-MicroStrategy Mobile
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-MicroStrategy System Manager
-Evaluation Version
-Evaluation period: 1
-Evaluation duration: 30 day(s)
-License based on Named Users
-Maximum number of Named Users allowed: 500
-Maximum number of Managed Named Users allowed: 500
-</code></pre>
-
-<p>Restart the server to complete the installation</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate15.png" alt="" /></p>
-
-<p>Activate the server using Start à Microstrategy à License Manager</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate16.png" alt="" /></p>
-
-<p>Enter the activation key that you got in the mail.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate17.png" alt="" /></p>
-
-<p>This completes the Microstrategy Server installation.</p>
-
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/061713_0449_microstrate18.png" alt="" /></p>
-
-<p>The installation should be easy if you have a good server to install it in. I had to struggle to get the VM ready and install MSTR on top of that. That too my VM was about micro in size. Took 3 hours to complete my installation. Better to use a larger VM for quicker installation.</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Connecting to Open VPN Server From iOS Device]]></title>
-    <link href="http://blog.meygam.com//blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/"/>
+    <link href="http://meygam.github.io/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/"/>
     <updated>2014-03-13T00:00:00-05:00</updated>
-    <id>http://blog.meygam.com//blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device</id>
+    <id>http://meygam.github.io/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device</id>
     <content type="html"><![CDATA[<p>To connect iOS device to Open VPN server we need</p>
 
 <ul>
@@ -710,36 +136,36 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Install Open VPN client from app store (<a href="https://itunes.apple.com/app/openvpn-connect/id590379981">https://itunes.apple.com/app/openvpn-connect/id590379981</a>)</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_174551000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_174551000_iOS.jpg" alt="" /></p>
 
 <h3>Import Open VPN settings</h3>
 
 <p>Get the Open VPN settings file, clinet.ovpn, from your VPN admin. Send that file to your iOS device through email, and open it in Open VPN app on the iOS device.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_175334000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_175334000_iOS.jpg" alt="" /></p>
 
 <p>Click on the green plus sign to import the profile to iOS device.</p>
 
-<p>{<3>}<img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180407000_iOS.jpg" alt="" /></p>
+<p>{<3>}<img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180407000_iOS.jpg" alt="" /></p>
 
 <p>Once imported it should like below</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180416000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180416000_iOS.jpg" alt="" /></p>
 
 <h3>Install Client Certificate</h3>
 
 <p>Get the client certificate in .p12 format from your Open VPN admin. Send that also to your iOS device through email, and install it.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180433000_iOS-1.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180433000_iOS-1.jpg" alt="" /></p>
 
 <pre><code>Note: You need your Client certificate with password protected. iOS doesn't allow to import certificate with blank password.
 </code></pre>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180452000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180452000_iOS.jpg" alt="" /></p>
 
 <p>You should see a successfully installed message</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180504000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180504000_iOS.jpg" alt="" /></p>
 
 <p>If it say &ldquo;Not Trusted&rdquo; as shown in my certificate above, then you will have to install the CA certificate. Else, when you try to connect Open VPN you will get the below error</p>
 
@@ -750,33 +176,33 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Get the CA certificate from VPN admin. it should be in the form of .pem file. Send that to your iOS device through email, and install it.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180531000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180531000_iOS.jpg" alt="" /></p>
 
 <p>Install the root CA certificate.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180534000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180534000_iOS.jpg" alt="" /></p>
 
 <p>Once installed you should see that Certificate Authority is &ldquo;Trusted&rdquo;</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180547000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180547000_iOS.jpg" alt="" /></p>
 
 <h3>Connect to Open VPN server</h3>
 
 <p>Open &ldquo;Open VPN&rdquo; app in your iOS device, select the <code>None Selected</code> list and select your certificate.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180601000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180601000_iOS.jpg" alt="" /></p>
 
 <p>Now turn on the VPN button and you should get connected to Open VPN server successfully.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/2014/Mar/20140313_180641000_iOS.jpg" alt="" /></p>
+<p><img src="http://meygam.github.io/assets/images/2014/Mar/20140313_180641000_iOS.jpg" alt="" /></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows]]></title>
-    <link href="http://blog.meygam.com//blog/2014/03/01/jenkins-android/"/>
+    <link href="http://meygam.github.io/blog/2014/03/01/jenkins-android/"/>
     <updated>2014-03-01T08:21:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/03/01/jenkins-android</id>
+    <id>http://meygam.github.io/blog/2014/03/01/jenkins-android</id>
     <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Android Application using Jenkins Continuous Integration - to build the project, run the unit tests (if any), archive the built artifacts and run the Android lint reports.</p>
 
 <!-- more -->
@@ -786,7 +212,7 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Navigate to jenkins-ci.org website using an Internet browser and download the Windows native package (the link is underlined for easy identification) as shown from the right side pane of the Download Jenkins tab.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
 
 <p>Once the download is complete, uncompress the zip file and click on the jenkins-1.xxx.msi file. Proceed through the configuration steps to install the Jenkins as a Windows service.</p>
 
@@ -838,21 +264,21 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Once the modification is saved in jenkins.xml file, restart the Jenkins service from the Windows Task Manager->Services and right clicking on the Jenkins service and choose Stop Service to stop the service as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
 
 <p>Once the status of the service changes to stopped, restart the service by right clicking on the Jenkins service and choose Start Service to start the service again.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
 
 <p>Navigate to localhost:8082 to verify if the Jenkins restart was successful as shown below - Jenkins Dashboard will be displayed. Note that it takes a while before the Jenkins service becomes available.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
 
 <h2>3. Install Plugins</h2>
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
 
 <p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
 
@@ -867,49 +293,49 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
 
 <p>Navigate to the Global Properties section and click on Add to add an Environment Variable ANDROID_HOME as shown in the snapshot below. Enter the name as ANDROID_HOME and enter the path of the location where the Android SDK is stored on windows.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/androidhome.png" title="Jenkins Android Home Configuration" alt="Jenkins Android Home Configuration" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/androidhome.png" title="Jenkins Android Home Configuration" alt="Jenkins Android Home Configuration" /></p>
 
 <p>Navigate to the JDK section and click on &ldquo;Add JDK&rdquo; to add the JDK installation as shown in the snapshot below. Specify a JDK Name, choose the JDK Version to install and follow the on-screen instructions to save the Oracle Login credentials. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
 
 <p>Next, proceed to the Git section and click on &ldquo;Add Git&rdquo; to add the Git installation as shown in the snapshot below. Specify Git Name, specify the path to Git executable and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
 
 <p>Next, proceed to the Gradle section and click on &ldquo;Add Gradle&rdquo; to add the Gradle installation as shown in the snapshot below. Specify Gradle Name, choose the appropriate version (at the time of writing, I used Gradle 1.10) and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/gradleinstall.png" title="Jenkins Gradle Installation" alt="Jenkins Gradle Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/gradleinstall.png" title="Jenkins Gradle Installation" alt="Jenkins Gradle Installation" /></p>
 
 <p>Next, proceed to the Email Notification section and enter the SMTP Server details as shown below. Click on the Advanced button to add the further details required and Save the changes. Click on &ldquo;Test configuration by sending test e-mail&rdquo;, enter the test e-mail recipient and click on &ldquo;Test configuration&rdquo; to see if the email is successfully sent.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
 
 <h2>5. Create a New Jenkins Job</h2>
 
 <p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a free-style software project&rdquo; as option and click on OK as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-newjob.png" title="Jenkins Android New Job" alt="Jenkins Android New Job" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-newjob.png" title="Jenkins Android New Job" alt="Jenkins Android New Job" /></p>
 
 <p>From the New Job Configuration screen, proceed to the Source Code Management section. Save the Git credentials by clicking on &ldquo;Add&rdquo; as shown below and entering the details in the following dialog. Save the changes by clicking on &ldquo;Add&rdquo; as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-add-credentials.png" title="Jenkins Android Add Credentials" alt="Jenkins Android Add Credentials" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-add-credentials.png" title="Jenkins Android Add Credentials" alt="Jenkins Android Add Credentials" /></p>
 
 <p>Specify the Git Repository URL for the project, choose the saved credentials from the drop-down list as shown in the snapshot below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
 
 <p>Next, from the Build Triggers section, select the options desired as shown below and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-build-triggers.png" title="Android Build Triggers" alt="Android Build Triggers" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-build-triggers.png" title="Android Build Triggers" alt="Android Build Triggers" /></p>
 
 <p>Proceed to the Build section, choose &ldquo;Invoke Gradle script&rdquo; from the drop-down list of choices for &ldquo;Add build step&rdquo;. Choose the appropriate Gradle version which is configured, enter the tasks to be built and select the options as desired. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-build.png" title="Android Build" alt="Android Build" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-build.png" title="Android Build" alt="Android Build" /></p>
 
 <p>Proceed to the Post-build Actions section, click on &ldquo;Publish Android Lint results&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and specify the location where the Lint results should be stored in the Jenkins workspace for the job.</p>
 
@@ -917,7 +343,7 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Click on &ldquo;E-mail Notification&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and enter the values for the email recipients as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-post-build.png" title="Android Post Build" alt="Android Post Build" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-post-build.png" title="Android Post Build" alt="Android Post Build" /></p>
 
 <h2>6. Build Now</h2>
 
@@ -925,7 +351,7 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build. Clicking on any successful build outcome shows the artifacts that were archived as part of the build, the change that started the build and the lint results as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/android-build-outcome.png" title="Android Build Outcome" alt="Android Build Outcome" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/android-build-outcome.png" title="Android Build Outcome" alt="Android Build Outcome" /></p>
 
 <p>Thus the entire process of building the project an Android application project whenever a SCM change is triggered or under another condition, running lint reports, archiving the artifacts built, publishing lint reports and triggering emails to the recipients can be automated with a click of a button through Jenkins.</p>
 ]]></content>
@@ -933,10 +359,10 @@ Maximum number of Managed Named Users allowed: 500
   
   <entry>
     <title type="html"><![CDATA[Automating the Release of Java Artifacts Using Jenkins on Windows]]></title>
-    <link href="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/"/>
+    <link href="http://meygam.github.io/blog/2014/02/05/jenkins-release-upload/"/>
     <updated>2014-02-05T08:21:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload</id>
-    <content type="html"><![CDATA[<p>This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post <a href="http://elizabetht.github.io/blog/2014/01/13/jenkins-snapshot-upload/">Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows</a>. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+    <id>http://meygam.github.io/blog/2014/02/05/jenkins-release-upload</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post <a href="http://meygam.github.io/blog/2014/01/13/jenkins-snapshot-upload/">Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows</a>. The details of the actual application are explained in the earlier post given by the link <a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->
 
@@ -951,21 +377,21 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Type &lsquo;services.msc&rsquo; in a command prompt to open up Services Management. Right click on the Jenkins service and select Properties.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-services-properties.png" title="Jenkins Services Management" alt="Jenkins Services Management" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-services-properties.png" title="Jenkins Services Management" alt="Jenkins Services Management" /></p>
 
 <p>From the Jenkins Properties windows, navigate to Log on tab. Choose Log on as &lsquo;This account&rsquo;, enter the details of the account (use the Browse option to choose/check the name of the account) and click Ok. The account credentials will generally match the log in account for the Windows as shown in the snapshot below</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-logon.png" title="Jenkins Logon" alt="Jenkins Logon" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-logon.png" title="Jenkins Logon" alt="Jenkins Logon" /></p>
 
 <p>Once the changes are saved, restart the Jenkins service from the Services Management by Right clicking on Jenkins service and choose Restart as shown below</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-services-restart.png" title="Jenkins Restart" alt="Jenkins Restart" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-services-restart.png" title="Jenkins Restart" alt="Jenkins Restart" /></p>
 
 <h2>3. Install Plugins</h2>
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
 
 <p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
 
@@ -978,33 +404,33 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
 
 <p>Proceed to the Maven Release Plug-in section. Enable Nexus-Pro support, enter the Nexus URL, Nexus User Credentials and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-nexus-pro.png" title="Jenkins Nexus-Pro" alt="Jenkins Nexus-Pro" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-nexus-pro.png" title="Jenkins Nexus-Pro" alt="Jenkins Nexus-Pro" /></p>
 
 <h2>5. Create a New Jenkins Job</h2>
 
 <p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a maven2/3 project&rdquo; as option and click on OK as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
 
 <p>From the New Job Configuration screen, proceed to the Source Code Management section and specify the Git Repository URL for the project as shown below. From the additional behaviors section, click on &ldquo;Add&rdquo; and select Check out to specific local branch. Enter the branch name as master and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-sourcecodemgmt-release.png" title="Jenkins Source Code Management for Release" alt="Jenkins Source Code Management for Release" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-sourcecodemgmt-release.png" title="Jenkins Source Code Management for Release" alt="Jenkins Source Code Management for Release" /></p>
 
 <p>Proceed to the Build Environment section, enable Maven Release Build option and enter the release goals.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-maven-releasebuild.png" title="Jenkins Maven Release Build" alt="Jenkins Maven Release Build" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-maven-releasebuild.png" title="Jenkins Maven Release Build" alt="Jenkins Maven Release Build" /></p>
 
 <p>Proceed to the Build section, enter the maven goals for building a snapshot as shown below and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
 
 <p>Proceed to the Build Settings section. Select the option for Email Notification and enter the values for the email recipients as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
 
 <h2>6. Configure settings.xml</h2>
 
@@ -1254,7 +680,7 @@ Maximum number of Managed Named Users allowed: 500
 
 <p>Verify that the Release version and the next Development Version are correct. Enable &lsquo;Specify custom SCM comment prefix&rsquo; to enter a custom SCM Comment. Enable &lsquo;Specify custom SCM tag&rsquo; to enter a custom SCM tag. Click on Schedule Maven Release Build.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-perform-maven-release.png" title="Jenkins Perform Maven Release" alt="Jenkins Perform Maven Release" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-perform-maven-release.png" title="Jenkins Perform Maven Release" alt="Jenkins Perform Maven Release" /></p>
 
 <p>Once the release process succeeds, the staging repository will be uploaded with the release artifacts.</p>
 
@@ -1264,9 +690,9 @@ Maximum number of Managed Named Users allowed: 500
   
   <entry>
     <title type="html"><![CDATA[WordPress on AWS]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/17/wordpress-on-aws/"/>
+    <link href="http://meygam.github.io/blog/2014/01/17/wordpress-on-aws/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/17/wordpress-on-aws</id>
+    <id>http://meygam.github.io/blog/2014/01/17/wordpress-on-aws</id>
     <content type="html"><![CDATA[<p>In this blog I am going to cover the step by step instructions to host your own WordPress blog in AWS. Hosting your own blog has some advantages, you can install any plugins/themes you want and publish any content you like. Having said that it’s not for everyone. If you are a basic user better you create account in wordpress.com. I wanted to run my own blog engine, primarily because I am a techie.</p>
 
 <!-- more -->
@@ -1524,9 +950,9 @@ fastcgi_pass unix:/var/run/php5-fpm.sock;
   
   <entry>
     <title type="html"><![CDATA[Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
+    <link href="http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
+    <id>http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
     <content type="html"><![CDATA[<p>Setting up a new Ubuntu server with Java 7 &amp; Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.</p>
 
 <!-- more -->
@@ -1584,10 +1010,10 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
   
   <entry>
     <title type="html"><![CDATA[Automating the Deployment and Upload of Snapshot Java Artifacts Using Jenkins on Windows]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/13/jenkins-snapshot-upload/"/>
+    <link href="http://meygam.github.io/blog/2014/01/13/jenkins-snapshot-upload/"/>
     <updated>2014-01-13T16:50:30-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/13/jenkins-snapshot-upload</id>
-    <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - to build the project, run the unit tests, upload the built artifacts to a Sonatype Snapshot repository, run the Cobertura Code Coverage reports and deploy the application to the Amazon EC2. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+    <id>http://meygam.github.io/blog/2014/01/13/jenkins-snapshot-upload</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - to build the project, run the unit tests, upload the built artifacts to a Sonatype Snapshot repository, run the Cobertura Code Coverage reports and deploy the application to the Amazon EC2. The details of the actual application are explained in the earlier post given by the link <a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->
 
@@ -1596,7 +1022,7 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>Navigate to jenkins-ci.org website using an Internet browser and download the Windows native package (the link is underlined for easy identification) as shown from the right side pane of the Download Jenkins tab.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
 
 <p>Once the download is complete, uncompress the zip file and click on the jenkins-1.xxx.msi file. Proceed through the configuration steps to install the Jenkins as a Windows service.</p>
 
@@ -1648,21 +1074,21 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>Once the modification is saved in jenkins.xml file, restart the Jenkins service from the Windows Task Manager->Services and right clicking on the Jenkins service and choose Stop Service to stop the service as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
 
 <p>Once the status of the service changes to stopped, restart the service by right clicking on the Jenkins service and choose Start Service to start the service again.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
 
 <p>Navigate to localhost:8082 to verify if the Jenkins restart was successful as shown below - Jenkins Dashboard will be displayed. Note that it takes a while before the Jenkins service becomes available.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
 
 <h2>3. Install Plugins</h2>
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
 
 <p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
 
@@ -1678,63 +1104,63 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
 
 <p>Navigate to the JDK section and click on &ldquo;Add JDK&rdquo; to add the JDK installation as shown in the snapshot below. Specify a JDK Name, choose the JDK Version to install and follow the on-screen instructions to save the Oracle Login credentials. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
 
 <p>Next, proceed to the Git section and click on &ldquo;Add Git&rdquo; to add the Git installation as shown in the snapshot below. Specify Git Name, specify the path to Git executable and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
 
 <p>Next, proceed to the Maven section and click on &ldquo;Add Maven&rdquo; to add the Maven installation as shown in the snapshot below. Specify Maven Name, choose the Maven Version to install and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-maven.png" title="Jenkins Maven Installation" alt="Jenkins Maven Installation" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-maven.png" title="Jenkins Maven Installation" alt="Jenkins Maven Installation" /></p>
 
 <p>Proceed to the Git plugin section and enter the values for Github Username and Email Address as credentials as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-git.png" title="Jenkins Gitplugin Credentials" alt="Jenkins Gitplugin Credentials" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-git.png" title="Jenkins Gitplugin Credentials" alt="Jenkins Gitplugin Credentials" /></p>
 
 <p>Proceed to the Artifactory section and click on &ldquo;Add&rdquo; to add the information about the artifactory servers. Specify the URL for the snapshot repository and provide the deployer credentials created from the Artifactory server website as shown below. Click on &ldquo;Test Connection&rdquo; to test if the connection parameters are good to save and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-artifactory.png" title="Jenkins Artifactory Servers Configuration" alt="Jenkins Artifactory Servers Configuration" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-artifactory.png" title="Jenkins Artifactory Servers Configuration" alt="Jenkins Artifactory Servers Configuration" /></p>
 
 <p>Next, proceed to the Email Notification section and enter the SMTP Server details as shown below. Click on the Advanced button to add the further details required and Save the changes. Click on &ldquo;Test configuration by sending test e-mail&rdquo;, enter the test e-mail recipient and click on &ldquo;Test configuration&rdquo; to see if the email is successfully sent.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
 
 <h2>5. Create a New Jenkins Job</h2>
 
 <p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a maven2/3 project&rdquo; as option and click on OK as shown below.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-newjob.png" title="Jenkins New Job" alt="Jenkins New Job" /></p>
 
 <p>From the New Job Configuration screen, proceed to the Source Code Management section and specify the Git Repository URL for the project as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
 
 <p>Next, from the Build Triggers section, select the options desired as shown below and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-buildtriggers.png" title="Jenkins Build Triggers" alt="Jenkins Build Triggers" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-buildtriggers.png" title="Jenkins Build Triggers" alt="Jenkins Build Triggers" /></p>
 
 <p>Proceed to the Build section, enter the maven goals for building a snapshot as shown below and Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-build.png" title="Jenkins Build" alt="Jenkins Build" /></p>
 
 <p>Proceed to the Build Settings section. Select the option for Email Notification and enter the values for the email recipients as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-emailnotifications.png" title="Jenkins Email Notifications" alt="Jenkins Email Notifications" /></p>
 
 <p>Under the Post-build Actions, click on &ldquo;Add post-build action&rdquo; button and select &ldquo;Deploy war/ear to a container&rdquo;. In the Amazon EC2, a Tomcat Manager (manager as username) instance has to be configured with roles manager-gui and manager-script to allow the remote deployment of the WAR/EAR to the Tomcat Container. The configuration steps can be found in the link <a href="https://help.ubuntu.com/13.04/serverguide/tomcat.html">https://help.ubuntu.com/13.04/serverguide/tomcat.html</a> under the section of &ldquo;Tomcat administration webapps&rdquo;</p>
 
 <p>Once the Tomcat Manager webapp configuration is complete in the Amazon EC2 instance, enter the details necessary for the deployment as shown below. Save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-deploy.png" title="Jenkins Deployment" alt="Jenkins Deployment" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-deploy.png" title="Jenkins Deployment" alt="Jenkins Deployment" /></p>
 
 <p>Similarly, from the Post-build Actions, click on &ldquo;Add post-build action&rdquo; button and select &ldquo;Publish Cobertura Coverage Report&rdquo;. Enter the Cobertura XML Report Pattern as shown below and save the changes.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jenkins-cobertura.png" title="Jenkins Cobertura Coverage Report" alt="Jenkins Cobertura Coverage Report" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jenkins-cobertura.png" title="Jenkins Cobertura Coverage Report" alt="Jenkins Cobertura Coverage Report" /></p>
 
 <h2>6. Configure settings.xml</h2>
 
@@ -1937,17 +1363,17 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
   
   <entry>
     <title type="html"><![CDATA[Building Jersey2 REST Client Using Spring With JUnit and JMock]]></title>
-    <link href="http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
+    <link href="http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
     <updated>2013-12-23T12:10:30-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
-    <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+    <id>http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->
 
 
 <h2>1. Update pom.xml</h2>
 
-<p>To make the Maven Java Web Application project (<a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>) support the JUnit testing framework, add the following dependency to the existing pom.xml</p>
+<p>To make the Maven Java Web Application project (<a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>) support the JUnit testing framework, add the following dependency to the existing pom.xml</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1967,7 +1393,7 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jersey-client-package.png" title="Jersey REST Client Package Layout" alt="Jersey REST Client Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jersey-client-package.png" title="Jersey REST Client Package Layout" alt="Jersey REST Client Package Layout" /></p>
 
 <h2>3. Create classes for Client tier</h2>
 
@@ -2121,7 +1547,7 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jersey-client-test-package.png" title="Jersey REST Client Test Package Layout" alt="Jersey REST Client Test Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jersey-client-test-package.png" title="Jersey REST Client Test Package Layout" alt="Jersey REST Client Test Package Layout" /></p>
 
 <h2>5. Extract Interfaces for Model and Resource tier classes</h2>
 
@@ -3671,9 +3097,9 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
-    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <link href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
     <updated>2013-12-13T10:45:30-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <id>http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -3689,7 +3115,7 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>Import the project into the IDE using File->Import->Existing Maven Projects, select Root Directory where the Project is created (ideally the name of the Project or ArtifactId) and click on Finish. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jersey-layout.png" title="Jersey REST Spring Maven Project Layout" alt="Jersey REST Spring Maven Project Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jersey-layout.png" title="Jersey REST Spring Maven Project Layout" alt="Jersey REST Spring Maven Project Layout" /></p>
 
 <h2>2. Update pom.xml</h2>
 
@@ -4226,11 +3652,11 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/signup.png" title="Jersey REST Spring Hibernate Signup Layout" alt="Jersey REST Spring Hibernate Signup Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/signup.png" title="Jersey REST Spring Hibernate Signup Layout" alt="Jersey REST Spring Hibernate Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/login.png" title="Jersey REST Spring Hibernate Login Layout" alt="Jersey REST Spring Hibernate Login Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/login.png" title="Jersey REST Spring Hibernate Login Layout" alt="Jersey REST Spring Hibernate Login Layout" /></p>
 
 <p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
 
@@ -4244,7 +3670,7 @@ sudo /opt/apache-tomcat-7.0.52/bin/startup.sh
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jersey-package.png" title="Jersey REST Spring Package Layout" alt="Jersey REST Spring Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jersey-package.png" title="Jersey REST Spring Package Layout" alt="Jersey REST Spring Package Layout" /></p>
 
 <h2>8. Create classes for Model Tier</h2>
 
@@ -4587,9 +4013,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using JDBC]]></title>
-    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc/"/>
+    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-jdbc/"/>
     <updated>2013-11-21T09:41:55-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-jdbc</id>
+    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-jdbc</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with JDBC. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -4601,7 +4027,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jdbclayout.png" title="JDBC Dynamic Web Project Layout" alt="JDBC Dynamic Web Project Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jdbclayout.png" title="JDBC Dynamic Web Project Layout" alt="JDBC Dynamic Web Project Layout" /></p>
 
 <h2>2. Modify web.xml</h2>
 
@@ -4665,7 +4091,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jdbcliblayout.png" title="JDBC Library Layout" alt="JDBC Library Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jdbcliblayout.png" title="JDBC Library Layout" alt="JDBC Library Layout" /></p>
 
 <h2>4. Create JSP Files for Student Signup/Login</h2>
 
@@ -4673,11 +4099,11 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/signup.png" title="JDBC Signup Layout" alt="JDBC Signup Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/signup.png" title="JDBC Signup Layout" alt="JDBC Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/login.png" title="JDBC Login Layout" alt="JDBC Login Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/login.png" title="JDBC Login Layout" alt="JDBC Login Layout" /></p>
 
 <p>The main actions for this application are as follows:</p>
 
@@ -4700,7 +4126,7 @@ Also create package for the utilities class under the src folder.</p>
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/jdbc-package.png" title="JDBC Package Layout" alt="JDBC Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/jdbc-package.png" title="JDBC Package Layout" alt="JDBC Package Layout" /></p>
 
 <h2>6. Create class for Model Tier</h2>
 
@@ -5233,9 +4659,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Struts 2]]></title>
-    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-struts-2/"/>
+    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-struts-2/"/>
     <updated>2013-11-21T09:41:45-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-struts-2</id>
+    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-struts-2</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Struts 2 framework. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -5247,7 +4673,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
 
-<p><img src="http://blog.meygam.com//assets/assets/images/elizabetht/elizabetht/strutslayout.png" title="Struts Dynamic Web Project Layout" alt="Struts Dynamic Web Project Layout" /></p>
+<p><img src="http://meygam.github.io/assets/assets/images/elizabetht/elizabetht/strutslayout.png" title="Struts Dynamic Web Project Layout" alt="Struts Dynamic Web Project Layout" /></p>
 
 <h2>2. Modify web.xml</h2>
 
@@ -5310,7 +4736,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
 
-<p><img src="http://blog.meygam.com//assets/assets/images/elizabetht/elizabetht/strutsliblayout.png" title="Struts Library Layout" alt="Struts Library Layout" /></p>
+<p><img src="http://meygam.github.io/assets/assets/images/elizabetht/elizabetht/strutsliblayout.png" title="Struts Library Layout" alt="Struts Library Layout" /></p>
 
 <h2>4. Create JSP Files for Student Signup/Login</h2>
 
@@ -5318,11 +4744,11 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/assets/images/elizabetht/elizabetht/struts-signup.png" title="Struts Signup Layout" alt="Struts Signup Layout" /></p>
+<p><img src="http://meygam.github.io/assets/assets/images/elizabetht/elizabetht/struts-signup.png" title="Struts Signup Layout" alt="Struts Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/assets/images/elizabetht/elizabetht/login.png" title="Struts Login Layout" alt="Struts Login Layout" /></p>
+<p><img src="http://meygam.github.io/assets/assets/images/elizabetht/elizabetht/login.png" title="Struts Login Layout" alt="Struts Login Layout" /></p>
 
 <p>The main actions for this application are as follows:</p>
 
@@ -5347,7 +4773,7 @@ Also create package for the utilities class under the src folder.</p>
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/assets/images/elizabetht/elizabetht/struts-package.png" title="Struts Package Layout" alt="Struts Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/assets/images/elizabetht/elizabetht/struts-package.png" title="Struts Package Layout" alt="Struts Package Layout" /></p>
 
 <h2>6. Create class for Model Tier</h2>
 
@@ -6182,9 +5608,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Hibernate With Spring]]></title>
-    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
+    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
     <updated>2013-11-21T09:41:30-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
+    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -6194,7 +5620,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>To begin with, in the IDE, create a Java Maven project with the template of maven-archetype-webapp (Filter the catalog based on the string &ldquo;webapp&rdquo;) by providing appropriate values for GroupId and Artifact Id for the project. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/springlayout.png" title="Spring Hibernate Project Layout" alt="Hibernate Spring Maven Project Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/springlayout.png" title="Spring Hibernate Project Layout" alt="Hibernate Spring Maven Project Layout" /></p>
 
 <h2>2. Update pom.xml</h2>
 
@@ -6607,11 +6033,11 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/signup.png" title="Spring Hibernate Signup Layout" alt="Spring Hibernate Signup Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/signup.png" title="Spring Hibernate Signup Layout" alt="Spring Hibernate Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/login.png" title="Spring Hibernate Login Layout" alt="Spring Hibernate Login Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/login.png" title="Spring Hibernate Login Layout" alt="Spring Hibernate Login Layout" /></p>
 
 <p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
 
@@ -6625,7 +6051,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/spring-hibernate-package.png" title="Spring Hibernate Package Layout" alt="Spring Hibernate Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/spring-hibernate-package.png" title="Spring Hibernate Package Layout" alt="Spring Hibernate Package Layout" /></p>
 
 <h2>9. Create classes for Model Tier</h2>
 
@@ -6924,9 +6350,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using MyBatis With Spring]]></title>
-    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
+    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
     <updated>2013-11-21T09:41:09-06:00</updated>
-    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
+    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -6936,7 +6362,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>To begin with, in the IDE, create a Java Maven project with the template of maven-archetype-webapp (Filter the catalog based on the string &ldquo;webapp&rdquo;) by providing appropriate values for GroupId and Artifact Id for the project. The sample web application directory structure is shown below with a standard deployment descriptor web.xml and Maven pom.xml</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/mybatislayout.png" title="MyBatis Project Layout" alt="MyBatis Maven Project Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/mybatislayout.png" title="MyBatis Project Layout" alt="MyBatis Maven Project Layout" /></p>
 
 <h2>2. Update pom.xml</h2>
 
@@ -7218,11 +6644,11 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/signup.png" title="MyBatis Signup Layout" alt="MyBatis Signup Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/signup.png" title="MyBatis Signup Layout" alt="MyBatis Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/login.png" title="MyBatis Login Layout" alt="MyBatis Login Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/login.png" title="MyBatis Login Layout" alt="MyBatis Login Layout" /></p>
 
 <p>Also create success.jsp to indicate the login success and failure.jsp to indicate login failure (These are just pages used to display the contents - no processing logic involved).</p>
 
@@ -7236,7 +6662,7 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="http://blog.meygam.com//assets/images/elizabetht/mybatis-package.png" title="MyBatis Package Layout" alt="MyBatis Package Layout" /></p>
+<p><img src="http://meygam.github.io/assets/images/elizabetht/mybatis-package.png" title="MyBatis Package Layout" alt="MyBatis Package Layout" /></p>
 
 <h2>7. Create classes for Model Tier</h2>
 
@@ -7515,6 +6941,111 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
 <p>If using git, clone a copy of this project here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git">https://github.com/elizabetht/StudentEnrollmentWithMyBatis.git</a></p>
 
 <p>In case of not using git, download the project as ZIP or tar.gz file here: <a href="https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7">https://github.com/elizabetht/StudentEnrollmentWithMyBatis/releases/tag/1.7</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Spring Cache Abstraction Using Ehcache]]></title>
+    <link href="http://meygam.github.io/blog/2013/09/10/spring-cache-abstraction-using-ehcache/"/>
+    <updated>2013-09-10T00:00:00-05:00</updated>
+    <id>http://meygam.github.io/blog/2013/09/10/spring-cache-abstraction-using-ehcache</id>
+    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
+
+<!-- more -->
+
+
+<p>Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.</p>
+
+<ul>
+<li>Add the Ehcache dependency to the project</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
+
+
+<p>Note: Without adding the dependency you might see the error</p>
+
+<pre><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: Lnet/sf/ehcache/CacheManager;
+</code></pre>
+
+<ul>
+<li>Include the cache namespace and schema location in the Spring Configuration file.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
+
+
+<ul>
+<li>Configure the application to use annotation driven</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
+
+
+<ul>
+<li>Define the cacheManager bean</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
+
+
+<ul>
+<li>Configure the ehcache.xml
+Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
+
+
+<p>Note: Without defaultCache defined, below error will be thrown</p>
+
+<pre><code>Cannot resolve reference to bean 'cacheManager' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'cacheManager' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Cannot resolve reference to bean 'ehcache' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ehcache' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Invocation of init method failed; nested exception is net.sf.ehcache.CacheException: Illegal configuration. No default cache is configured.
+</code></pre>
+
+<ul>
+<li>Add the @Cacheable annotation to the code</li>
+</ul>
+
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
+
+
+<h4>Common issues one might face in using the Spring Cache abstraction</h4>
+
+<ul>
+<li>Cache key collision:
+The default key generator is a simple one and it is easy to get key collisions using this. Refer the DefaultKeyGenerator.java code to see how it works. Also when you have an array as a parameter, the default key generator produces different key for each execution.</li>
+</ul>
+
+
+<p>It’s better to use your own key generator. Below is the sample one I used</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
+
+
+<p>And you can set this as your default key generator in the Spring configuration file like below.</p>
+
+<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
+
+
+<ul>
+<li>Application context is loaded more than once:</li>
+</ul>
+
+
+<p>Sometimes due to misconfiguration the application context gets loaded twice and due to that you might get the error. Make sure you name the cacheManager in the ehcache.xml and you are not loading the application context twice.</p>
+
+<pre><code>Another unnamed CacheManager already exists in the same VM. 
+Please provide unique names for each CacheManager in the config or do one of following:
+1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
+2. Shutdown the earlier cacheManager before creating new one with same name.
+The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
+</code></pre>
 ]]></content>
   </entry>
   
