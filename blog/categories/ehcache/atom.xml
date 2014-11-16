@@ -1,4 +1,24 @@
-<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ehcache | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/ehcache/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:41:56-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring Cache Abstraction Using Ehcache]]></title>
+    <link href="http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache/"/>
+    <updated>2014-09-10T00:00:00-05:00</updated>
+    <id>http://blog.meygam.com//blog/2014/09/10/spring-cache-abstraction-using-ehcache</id>
+    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
 
 <!-- more -->
 
@@ -95,3 +115,7 @@ Please provide unique names for each CacheManager in the config or do one of fol
 2. Shutdown the earlier cacheManager before creating new one with same name.
 The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
 </code></pre>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Tomcat | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/tomcat/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:40:56-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Tomcat | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/tomcat/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:41:56-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13]]></title>
-    <link href="http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
+    <link href="http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
+    <id>http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
     <content type="html"><![CDATA[<p>Setting up a new Ubuntu server with Java 7 &amp; Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.</p>
 
 <!-- more -->
