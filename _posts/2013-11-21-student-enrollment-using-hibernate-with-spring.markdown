@@ -4,7 +4,7 @@ title: "Building Java Web Application Using Hibernate with Spring"
 author: swapna
 date: 2013-11-21 09:41:30 -0600
 comments: true
-categories: [Hibernate, Spring, Maven]
+categories: [Hibernate, Spring, Maven, Java]
 ---
 This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.
 

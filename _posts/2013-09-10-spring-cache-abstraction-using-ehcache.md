@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Spring Cache abstraction using Ehcache"
+author: saravana
+date:   2013-09-10
+categories: [Spring, Java, EhCache]
+---
 In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer http://ehcache.org/documentation/recipes/spring-annotations for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it's easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change. 
 
 <!-- more -->
@@ -6,7 +13,7 @@ Let’s look at the Spring configuration steps and common issues that one encoun
 	
 * Add the Ehcache dependency to the project
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
+{% gist 6613368 %}
 
 Note: Without adding the dependency you might see the error
 
@@ -14,20 +21,20 @@ Note: Without adding the dependency you might see the error
    
 * Include the cache namespace and schema location in the Spring Configuration file.
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
+{% gist 6613426 %}
 
 * Configure the application to use annotation driven
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
+{% gist 6613497 %}
 
 * Define the cacheManager bean
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
+{% gist 6613514 %}
 
 * Configure the ehcache.xml
 Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
+{% gist 6613543 %}
 
 Note: Without defaultCache defined, below error will be thrown
 
@@ -35,7 +42,7 @@ Note: Without defaultCache defined, below error will be thrown
     
 * Add the @Cacheable annotation to the code
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
+{% gist 6613568 %}
 
 
 #### Common issues one might face in using the Spring Cache abstraction
@@ -45,11 +52,11 @@ The default key generator is a simple one and it is easy to get key collisions u
 
 It’s better to use your own key generator. Below is the sample one I used
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
+{% gist 6613617 %}
 
 And you can set this as your default key generator in the Spring configuration file like below.
 
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
+{% gist 6613634 %}
 
 * Application context is loaded more than once:
 

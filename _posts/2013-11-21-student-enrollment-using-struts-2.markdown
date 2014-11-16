@@ -4,7 +4,7 @@ title: "Building Java Web Application Using Struts 2"
 author: swapna
 date: 2013-11-21 09:41:45 -0600
 comments: true
-categories: [Struts2]
+categories: [Struts2, Java]
 ---
 This post will show how to create a Student Enrollment Application using MYSQL DB with Struts 2 framework. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.
 

@@ -4,7 +4,7 @@ title: "Building Java Web Application Using Jersey2 REST with Spring"
 author: swapna
 date: 2013-12-13 10:45:30 -0600
 comments: true
-categories: [Hibernate, Spring, Maven, Jersey2, REST]
+categories: [Hibernate, Spring, Maven, Jersey2, REST, Java]
 ---
 This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.
 

@@ -4,7 +4,7 @@ title: "Building Java Web Application Using MyBatis with Spring"
 author: swapna
 date: 2013-11-21 09:41:09 -0600
 comments: true
-categories: [MyBatis, Spring, Maven]
+categories: [MyBatis, Spring, Maven, Java]
 ---
 This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.
 
