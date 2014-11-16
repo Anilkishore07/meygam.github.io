@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Microstrategy | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/microstrategy/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:50:13-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Overview of Microstrategy Features]]></title>
+    <link href="http://blog.meygam.com//blog/2013/06/20/overview-of-microstrategy-features/"/>
+    <updated>2013-06-20T00:00:00-05:00</updated>
+    <id>http://blog.meygam.com//blog/2013/06/20/overview-of-microstrategy-features</id>
+    <content type="html"><![CDATA[<p>In my previous blog <a href="/microstrategy-9-installation-on-a-new-windows-2008-server/">Microstrategy 9 Installation on a new Windows 2008 server</a> we looked at installing the MSTR. Here let&rsquo;s look at the features we installed. Below is the list of all the features from MSTR.</p>
+
+<!-- more -->
+
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm1-1.png" alt="" /></p>
+
+<p>The below picture will give us the overview of how all these features are related.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm2-1.png" alt="" /></p>
+
+<p>Let&rsquo;s look at each one of them in detail</p>
+
+<h4>Microstrategy Intelligence Server</h4>
+
+<p>Microstrategy Intelligence Server is the architectural foundation for the Microstrategy platform. This communicates to the various data sources, and runs the reports and distributes to MSTR Desktop and Web users. Intelligence server ensures the scalability and fault tolerance required for analysis of terabyte databases and millions of users.</p>
+
+<p>Below are the sub-features installed as part of MSTR Intelligence server. We will cover these features in detail when we explore the Intelligence server in detail.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm3-1.png" alt="" /></p>
+
+<h4>Microstrategy Web universal</h4>
+
+<p>MSTR Web enables the users to create and/or run the reports in web.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm4-1.png" alt="" /></p>
+
+<p>Below are the sub-features installed as part of MSTR Web Universal.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm5-1.png" alt="" /></p>
+
+<h4>Microstrategy Office</h4>
+
+<p>MSTR Office is a plugin for Microsoft Office and lets the user to run reports from Office tools. I could not show the screen shot for this product, I didn&rsquo;t install this feature as I don&rsquo;t have the MS Office in my VM.</p>
+
+<p>Below are the sub-features installed as part of MSTR Office.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm6.png" alt="" /></p>
+
+<h4>Microstrategy Mobile</h4>
+
+<p>MSTR Mobile enables the users to view the reports from mobile devices.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm7.png" alt="" /></p>
+
+<p>Below are the sub-features installed as part of MSTR Mobile.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm8.png" alt="" /></p>
+
+<h4>Microstrategy Desktop Products</h4>
+
+<p>MSTR Desktop allows the user to create and/or run the reports in the Desktop.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm9.png" alt="" /></p>
+
+<p>MSTR Architect helps to map the data model to the business model.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm10.png" alt="" /></p>
+
+<p>Below are the sub-features installed as part of MSTR Desktop.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm11.png" alt="" /></p>
+
+<h4>Microstrategy Object Manager</h4>
+
+<p>MSTR Object Manager is used to migrate MSTR objects from one environment to another.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm12.png" alt="" /></p>
+
+<h4>Microstrategy Command Manager</h4>
+
+<p>Command Manager is used to create scripts to automate common administrative tasks.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm13.png" alt="" /></p>
+
+<h4>Microstrategy Enterprise Manager</h4>
+
+<p>MSTR Enterprise Manager provides the usage details of the MSTR Intelligence Server. The core of Enterprise Manager is nothing but a MSTR project with set of predefined reports, and the metrics and attributes to create your own reports. You can run reports that help you to:</p>
+
+<ul>
+<li>Allocate system resources based on data warehouse usage trends</li>
+<li>Research efficient aggregation, partitioning, and indexing strategies</li>
+<li>Profile users based on their system resource usage</li>
+<li>Determine the optimal time to run scheduled jobs, load data, or perform routine system and database maintenance</li>
+<li>Determine the most popular reports so you can schedule and cache them, thus increasing their response time and reducing the load on the system</li>
+<li>Identify unused objects from your metadata repository so they can be deleted later</li>
+<li>Identify peak usage times and patterns and, if necessary, change your Intelligence Server configuration to respond appropriately</li>
+<li>Determine whether you need to add more threads to the database connection threads if queue times are long</li>
+<li>Find which tables are the most used, and create indexes to improve performance</li>
+</ul>
+
+
+<h4>Microstrategy Integrity Manager</h4>
+
+<p>MSTR Integrity Manager is used to automate the report testing.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm14.jpg" alt="" /></p>
+
+<p><img src="/assets/images/2014/Mar/mstr_integrity_manager.png" alt="" /></p>
+
+<h4>Microstrategy System Manager</h4>
+
+<p>Microstrategy System Manager helps to automate the configuration of MSTR products in larger environments.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm15.png" alt="" /></p>
+
+<h4>Microstrategy SDK</h4>
+
+<p>MSTR SDK enables the developers to extend and integrate MSTR platform through a set of APIs that exposes all platform functionality. It helps to embed intelligence in any custom application.</p>
+
+<h4>Microstrategy Narrowcast Sever</h4>
+
+<p>MSTR Narrowcast server delivers the report in mail/phone based on the schedules.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm16.png" alt="" /></p>
+
+<p>Below are the sub-features installed as part of MSTR Narrowcast Server.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm17.png" alt="" /></p>
+
+<h4>Other Components</h4>
+
+<p>This installs the drivers to access Cubes from Analysis Servers and Sequelink ODBC Socket server to talk to multiple data sources.</p>
+
+<p><img src="/assets/images/2014/Mar/062313_1702_overviewofm18-1.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Microstrategy 9 Installation on a New Windows 2008 Server]]></title>
+    <link href="http://blog.meygam.com//blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server/"/>
+    <updated>2013-06-16T00:00:00-05:00</updated>
+    <id>http://blog.meygam.com//blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server</id>
+    <content type="html"><![CDATA[<p>Since my customer has decided to go with the Microstrategy(MSTR) as analytics and reporting tool, I got curious about this tool and wanted to know more on its capabilities. I got an opportunity to go for a free training from MSTR, and I got the evaluation CD &amp; a nice notebook J. I thought I will install it and explore it for 30 days… Lets see how far I go!</p>
+
+<!-- more -->
+
+
+<p>The installation of actual MSTR seems to be simple, but setting up the windows server for the installtion took more time. It would have been simpler if MSTR gave the VM with MSTR services installed in it. Anyways lets assume we have the Windows Server 2008 ready and let see how to install the MSTR. The prerequites are mentioned in the MSTR website <a href="http://www.microstrategy.com/evaluation-edition">http://www.microstrategy.com/evaluation-edition</a></p>
+
+<h3>System Requirements</h3>
+
+<ul>
+<li>x86 or x64 compatible CPU</li>
+<li>4 GB RAM</li>
+<li>Minimum storage space required: Three times the amount of RAM available to Intelligence Server. For example, an Intelligence Server that is provided 4 GB of RAM requires 12 GB of hard drive space.</li>
+<li>Windows 2003 Standard Edition SP2 (on x86 or x64) ,Windows 2003 Enterprise Edition SP2 (on x86 or x64) ,Windows 2003 Standard Edition R2 SP2 (on x86 or x64) ,Windows 2003 Enterprise Edition R2 SP2 (on x86 or x64) ,Windows Vista Business Edition SP2 (on x86 or x64), Windows Vista Enterprise Edition SP2 (on x86 or x64) ,Windows 7 Professional Edition SP1(on x86 or x64), Windows 7 Enterprise Edition SP1 (on x86 or x64) ,Windows 8 all editions (on x86 or x64) ,Windows 2008 Standard Edition SP2 on x64 ,Windows 2008 Enterprise Edition SP2 on x64 ,Windows 2008 Standard Edition R2 SP1 on x64 ,Windows 2008 Enterprise Edition R2 SP1 on x64 ,Windows Server 2012 Standard (on x64)</li>
+<li>Microsoft Internet Information Services (IIS) * version 6.x, 7.0.x, 7.5.x, or 8.x.</li>
+<li>Microsoft .NET Framework 4.0 or 4.5. This must be installed prior to installing MicroStrategy.</li>
+<li>Microsoft Internet Explorer version 7.x, 8.x, 9.x, or 10.x.</li>
+<li>Adobe® Reader® version 9.x, 10.x or 11.x.</li>
+<li>Adobe® Flash® Player version 10.1.x, 10.3.x, or 11.x.</li>
+<li>16-bit color display or higher</li>
+<li>Windows fonts display set to small fonts (96 dpi)</li>
+</ul>
+
+
+<p>Insert the DVD and double click on the DVD, it will open the below window, click on &ldquo;Begin Microstrategy Platform Installation&rdquo;.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate1.png" alt="" /></p>
+
+<p>Select the language and click &ldquo;Ok&rdquo;</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate2.png" alt="" /></p>
+
+<p>Click &ldquo;Next&rdquo;</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate3.png" alt="" /></p>
+
+<p>Accept the license agreements and click &ldquo;Next&rdquo;</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate4.png" alt="" /></p>
+
+<p>The license kay can be obtained form <a href="http://www.microstrategy.com/LicenseKey.">http://www.microstrategy.com/LicenseKey.</a> Promo code is required to get the license key. I got one with the evaluation DVD pack. License ley will be sent to your registered email address. Yes, you will have to register to get the license key.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate5.png" alt="" /></p>
+
+<p>Change the installation folders if needed. I prefer it to have the default installation path.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate6.png" alt="" /></p>
+
+<p>Select the features you want to install. Since I am evaluating I installed all the features except the &ldquo;Microstrategy office&rdquo; as it required MS Office to be installed in the server, and I don&rsquo;t have one on my server.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate7.png" alt="" /></p>
+
+<p>After this I got an error saying &ldquo;Adobe Acrobat Reader 7 or greater&rdquo; is needed. I downloaded and installed the acrobat reader. Then I got the below errors</p>
+
+<pre><code>MicroStrategy Common Files requirements:MISSING: Microsoft .Net Framework v4.0
+MicroStrategy Desktop Products requirements:MISSING: Microsoft .Net Framework v4.0
+MicroStrategy Object Manager requirements:
+OK
+MicroStrategy Command Manager requirements:
+OK
+MicroStrategy Enterprise Manager requirements:
+OK
+MicroStrategy Intelligence Server requirements:
+OK
+MicroStrategy Web Universal requirements:
+MISSING: Microsoft Internet Information Server Version 5.0 or greater.
+MISSING: Microsoft .Net Framework v4.0
+MicroStrategy Web Services requirements:
+MISSING: Microsoft Internet Information Server Version 5.0 or greater.
+MISSING: Microsoft .Net Framework v4.0
+MicroStrategy Mobile Server (ASP .NET) requirements:
+MISSING: Microsoft Internet Information Server Version 5.0 or greater.
+MISSING: Microsoft .Net Framework v4.0
+MicroStrategy SDK requirements:
+OK
+MicroStrategy Integrity Manager requirements:
+OK
+MicroStrategy Office requirements:
+MISSING: Microsoft .Net Framework v4.0
+MISSING: Microsoft Office XP or higher.
+MISSING: Windows Installer 4.5 or higher.
+(Windows Installer 4.5 redistributables can be found in
+..\Utilities\3rdParty\WindowsInstaller45 folder
+on the MicroStrategy product installation media.)
+SequeLink ODBC Socket Server requirements:
+OK
+MicroStrategy Narrowcast Administrator requirements:
+OK
+MicroStrategy Delivery Engine requirements:
+OK
+MicroStrategy Subscription Portal requirements:
+MISSING: Microsoft Internet Information Server Version 5.0 or greater.
+MicroStrategy Tutorial - Reporting requirements:
+OK
+MicroStrategy Analytics Modules requirements:
+OK
+MicroStrategy MDX Cube Provider requirements:
+MISSING: Microsoft Internet Information Server Version 5.0 or greater.
+MISSING: Microsoft .Net Framework v4.0
+</code></pre>
+
+<p>I got below message after installing Microsoft .Net 4.0 and IIS.</p>
+
+<pre><code>MicroStrategy Mobile Server (ASP .NET) requirements:
+MISSING Web Server feature: Security\Windows Authentication
+MISSING Web Server feature: Application Development\ASP
+</code></pre>
+
+<p>I had to enable the ASP &amp; Windows Authentication services for the IIS as shown below.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate8.png" alt="" /></p>
+
+<p>Since it&rsquo;s the new server, I didn&rsquo;t get a chance to enable the ASP and ASP.Net extensions in the IIS. Good that MSTR installation recognizes that and showed me the below pop up.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate9.png" alt="" /></p>
+
+<p>Leave the default and click &ldquo;Next&rdquo;</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate10.png" alt="" /></p>
+
+<p> This is to just an information that you will get the activation key in the mail.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate11.png" alt="" /></p>
+
+<p>Enter the instance name, location, use and click &ldquo;Next&rdquo;</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate12.png" alt="" /></p>
+
+<p>Enter your information and click &ldquo;Next&rdquo;.. In case if you select &ldquo;I am not an employee…&rdquo; option then it will prompt you an one more window where it will ask you to entert one of the Employee&rsquo;s information associated with this project.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate13.png" alt="" /></p>
+
+<p>The installation will start now. It took me hours to finish the installation as my VM&rsquo;s processor and memory are under the required specifications.  Select to get the activation code in email. You need to activate the software within 7 days from the installation.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate14.png" alt="" /></p>
+
+<p>The installed components and it details are listed once the installation is complete.</p>
+
+<pre><code>Component Install:
+- MicroStrategy Desktop Analyst
+- MicroStrategy Desktop Designer
+- MicroStrategy Architect
+- MicroStrategy Server Administrator
+- MicroStrategy Object Manager
+- MicroStrategy Command Manager
+- MicroStrategy Enterprise Manager
+- MicroStrategy System Manager
+- MicroStrategy Intelligence Server
+- MicroStrategy Report Services
+- MicroStrategy OLAP Services
+- MicroStrategy Distribution Services
+- MicroStrategy Transaction Services
+- MicroStrategy Web Universal - MicroStrategy Web Server (ASP .NET)
+- MicroStrategy Web Universal - MicroStrategy Web Server (JSP)
+- MicroStrategy Web Universal Analyst
+- MicroStrategy Web Universal Professional
+- MicroStrategy Web Universal Reporter
+- MicroStrategy Mobile - BlackBerry® Device Client Application
+- MicroStrategy Mobile - MicroStrategy Mobile Server (ASP .NET)
+- MicroStrategy Mobile - MicroStrategy Mobile Server (JSP)
+- MicroStrategy Portlets
+- MicroStrategy GIS Connectors
+- MicroStrategy SDK
+- MicroStrategy Integrity Manager
+- MicroStrategy Tutorial - Reporting
+- MicroStrategy Analytics Modules
+- MicroStrategy Narrowcast Administrator
+- MicroStrategy Delivery Engine
+- MicroStrategy Subscription Portal
+- MicroStrategy Tutorial - Delivery
+- SequeLink ODBC Socket Server
+- MicroStrategy MDX Cube Provider
+Target Directories:
+- MicroStrategy Desktop Products: C:\Program Files\MicroStrategy\Desktop
+- MicroStrategy Object Manager: C:\Program Files\MicroStrategy\Object Manager
+- MicroStrategy Command Manager: C:\Program Files\MicroStrategy\Command Manager
+- MicroStrategy Enterprise Manager: C:\Program Files\MicroStrategy\Enterprise Manager
+- MicroStrategy System Manager: C:\Program Files\MicroStrategy\System Manager
+- MicroStrategy Intelligence Server: C:\Program Files\MicroStrategy\Intelligence Server
+- MicroStrategy Web Universal - MicroStrategy Web Server (ASP .NET): C:\Program Files\MicroStrategy\Web ASPx
+- MicroStrategy Web Universal - MicroStrategy Web Server (JSP): C:\Program Files\MicroStrategy\Web JSP
+- MicroStrategy Mobile - BlackBerry® Device Client Application: C:\Program Files\MicroStrategy\Mobile Clients
+- MicroStrategy Mobile Server - MicroStrategy Mobile Server (ASP .NET): C:\Program Files\MicroStrategy\Mobile Server ASPx
+- MicroStrategy Mobile Server - MicroStrategy Mobile Server (JSP): C:\Program Files\MicroStrategy\Mobile Server JSP
+- MicroStrategy SDK: C:\Program Files\MicroStrategy\SDK
+- MicroStrategy Portlets: C:\Program Files\MicroStrategy\Portlets
+- MicroStrategy GIS Connectors: C:\Program Files\MicroStrategy\GISConnectors
+- MicroStrategy Integrity Manager: C:\Program Files\MicroStrategy\Integrity Manager
+- MicroStrategy Tutorial - Reporting: C:\Program Files\MicroStrategy\Tutorial Reporting
+- MicroStrategy Analytics Modules: C:\Program Files\MicroStrategy\Analytics Modules
+- MicroStrategy Narrowcast Administrator: C:\Program Files\MicroStrategy\Narrowcast Server\Delivery Engine
+- MicroStrategy Tutorial - Delivery: C:\Program Files\MicroStrategy\Narrowcast Server\Tutorial
+- MicroStrategy Subscription Portal: C:\Program Files\MicroStrategy\Narrowcast Server\Subscription Portal
+- MicroStrategy Health Center: C:\Program Files\Common Files\MicroStrategy\HealthCenter
+- MicroStrategy MDX Cube Provider: C:\Program Files\MicroStrategy\MDX Cube Provider
+- MicroStrategy Common Files: C:\Program Files\Common Files\MicroStrategy
+Program Folder: MicroStrategy
+Log file:
+C:\Program Files\Common Files\MicroStrategy\install.log
+MicroStrategy Web Server (ASP .NET) Virtual Directory: MicroStrategy
+MicroStrategy Mobile Server (ASP .NET) Virtual Directory: MicroStrategyMobile
+MicroStrategy Subscription Portal Virtual Directory: NarrowcastServer
+MicroStrategy MDX Cube Provider Virtual Directory: MicroStrategyMDX
+License Details:
+Contract ID: 76053
+License Key Group: 1
+License Key Issue Date: 7/18/2012
+GA installation
+MicroStrategy Intelligence Server Module
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Intelligence Server Universal Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Narrowcast Server Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Report Services Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy OLAP Services Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Distribution Services Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Transaction Services Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Intelligence Server Clustering Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Intelligence Server MultiSource Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+Maximum number of Concurrent Users allowed: 50
+MicroStrategy Web Reporter Module
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Web Universal Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Web Analyst Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Web Professional Option
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy Desktop Products
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+MicroStrategy Desktop Analyst Module
+Maximum number of Named Users allowed: 500
+MicroStrategy Desktop Designer Option
+Maximum number of Named Users allowed: 500
+MicroStrategy Architect
+Maximum number of Named Users allowed: 500
+MicroStrategy Server Administrator
+MicroStrategy Command Manager
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+Maximum number of Managed Named Users allowed: 500
+MicroStrategy Enterprise Manager
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+Maximum number of Managed Named Users allowed: 500
+MicroStrategy Object Manager
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+Maximum number of Managed Named Users allowed: 500
+MicroStrategy SDK
+Production Version
+MicroStrategy Analytics Modules
+Evaluation Version
+MicroStrategy Integrity Manager
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+Maximum number of Named Users allowed: 1
+Maximum number of Managed Named Users allowed: 500
+MicroStrategy Mobile
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+MicroStrategy System Manager
+Evaluation Version
+Evaluation period: 1
+Evaluation duration: 30 day(s)
+License based on Named Users
+Maximum number of Named Users allowed: 500
+Maximum number of Managed Named Users allowed: 500
+</code></pre>
+
+<p>Restart the server to complete the installation</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate15.png" alt="" /></p>
+
+<p>Activate the server using Start à Microstrategy à License Manager</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate16.png" alt="" /></p>
+
+<p>Enter the activation key that you got in the mail.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate17.png" alt="" /></p>
+
+<p>This completes the Microstrategy Server installation.</p>
+
+<p><img src="/assets/images/2014/Mar/061713_0449_microstrate18.png" alt="" /></p>
+
+<p>The installation should be easy if you have a good server to install it in. I had to struggle to get the VM ready and install MSTR on top of that. That too my VM was about micro in size. Took 3 hours to complete my installation. Better to use a larger VM for quicker installation.</p>
+]]></content>
+  </entry>
+  
+</feed>

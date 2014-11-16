@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Android | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/android/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:50:13-06:00</updated>
+  <id>http://blog.meygam.com//</id>
+  <author>
+    <name><![CDATA[Meygam Inc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows]]></title>
+    <link href="http://blog.meygam.com//blog/2014/03/01/jenkins-android/"/>
+    <updated>2014-03-01T08:21:00-06:00</updated>
+    <id>http://blog.meygam.com//blog/2014/03/01/jenkins-android</id>
+    <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Android Application using Jenkins Continuous Integration - to build the project, run the unit tests (if any), archive the built artifacts and run the Android lint reports.</p>
+
+<!-- more -->
+
+
+<h2>1. Install Jenkins as a Windows Service</h2>
+
+<p>Navigate to jenkins-ci.org website using an Internet browser and download the Windows native package (the link is underlined for easy identification) as shown from the right side pane of the Download Jenkins tab.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-installation.png" title="Jenkins Installation Package" alt="Jenkins Installation package" /></p>
+
+<p>Once the download is complete, uncompress the zip file and click on the jenkins-1.xxx.msi file. Proceed through the configuration steps to install the Jenkins as a Windows service.</p>
+
+<h2>2. Modify Default Jenkins Port</h2>
+
+<p>By default Jenkins runs on the port 8080. In order to avoid conflict with other applications, the default port can be modified by editing the jenkins.xml found under C:\Program Files (x86)\Jenkins location. As shown below, modify the httpPort to 8082.</p>
+
+<pre><code>&lt;service&gt;
+  &lt;id&gt;jenkins&lt;/id&gt;
+  &lt;name&gt;Jenkins&lt;/name&gt;
+  &lt;description&gt;This service runs Jenkins continuous integration system.&lt;/description&gt;
+  &lt;env name="JENKINS_HOME" value="%BASE%"/&gt;
+  &lt;!--
+    if you'd like to run Jenkins with a specific version of Java, specify a full path to java.exe.
+    The following value assumes that you have java in your PATH.
+  --&gt;
+  &lt;executable&gt;%BASE%\jre\bin\java&lt;/executable&gt;
+  &lt;arguments&gt;-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar "%BASE%\jenkins.war" --httpPort=8082&lt;/arguments&gt;
+  &lt;!--
+    interactive flag causes the empty black Java window to be displayed.
+    I'm still debugging this.
+  &lt;interactive /&gt;
+  --&gt;
+  &lt;logmode&gt;rotate&lt;/logmode&gt;
+
+  &lt;onfailure action="restart" /&gt;
+&lt;/service&gt;
+</code></pre>
+
+<p>Once the modification is saved in jenkins.xml file, restart the Jenkins service from the Windows Task Manager->Services and right clicking on the Jenkins service and choose Stop Service to stop the service as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-stop.png" title="Jenkins Stop Service" alt="Jenkins Stop Service" /></p>
+
+<p>Once the status of the service changes to stopped, restart the service by right clicking on the Jenkins service and choose Start Service to start the service again.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-restart.png" title="Jenkins Restart Service" alt="Jenkins Restart Service" /></p>
+
+<p>Navigate to localhost:8082 to verify if the Jenkins restart was successful as shown below - Jenkins Dashboard will be displayed. Note that it takes a while before the Jenkins service becomes available.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-dashboard.png" title="Jenkins Dashboard" alt="Jenkins Dashboard" /></p>
+
+<h2>3. Install Plugins</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Manage Plugins as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-manageplugins.png" title="Jenkins Manage Plugins" alt="Jenkins Manage Plugins" /></p>
+
+<p>Install the following plugins and restart Jenkins for the changes to take effect.</p>
+
+<ul>
+<li>Git Plugin (for integrating Git with Jenkins)</li>
+<li>Gradle Plugin (for integrating Gradle with Jenkins)</li>
+<li>Android Lint Plugin (for integration Lint with Jenkins)</li>
+</ul>
+
+
+<h2>4. Configure System</h2>
+
+<p>On the Jenkins Dashboard, navigate to Manage Jenkins -> Configure System as shown in the snapshot below.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-configuresystem.png" title="Jenkins Configure System" alt="Jenkins Configure System" /></p>
+
+<p>Navigate to the Global Properties section and click on Add to add an Environment Variable ANDROID_HOME as shown in the snapshot below. Enter the name as ANDROID_HOME and enter the path of the location where the Android SDK is stored on windows.</p>
+
+<p><img src="/assets/images/elizabetht/androidhome.png" title="Jenkins Android Home Configuration" alt="Jenkins Android Home Configuration" /></p>
+
+<p>Navigate to the JDK section and click on &ldquo;Add JDK&rdquo; to add the JDK installation as shown in the snapshot below. Specify a JDK Name, choose the JDK Version to install and follow the on-screen instructions to save the Oracle Login credentials. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-java.png" title="Jenkins Java Installation" alt="Jenkins Java Installation" /></p>
+
+<p>Next, proceed to the Git section and click on &ldquo;Add Git&rdquo; to add the Git installation as shown in the snapshot below. Specify Git Name, specify the path to Git executable and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-gitinstall.png" title="Jenkins Git Installation" alt="Jenkins Git Installation" /></p>
+
+<p>Next, proceed to the Gradle section and click on &ldquo;Add Gradle&rdquo; to add the Gradle installation as shown in the snapshot below. Specify Gradle Name, choose the appropriate version (at the time of writing, I used Gradle 1.10) and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/gradleinstall.png" title="Jenkins Gradle Installation" alt="Jenkins Gradle Installation" /></p>
+
+<p>Next, proceed to the Email Notification section and enter the SMTP Server details as shown below. Click on the Advanced button to add the further details required and Save the changes. Click on &ldquo;Test configuration by sending test e-mail&rdquo;, enter the test e-mail recipient and click on &ldquo;Test configuration&rdquo; to see if the email is successfully sent.</p>
+
+<p><img src="/assets/images/elizabetht/jenkins-email.png" title="Jenkins Email Notification" alt="Jenkins Email Notification" /></p>
+
+<h2>5. Create a New Jenkins Job</h2>
+
+<p>From the Jenkins Dashboard, click on &ldquo;New Job&rdquo; to create a new job. Enter a name for the job and choose &ldquo;Build a free-style software project&rdquo; as option and click on OK as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-newjob.png" title="Jenkins Android New Job" alt="Jenkins Android New Job" /></p>
+
+<p>From the New Job Configuration screen, proceed to the Source Code Management section. Save the Git credentials by clicking on &ldquo;Add&rdquo; as shown below and entering the details in the following dialog. Save the changes by clicking on &ldquo;Add&rdquo; as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-add-credentials.png" title="Jenkins Android Add Credentials" alt="Jenkins Android Add Credentials" /></p>
+
+<p>Specify the Git Repository URL for the project, choose the saved credentials from the drop-down list as shown in the snapshot below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-sourcecodemgmt.png" title="Jenkins Source Code Management" alt="Jenkins Source Code Management" /></p>
+
+<p>Next, from the Build Triggers section, select the options desired as shown below and Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-build-triggers.png" title="Android Build Triggers" alt="Android Build Triggers" /></p>
+
+<p>Proceed to the Build section, choose &ldquo;Invoke Gradle script&rdquo; from the drop-down list of choices for &ldquo;Add build step&rdquo;. Choose the appropriate Gradle version which is configured, enter the tasks to be built and select the options as desired. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-build.png" title="Android Build" alt="Android Build" /></p>
+
+<p>Proceed to the Post-build Actions section, click on &ldquo;Publish Android Lint results&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and specify the location where the Lint results should be stored in the Jenkins workspace for the job.</p>
+
+<p>Similarly, click on &ldquo;Archive the artifacts&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and the specify the format of APK files to be archived after every build. Additionally, options from Advanced section such as &ldquo;Discard all but the last successful/stable artifact to save disk space&rdquo; could be enabled for saving disk space.</p>
+
+<p>Click on &ldquo;E-mail Notification&rdquo; from the drop-down list of choices for &ldquo;Add post-build action&rdquo; and enter the values for the email recipients as shown below. Save the changes.</p>
+
+<p><img src="/assets/images/elizabetht/android-post-build.png" title="Android Post Build" alt="Android Post Build" /></p>
+
+<h2>6. Build Now</h2>
+
+<p>Once the above configuration steps are complete, click on &ldquo;Build Now&rdquo; under the Jenkins -> Build Android Application (or the respective Job name) to build the project based on the configuration.</p>
+
+<p>The console output has the detailed logs of what steps were initiated by the configuration and the outcome of the entire build. Clicking on any successful build outcome shows the artifacts that were archived as part of the build, the change that started the build and the lint results as shown below.</p>
+
+<p><img src="/assets/images/elizabetht/android-build-outcome.png" title="Android Build Outcome" alt="Android Build Outcome" /></p>
+
+<p>Thus the entire process of building the project an Android application project whenever a SCM change is triggered or under another condition, running lint reports, archiving the artifacts built, publishing lint reports and triggering emails to the recipients can be automated with a click of a button through Jenkins.</p>
+]]></content>
+  </entry>
+  
+</feed>

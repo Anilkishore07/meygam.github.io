@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Maven | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/maven/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:44:38-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Maven | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/maven/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:50:13-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,17 +15,17 @@
   
   <entry>
     <title type="html"><![CDATA[Building Jersey2 REST Client Using Spring With JUnit and JMock]]></title>
-    <link href="http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
+    <link href="http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock/"/>
     <updated>2013-12-23T12:10:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
-    <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
+    <id>http://blog.meygam.com//blog/2013/12/23/jersey2-rest-client-with-junit-and-jmock</id>
+    <content type="html"><![CDATA[<p>This post will show how to create a Jersey2 REST Client in a Spring environment and test the same using JUnit and JMock frameworks. The details of the actual application are explained in the earlier post given by the link <a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->
 
 
 <h2>1. Update pom.xml</h2>
 
-<p>To make the Maven Java Web Application project (<a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>) support the JUnit testing framework, add the following dependency to the existing pom.xml</p>
+<p>To make the Maven Java Web Application project (<a href="http://elizabetht.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>) support the JUnit testing framework, add the following dependency to the existing pom.xml</p>
 
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.jmock&lt;/groupId&gt;
@@ -930,9 +930,9 @@
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Jersey2 REST With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/"/>
     <updated>2013-12-13T10:45:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -1484,9 +1484,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using Hibernate With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring/"/>
     <updated>2013-11-21T09:41:30-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-hibernate-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with Hibernate ORM in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->
@@ -1952,9 +1952,9 @@ This is necessary as the DB Schema name of studentEnrollment is specified in the
   
   <entry>
     <title type="html"><![CDATA[Building Java Web Application Using MyBatis With Spring]]></title>
-    <link href="http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
+    <link href="http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring/"/>
     <updated>2013-11-21T09:41:09-06:00</updated>
-    <id>http://meygam.github.io/blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
+    <id>http://blog.meygam.com//blog/2013/11/21/student-enrollment-using-mybatis-with-spring</id>
     <content type="html"><![CDATA[<p>This post will show how to create a Student Enrollment Application using MYSQL DB with MyBatis framework in a Spring environment. This is a simple application that aims to collect the input details from the user during signup, save the details in the MYSQL DB and authenticate the same during login.</p>
 
 <!-- more -->

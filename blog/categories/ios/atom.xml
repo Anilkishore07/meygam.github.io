@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Ios | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/ios/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:44:38-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Ios | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T18:50:13-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Connecting to Open VPN Server From iOS Device]]></title>
-    <link href="http://meygam.github.io/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/"/>
+    <link href="http://blog.meygam.com//blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device/"/>
     <updated>2014-03-13T00:00:00-05:00</updated>
-    <id>http://meygam.github.io/blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device</id>
+    <id>http://blog.meygam.com//blog/2014/03/13/connecting-to-open-vpn-server-from-ios-device</id>
     <content type="html"><![CDATA[<p>To connect iOS device to Open VPN server we need</p>
 
 <ul>
