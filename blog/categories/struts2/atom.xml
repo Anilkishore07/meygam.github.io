@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Struts2 | My Octopress Blog]]></title>
   <link href="http://meygam.github.io/blog/categories/struts2/atom.xml" rel="self"/>
   <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:44:38-06:00</updated>
+  <updated>2014-11-15T18:50:21-06:00</updated>
   <id>http://meygam.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -29,7 +29,7 @@
 
 <p>The sample web application directory structure is shown below with a standard deployment descriptor web.xml</p>
 
-<p><img src="/assets/assets/images/elizabetht/elizabetht/strutslayout.png" title="Struts Dynamic Web Project Layout" alt="Struts Dynamic Web Project Layout" /></p>
+<p><img src="/assets/images/elizabetht/strutslayout.png" title="Struts Dynamic Web Project Layout" alt="Struts Dynamic Web Project Layout" /></p>
 
 <h2>2. Modify web.xml</h2>
 
@@ -80,7 +80,7 @@
 
 <p>The sample lib folder structure is shown below with the necessary JARs added for the project.</p>
 
-<p><img src="/assets/assets/images/elizabetht/elizabetht/strutsliblayout.png" title="Struts Library Layout" alt="Struts Library Layout" /></p>
+<p><img src="/assets/images/elizabetht/strutsliblayout.png" title="Struts Library Layout" alt="Struts Library Layout" /></p>
 
 <h2>4. Create JSP Files for Student Signup/Login</h2>
 
@@ -88,11 +88,11 @@
 
 <p>Create a file signup.jsp to include a form to get the input details like UserName, Password, FirstName, LastName, DateOfBirth and EmailAddress of the student. A snapshot of the signup page is as follows:</p>
 
-<p><img src="/assets/assets/images/elizabetht/elizabetht/struts-signup.png" title="Struts Signup Layout" alt="Struts Signup Layout" /></p>
+<p><img src="/assets/images/elizabetht/struts-signup.png" title="Struts Signup Layout" alt="Struts Signup Layout" /></p>
 
 <p>Next, create a file login.jsp to include a form with UserName and Password. A snapshot of the login page is as follows:</p>
 
-<p><img src="/assets/assets/images/elizabetht/elizabetht/login.png" title="Struts Login Layout" alt="Struts Login Layout" /></p>
+<p><img src="/assets/images/elizabetht/login.png" title="Struts Login Layout" alt="Struts Login Layout" /></p>
 
 <p>The main actions for this application are as follows:</p>
 
@@ -117,7 +117,7 @@ Also create package for the utilities class under the src folder.</p>
 
 <p>A sample snapshot of the project after the package creation is as shown below:</p>
 
-<p><img src="/assets/assets/images/elizabetht/elizabetht/struts-package.png" title="Struts Package Layout" alt="Struts Package Layout" /></p>
+<p><img src="/assets/images/elizabetht/struts-package.png" title="Struts Package Layout" alt="Struts Package Layout" /></p>
 
 <h2>6. Create class for Model Tier</h2>
 
