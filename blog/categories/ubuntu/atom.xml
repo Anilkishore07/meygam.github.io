@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Ubuntu | The Story of Experiments with Technology]]></title>
-  <link href="http://blog.meygam.com//blog/categories/ubuntu/atom.xml" rel="self"/>
-  <link href="http://blog.meygam.com//"/>
-  <updated>2014-11-15T17:59:30-06:00</updated>
-  <id>http://blog.meygam.com//</id>
+  <title><![CDATA[Category: Ubuntu | My Octopress Blog]]></title>
+  <link href="http://meygam.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://meygam.github.io/"/>
+  <updated>2014-11-15T18:36:41-06:00</updated>
+  <id>http://meygam.github.io/</id>
   <author>
-    <name><![CDATA[Meygam Inc]]></name>
+    <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,242 +15,13 @@
   
   <entry>
     <title type="html"><![CDATA[Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/17/spring-cache-abstraction-using-ehcache/"/>
+    <link href="http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/17/spring-cache-abstraction-using-ehcache</id>
-    <content type="html"><![CDATA[<p>In this article, we will see how to use EhCahce with Spring Cache abstraction. Refer <a href="http://ehcache.org/documentation/recipes/spring-annotations">http://ehcache.org/documentation/recipes/spring-annotations</a> for using EhCache’s own annotations. The advantage of using it with Spring Cache abstraction is that it&rsquo;s easy to change the underlying storage. Say in future if we want to change it to Memcached, then it is just a configuration change and not a code change.</p>
-
-<p>Let’s look at the Spring configuration steps and common issues that one encounters while using Spring Cache.</p>
-
-<ul>
-<li>Add the Ehcache dependency to the project</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613368.js"></script>
-
-
-<p>Note: Without adding the dependency you might see the error</p>
-
-<pre><code>org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': Invocation of init method failed; nested exception is java.lang.NoClassDefFoundError: Lnet/sf/ehcache/CacheManager;
-</code></pre>
-
-<ul>
-<li>Include the cache namespace and schema location in the Spring Configuration file.</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613426.js"></script>
-
-
-<ul>
-<li>Configure the application to use annotation driven</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613497.js"></script>
-
-
-<ul>
-<li>Define the cacheManager bean</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613514.js"></script>
-
-
-<ul>
-<li>Configure the ehcache.xml
-Defined the caches in the ehcache configuration XML. Below is the sample ehcache xml file to define the caches.</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613543.js"></script>
-
-
-<p>Note: Without defaultCache defined, below error will be thrown</p>
-
-<pre><code>Cannot resolve reference to bean 'cacheManager' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'cacheManager' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Cannot resolve reference to bean 'ehcache' while setting bean property 'cacheManager'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ehcache' defined in ServletContext resource [/WEB-INF/servlet-config.xml]: Invocation of init method failed; nested exception is net.sf.ehcache.CacheException: Illegal configuration. No default cache is configured.
-</code></pre>
-
-<ul>
-<li>Add the @Cacheable annotation to the code</li>
-</ul>
-
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613568.js"></script>
-
-
-<h4>Common issues one might face in using the Spring Cache abstraction</h4>
-
-<ul>
-<li>Cache key collision:
-The default key generator is a simple one and it is easy to get key collisions using this. Refer the DefaultKeyGenerator.java code to see how it works. Also when you have an array as a parameter, the default key generator produces different key for each execution.</li>
-</ul>
-
-
-<p>It’s better to use your own key generator. Below is the sample one I used</p>
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613617.js"></script>
-
-
-<p>And you can set this as your default key generator in the Spring configuration file like below.</p>
-
-<script src="https://gist.github.com/saravanakumar-periyasamy/6613634.js"></script>
-
-
-<ul>
-<li>Application context is loaded more than once:</li>
-</ul>
-
-
-<p>Sometimes due to misconfiguration the application context gets loaded twice and due to that you might get the error. Make sure you name the cacheManager in the ehcache.xml and you are not loading the application context twice.</p>
-
-<pre><code>Another unnamed CacheManager already exists in the same VM. 
-Please provide unique names for each CacheManager in the config or do one of following:
-1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
-2. Shutdown the earlier cacheManager before creating new one with same name.
-The source of the existing CacheManager is: InputStreamConfigurationSource [stream=sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@47f3ed6]
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Overview of Microstrategy Features]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/17/overview-of-microstrategy-features/"/>
-    <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/17/overview-of-microstrategy-features</id>
-    <content type="html"><![CDATA[<p>In my previous blog <a href="/microstrategy-9-installation-on-a-new-windows-2008-server/">Microstrategy 9 Installation on a new Windows 2008 server</a> we looked at installing the MSTR. Here let&rsquo;s look at the features we installed. Below is the list of all the features from MSTR.</p>
-
-<p>{<1>}<img src="/content/images/2014/Mar/062313_1702_overviewofm1-1.png" alt="" /></p>
-
-<p>The below picture will give us the overview of how all these features are related.</p>
-
-<p>{<2>}<img src="/content/images/2014/Mar/062313_1702_overviewofm2-1.png" alt="" /></p>
-
-<p>Let&rsquo;s look at each one of them in detail</p>
-
-<h4>Microstrategy Intelligence Server</h4>
-
-<p>Microstrategy Intelligence Server is the architectural foundation for the Microstrategy platform. This communicates to the various data sources, and runs the reports and distributes to MSTR Desktop and Web users. Intelligence server ensures the scalability and fault tolerance required for analysis of terabyte databases and millions of users.</p>
-
-<p>Below are the sub-features installed as part of MSTR Intelligence server. We will cover these features in detail when we explore the Intelligence server in detail.</p>
-
-<p>{<3>}<img src="/content/images/2014/Mar/062313_1702_overviewofm3-1.png" alt="" /></p>
-
-<h4>Microstrategy Web universal</h4>
-
-<p>MSTR Web enables the users to create and/or run the reports in web.</p>
-
-<p>{<4>}<img src="/content/images/2014/Mar/062313_1702_overviewofm4-1.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Web Universal.</p>
-
-<p>{<5>}<img src="/content/images/2014/Mar/062313_1702_overviewofm5-1.png" alt="" /></p>
-
-<h4>Microstrategy Office</h4>
-
-<p>MSTR Office is a plugin for Microsoft Office and lets the user to run reports from Office tools. I could not show the screen shot for this product, I didn&rsquo;t install this feature as I don&rsquo;t have the MS Office in my VM.</p>
-
-<p>Below are the sub-features installed as part of MSTR Office.</p>
-
-<p>{<6>}<img src="/content/images/2014/Mar/062313_1702_overviewofm6.png" alt="" /></p>
-
-<h4>Microstrategy Mobile</h4>
-
-<p>MSTR Mobile enables the users to view the reports from mobile devices.</p>
-
-<p>{<7>}<img src="/content/images/2014/Mar/062313_1702_overviewofm7.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Mobile.</p>
-
-<p>{<8>}<img src="/content/images/2014/Mar/062313_1702_overviewofm8.png" alt="" /></p>
-
-<h4>Microstrategy Desktop Products</h4>
-
-<p>MSTR Desktop allows the user to create and/or run the reports in the Desktop.</p>
-
-<p>{<9>}<img src="/content/images/2014/Mar/062313_1702_overviewofm9.png" alt="" /></p>
-
-<p>MSTR Architect helps to map the data model to the business model.</p>
-
-<p>{<10>}<img src="/content/images/2014/Mar/062313_1702_overviewofm10.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Desktop.</p>
-
-<p>{<11>}<img src="/content/images/2014/Mar/062313_1702_overviewofm11.png" alt="" /></p>
-
-<h4>Microstrategy Object Manager</h4>
-
-<p>MSTR Object Manager is used to migrate MSTR objects from one environment to another.</p>
-
-<p>{<12>}<img src="/content/images/2014/Mar/062313_1702_overviewofm12.png" alt="" /></p>
-
-<h4>Microstrategy Command Manager</h4>
-
-<p>Command Manager is used to create scripts to automate common administrative tasks.</p>
-
-<p>{<13>}<img src="/content/images/2014/Mar/062313_1702_overviewofm13.png" alt="" /></p>
-
-<h4>Microstrategy Enterprise Manager</h4>
-
-<p>MSTR Enterprise Manager provides the usage details of the MSTR Intelligence Server. The core of Enterprise Manager is nothing but a MSTR project with set of predefined reports, and the metrics and attributes to create your own reports. You can run reports that help you to:</p>
-
-<ul>
-<li>Allocate system resources based on data warehouse usage trends</li>
-<li>Research efficient aggregation, partitioning, and indexing strategies</li>
-<li>Profile users based on their system resource usage</li>
-<li>Determine the optimal time to run scheduled jobs, load data, or perform routine system and database maintenance</li>
-<li>Determine the most popular reports so you can schedule and cache them, thus increasing their response time and reducing the load on the system</li>
-<li>Identify unused objects from your metadata repository so they can be deleted later</li>
-<li>Identify peak usage times and patterns and, if necessary, change your Intelligence Server configuration to respond appropriately</li>
-<li>Determine whether you need to add more threads to the database connection threads if queue times are long</li>
-<li>Find which tables are the most used, and create indexes to improve performance</li>
-</ul>
-
-
-<h4>Microstrategy Integrity Manager</h4>
-
-<p>MSTR Integrity Manager is used to automate the report testing.</p>
-
-<p>{<14>}<img src="/content/images/2014/Mar/062313_1702_overviewofm14.jpg" alt="" /></p>
-
-<p>{<15>}<img src="/content/images/2014/Mar/mstr_integrity_manager.png" alt="" /></p>
-
-<h4>Microstrategy System Manager</h4>
-
-<p>Microstrategy System Manager helps to automate the configuration of MSTR products in larger environments.</p>
-
-<p>{<16>}<img src="/content/images/2014/Mar/062313_1702_overviewofm15.png" alt="" /></p>
-
-<h4>Microstrategy SDK</h4>
-
-<p>MSTR SDK enables the developers to extend and integrate MSTR platform through a set of APIs that exposes all platform functionality. It helps to embed intelligence in any custom application.</p>
-
-<h4>Microstrategy Narrowcast Sever</h4>
-
-<p>MSTR Narrowcast server delivers the report in mail/phone based on the schedules.</p>
-
-<p>{<17>}<img src="/content/images/2014/Mar/062313_1702_overviewofm16.png" alt="" /></p>
-
-<p>Below are the sub-features installed as part of MSTR Narrowcast Server.</p>
-
-<p>{<18>}<img src="/content/images/2014/Mar/062313_1702_overviewofm17.png" alt="" /></p>
-
-<h4>Other Components</h4>
-
-<p>This installs the drivers to access Cubes from Analysis Servers and Sequelink ODBC Socket server to talk to multiple data sources.</p>
-
-<p>{<19>}<img src="/content/images/2014/Mar/062313_1702_overviewofm18-1.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Installing Oracle Java 7 and Tomcat 7 on Ubuntu 13]]></title>
-    <link href="http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13/"/>
-    <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://blog.meygam.com//blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
+    <id>http://meygam.github.io/blog/2014/01/17/installing-oracle-java-7-and-tomcat-7-on-ubuntu-13</id>
     <content type="html"><![CDATA[<p>Setting up a new Ubuntu server with Java 7 &amp; Tomcat 7 seems to be trivial, but often I had to do it at my workplace and everytime I had to google it to do this. So I thought I will list down the steps in my blog.</p>
+
+<!-- more -->
+
 
 <h3>Install Oracle Java 7</h3>
 
