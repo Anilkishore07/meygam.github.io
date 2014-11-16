@@ -3,6 +3,7 @@ layout: post
 title:  "WordPress on AWS"
 author: saravana
 date:   2014-01-17
+comments: true
 categories: [AWS, Wordpress]
 ---
 In this blog I am going to cover the step by step instructions to host your own WordPress blog in AWS. Hosting your own blog has some advantages, you can install any plugins/themes you want and publish any content you like. Having said that it’s not for everyone. If you are a basic user better you create account in wordpress.com. I wanted to run my own blog engine, primarily because I am a techie.

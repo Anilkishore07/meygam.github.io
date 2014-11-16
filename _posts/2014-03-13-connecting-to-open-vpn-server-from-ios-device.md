@@ -3,6 +3,7 @@ layout: post
 title:  "Connecting to Open VPN server from iOS device"
 author: saravana
 date:   2014-03-13
+comments: true
 categories: [OpenVPN, iOS]
 ---
 To connect iOS device to Open VPN server we need

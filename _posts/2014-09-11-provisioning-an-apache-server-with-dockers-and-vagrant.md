@@ -3,6 +3,7 @@ layout: post
 title:  "Provisioning an Apache Server With Dockers And Vagrant"
 author: saravana
 date:   2014-09-11
+comments: true
 categories: [Dockers, Vagrant]
 ---
 At the end of this blog we will provision a server with vagrant and run apache in a docker container.
