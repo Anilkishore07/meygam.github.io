@@ -6,6 +6,10 @@ date:   2014-06-16
 categories: [Microstrategy]
 ---
 Since my customer has decided to go with the Microstrategy(MSTR) as analytics and reporting tool, I got curious about this tool and wanted to know more on its capabilities. I got an opportunity to go for a free training from MSTR, and I got the evaluation CD & a nice notebook J. I thought I will install it and explore it for 30 days… Lets see how far I go!
+
+<!-- more -->
+
+
 The installation of actual MSTR seems to be simple, but setting up the windows server for the installtion took more time. It would have been simpler if MSTR gave the VM with MSTR services installed in it. Anyways lets assume we have the Windows Server 2008 ready and let see how to install the MSTR. The prerequites are mentioned in the MSTR website http://www.microstrategy.com/evaluation-edition
 
 ###System Requirements
