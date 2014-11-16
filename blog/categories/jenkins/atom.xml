@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Jenkins | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/jenkins/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:54:17-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Jenkins | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/jenkins/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T19:00:53-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Automating the Release of Java Artifacts Using Jenkins on Windows]]></title>
-    <link href="http://meygam.github.io/blog/2014/02/05/jenkins-release-upload/"/>
+    <link href="http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload/"/>
     <updated>2014-02-05T08:21:00-06:00</updated>
-    <id>http://meygam.github.io/blog/2014/02/05/jenkins-release-upload</id>
+    <id>http://blog.meygam.com//blog/2014/02/05/jenkins-release-upload</id>
     <content type="html"><![CDATA[<p>This post will show how to automate the release process of a Java Web Application (Student Enrollment Application developed using MYSQL DB with Hibernate ORM in a REST based Jersey2 Spring environment) using Jenkins Continuous Integration - upload the release artifacts to release repository. The job configured using this post must be run only after uploading the snapshot artifacts into the snapshot repository as explained in the earlier post <a href="http://meygam.github.io/blog/2014/01/13/jenkins-snapshot-upload/">Automating the Deployment and Upload of Snapshot Java Artifacts using Jenkins on Windows</a>. The details of the actual application are explained in the earlier post given by the link <a href="http://meygam.github.io/blog/2013/12/13/student-enrollment-using-jersey-rest-with-spring/">Building Java Web Application Using Jersey REST With Spring</a>.</p>
 
 <!-- more -->

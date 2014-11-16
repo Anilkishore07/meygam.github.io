@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Aws | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/aws/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:54:17-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Aws | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/aws/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T19:00:53-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[WordPress on AWS]]></title>
-    <link href="http://meygam.github.io/blog/2014/01/17/wordpress-on-aws/"/>
+    <link href="http://blog.meygam.com//blog/2014/01/17/wordpress-on-aws/"/>
     <updated>2014-01-17T00:00:00-06:00</updated>
-    <id>http://meygam.github.io/blog/2014/01/17/wordpress-on-aws</id>
+    <id>http://blog.meygam.com//blog/2014/01/17/wordpress-on-aws</id>
     <content type="html"><![CDATA[<p>In this blog I am going to cover the step by step instructions to host your own WordPress blog in AWS. Hosting your own blog has some advantages, you can install any plugins/themes you want and publish any content you like. Having said that it’s not for everyone. If you are a basic user better you create account in wordpress.com. I wanted to run my own blog engine, primarily because I am a techie.</p>
 
 <!-- more -->

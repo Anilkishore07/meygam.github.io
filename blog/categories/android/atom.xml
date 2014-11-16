@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Android | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/android/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:54:17-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Android | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/android/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T19:00:53-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Automating the Continuous Integration of Android Projects With Gradle Using Jenkins on Windows]]></title>
-    <link href="http://meygam.github.io/blog/2014/03/01/jenkins-android/"/>
+    <link href="http://blog.meygam.com//blog/2014/03/01/jenkins-android/"/>
     <updated>2014-03-01T08:21:00-06:00</updated>
-    <id>http://meygam.github.io/blog/2014/03/01/jenkins-android</id>
+    <id>http://blog.meygam.com//blog/2014/03/01/jenkins-android</id>
     <content type="html"><![CDATA[<p>This post will show how to automate the deployment process of a Android Application using Jenkins Continuous Integration - to build the project, run the unit tests (if any), archive the built artifacts and run the Android lint reports.</p>
 
 <!-- more -->

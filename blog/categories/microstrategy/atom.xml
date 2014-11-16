@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Microstrategy | My Octopress Blog]]></title>
-  <link href="http://meygam.github.io/blog/categories/microstrategy/atom.xml" rel="self"/>
-  <link href="http://meygam.github.io/"/>
-  <updated>2014-11-15T18:54:17-06:00</updated>
-  <id>http://meygam.github.io/</id>
+  <title><![CDATA[Category: Microstrategy | The Story of Experiments with Technology]]></title>
+  <link href="http://blog.meygam.com//blog/categories/microstrategy/atom.xml" rel="self"/>
+  <link href="http://blog.meygam.com//"/>
+  <updated>2014-11-15T19:00:53-06:00</updated>
+  <id>http://blog.meygam.com//</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Meygam Inc]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Overview of Microstrategy Features]]></title>
-    <link href="http://meygam.github.io/blog/2013/06/20/overview-of-microstrategy-features/"/>
+    <link href="http://blog.meygam.com//blog/2013/06/20/overview-of-microstrategy-features/"/>
     <updated>2013-06-20T00:00:00-05:00</updated>
-    <id>http://meygam.github.io/blog/2013/06/20/overview-of-microstrategy-features</id>
+    <id>http://blog.meygam.com//blog/2013/06/20/overview-of-microstrategy-features</id>
     <content type="html"><![CDATA[<p>In my previous blog <a href="/microstrategy-9-installation-on-a-new-windows-2008-server/">Microstrategy 9 Installation on a new Windows 2008 server</a> we looked at installing the MSTR. Here let&rsquo;s look at the features we installed. Below is the list of all the features from MSTR.</p>
 
 <!-- more -->
@@ -148,9 +148,9 @@
   
   <entry>
     <title type="html"><![CDATA[Microstrategy 9 Installation on a New Windows 2008 Server]]></title>
-    <link href="http://meygam.github.io/blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server/"/>
+    <link href="http://blog.meygam.com//blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server/"/>
     <updated>2013-06-16T00:00:00-05:00</updated>
-    <id>http://meygam.github.io/blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server</id>
+    <id>http://blog.meygam.com//blog/2013/06/16/microstrategy-9-installation-on-a-new-windows-2008-server</id>
     <content type="html"><![CDATA[<p>Since my customer has decided to go with the Microstrategy(MSTR) as analytics and reporting tool, I got curious about this tool and wanted to know more on its capabilities. I got an opportunity to go for a free training from MSTR, and I got the evaluation CD &amp; a nice notebook J. I thought I will install it and explore it for 30 days… Lets see how far I go!</p>
 
 <!-- more -->
